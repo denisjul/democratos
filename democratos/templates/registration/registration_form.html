@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block script %}
+    <style type="text/css" media="screen">
+        #intro{display: none;}
+        body{text-align: center;} 
+        section form{padding-left: 5%;}   
+    </style>
+{% endblock %}
+
+{% block Main %}
+<section class="simple_design">
+    <h1 style="text-align: center;">Nouvel utilisateur</h1>
+        <form method="post" action=".">
+                {% csrf_token %}
+                {% include "base_form.html" with form=form %}
+                <input type="submit" value="Enregistrer"/>
+        </form>
+    <br>
+    <a href="/CYL/accounts/login">Revenir à la page de connexion</a>
+
+</section>
+{% endblock %}

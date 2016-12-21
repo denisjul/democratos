@@ -1,0 +1,28 @@
+{% extends "base_login.html" %}
+
+{% load staticfiles %}
+
+{% block script %} 
+	<script type="text/javascript" src="{% static 'js/jstree.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui.min.css' %}"></link>
+	<script type="text/javascript" src="{% static 'js/myJS_CYL.js' %}"></script>
+	<style type="text/css" media="screen">
+		nav{display: inline-block;}	
+	</style>
+	{% block script2 %} {% endblock %}
+{% endblock %}
+
+{% block nav %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jstree-style.css' %}" />
+    <div id="jstree_CYL"  class="ui-widget-content" style="padding:1px;"></div>
+{% endblock %}
+
+ {% block Main %}
+	 <section  id="intro">
+	   {% block intro %}{% endblock %}
+	 </section>
+	 <section id="content">
+	   {% block content %}{% endblock %}
+	 </section>
+ {% endblock %}

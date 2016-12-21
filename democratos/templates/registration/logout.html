@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block script %}
+	<script>
+	    function redirect(){
+	       window.location.href = "{% url 'auth_login' %}";
+	    }
+	    setTimeout(redirect, 5000); 
+	</script>
+{% endblock %}
+
+{% block title %}{% trans "Logged out" %}{% endblock %}
+
+{% block Main %}
+<section class="short_message">
+	<p>{% trans "Successfully logged out" %}.</p>
+	<p>Vous allez être redirigé dans 5 secondes...</p>	
+</section>
+{% endblock %}

@@ -1,0 +1,35 @@
+##################   User  ###############
+- gérer les droits d'accès aux pages
+- mail confirmation inscription					/!\ Lors de la mise en prod
+- changer mdp
+- utilisation de note/axe de réfléxion
+- page de profil utiliateur
+- système de relation entre utilisateurs (un nouveau model 'Relation' avec: contact name, en contact? invit sent? invit recieved?)
+- suppression compte?...
+- discussion entre user
+- envoi mail aux users
+- notification: Réflection commenté/ evenement dans les intéret
+
+#################  Le Backend  #####################
+- revoir téléchargement des codes de lois(code des assurances livre II????)
+- supprimer la possibilité d'approuver une loi et une de ses contre-proposition en meme temps(code ok mais bug persistant dans l'ordre de loading de la maj des valeurs,i.e. erreur supprimé dès f5)
+- nouvel enregistrement + light des tables     <-- A tester!
+- lien "signaler abus" ?
+-supprimer dis???
+
+#################  La fonctionalité du site  #####################
+- Crée un nouveau code de loi
+- Crée des sous-parties de code
+- crée des nouvelles lois
+
+##################      Le frontend        #####################
+- création d'une page liste (de question/proposition/explication/opinion/démentis)	| A tester!
+- limiter les liste aux 5 propositions les plus importantes
+- Ckeditor à paramétrer: différent pour loi & prop que pour les autres
+- limite titre obligatoire si plus de X caractères/lignes dans le text
+- mise en page des pages web (Css/html)
+- notification défiler
+- JStree revoir pourquoi premier article ne marche pas parfois
+
+##################    en plus      #############################
+- forum (à méditer)
