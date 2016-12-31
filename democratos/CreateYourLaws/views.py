@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
@@ -34,7 +35,7 @@ def home(request):
 
 @login_required
 def nav_up(request, idbox):
-    "ajax for CYL nav: update the tree"
+    """ajax for CYL nav: update the tree"""
     id_box = int(idbox[1:len(idbox)])
     children = []
     JSON_obj = []
@@ -49,7 +50,8 @@ def nav_up(request, idbox):
         for el in listArticle:
             children.append((str(el.id),
                              el.title,
-                             '/CYL/reflection/loi/' + str(el.id),
+                             "Reflection",
+                             'loi:' + str(el.id),
                              False))
     if idbox[0] == 'A':
         listBlock = list(
@@ -61,26 +63,30 @@ def nav_up(request, idbox):
         for el in listBlock:
             children.append((str(el.id),
                              el.title,
-                             '/CYL/InDatBox/2/' + str(el.id),
+                             "InDatBox",
+                             '2:' + str(el.id),
                              True))
     for elem in children:
         # 'B' in the 'id' param inform that this is a Code BLock
         JSON_obj.append({'id': 'B' + elem[0],
                          'text': elem[1],
-                         'a_attr': {'href': elem[2]},
-                         'children': elem[3]})
+                         'a_attr': {'class': elem[2],
+                                    'name': elem[3]},
+                         'children': elem[4]})
     return JsonResponse(JSON_obj, safe=False)
+
 
 @login_required
 def nav_init(request):
-    "ajax for CYL nav: init the tree"
+    """ajax for CYL nav: init the tree"""
     law_codes = list(LawCode.objects.all())
     JSON_obj = []
     for i, el in enumerate(law_codes):
         # 'A' in the 'id' param inform that this is a Law code
         JSON_obj.append({'id': 'A' + str(el.id),
                          'text': el.title,
-                         'a_attr': {'href': '/CYL/InDatBox/1/' + str(el.id)},
+                         'a_attr': {"class": "InDatBox",
+                                    "name": "1:" + str(el.id)},
                          'children': True})
     return JsonResponse(JSON_obj, safe=False)
 
@@ -145,7 +151,9 @@ def UP(request):
         note.approve = True
         note.save()
     obj = get_the_instance(typ, Id)
-    ctx = {'message': message, 'approb': str(obj.approval_ratio), 'data': data}
+    ctx = {'message': message,
+           'approb': str(obj.approval_ratio),
+           'data': data}
     return JsonResponse(ctx)
 
 
@@ -252,25 +260,24 @@ def view_profile(request, set_var="info"):
 
 
 @login_required
-def In_dat_box(request, box_type, box_id):  # <------------ A revoir !!!!!!!!!
+def In_dat_box(request):
     """ List the blocks or articles contained in a law code or boxe """
+    slug = request.POST.get('slug', None)
+    box_type, box_id = slug.split(sep=":")
+    box_id = int(box_id)
     if box_type == '1':
         lqs = list(
             LawArticle.objects.filter(law_code=box_id,
                                       block_id__isnull=True).order_by('id'))
-    else:
-        lqs = list(
-            LawArticle.objects.filter(block=box_id).order_by('id'))
-    if box_type == '1':
         lqs += list(
             CodeBlock.objects.filter(rank=1, law_code=box_id).order_by('id'))
-    else:
-        lqs += list(
-            CodeBlock.objects.filter(block=box_id).order_by('id'))
-    if box_type == '1':  # liste des premiers
         Box = LawCode.objects.get(id=box_id)
         listparents = []
     else:
+        lqs = list(
+            LawArticle.objects.filter(block=box_id).order_by('id'))
+        lqs += list(
+            CodeBlock.objects.filter(block=box_id).order_by('id'))
         Box = CodeBlock.objects.get(id=box_id)
         listparents = []
         lastbox = Box
@@ -281,14 +288,21 @@ def In_dat_box(request, box_type, box_id):  # <------------ A revoir !!!!!!!!!
         parent = Box.law_code
         listparents.append((parent.title, parent.id, 1))
         listparents.reverse()
-    return render(request, 'InDatBox.html', locals())
+    intro = render_to_string('intro_InDatBox.html', locals())
+    content = render_to_string('content_InDatBox.html', locals())
+    ctx = {'intro': intro, 'content': content}
+    return JsonResponse(ctx)
 
 
 @login_required
-def view_reflection(request, typeref, id_ref):
+def get_reflection(request):
     """ View which display a reflection and its child
     reflections from its ID"""
     # Does the reflection extist?
+    print('fck yeah')
+    slug = request.POST.get('slug', None)
+    typeref, id_ref = slug.split(sep=":")
+    id_ref = int(id_ref)
     try:
         if typeref == 'loi':
             ref = LawArticle.objects.get(id=id_ref)
@@ -407,10 +421,10 @@ def view_reflection(request, typeref, id_ref):
         listposop = list(ref.opinions.filter(positive=True))
         listnegop = list(ref.opinions.filter(positive=False))
         listpropositions = list(ref.propositions.all())
-    typereq = 'loi'
-    return render(request,
-                  'main_ref.html',
-                  locals())
+    intro = render_to_string('intro_reflec.html', locals())
+    content = render_to_string('content_reflec.html', locals())
+    ctx = {'intro': intro, 'content': content}
+    return JsonResponse(ctx)
 
 
 @login_required

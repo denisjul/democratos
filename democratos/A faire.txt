@@ -14,6 +14,7 @@
 - revoir téléchargement des codes de lois(code des assurances livre II????)
 - supprimer la possibilité d'approuver une loi et une de ses contre-proposition en meme temps(code ok mais bug persistant dans l'ordre de loading de la maj des valeurs,i.e. erreur supprimé dès f5)
 - nouvel enregistrement + light des tables     <-- A tester!
+- dl plante après : Code de l'urbanisme :  Article R173-1
 - lien "signaler abus" ?
 -supprimer dis???
 
@@ -30,6 +31,15 @@
 - mise en page des pages web (Css/html)
 - notification défiler
 - JStree revoir pourquoi premier article ne marche pas parfois
+- threading de commentaires
 
 ##################    en plus      #############################
 - forum (à méditer)
+
+
+================================================================================================
+################ form ajax ###############################
+
+- tester la requette (ajax + form)
+- mettre champs caché dans form pour connaitre type de requette
+

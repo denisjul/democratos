@@ -179,14 +179,14 @@ section form{
 	list-style: none;
 }
 
-.opform{
+#opform{
 	background: -moz-linear-gradient(110deg,#f98b8b 50%,#93f99a 50%);
 	border-style: solid;
 	border-color: #93f99a;
 	border-radius: 8px;
 }
 
-.opform ul{
+#opform ul{
 	list-style: none;
 }
 
@@ -327,6 +327,10 @@ section form{
 
 .list_nav:hover {
 	background-color: white;
+	cursor: pointer;
+}
+
+.InDatBox:hover {
 	cursor: pointer;
 }
 

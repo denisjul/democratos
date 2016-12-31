@@ -396,6 +396,7 @@ def Get_Constitution(url_fail, Gov):  # A revoir si nouvelle constitution
                       ' --> OK!')
 
             buf_16 = buf_16[1:16]
+    print("constitution terminée!")
     return url_fail
 
 
@@ -445,6 +446,7 @@ def _Main_():
     listofcodes = Get_codes_ref()
     url_fail = Get_Constitution(url_fail, Gov)
     # url_fail = get_code_data(listofcodes[1][1], url_fail, Gov)
+    print("c'est parti!")
     for x in range(len(listofcodes)):
         url_fail = get_code_data(listofcodes[x][1], url_fail, Gov)
 

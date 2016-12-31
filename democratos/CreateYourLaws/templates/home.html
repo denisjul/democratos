@@ -2,6 +2,7 @@
 
 {% block title %}Home{% endblock %}
 {% load staticfiles %}
+{% load special_filters %}
 
 {% block nav %}
 	<link rel="stylesheet" type="text/css" href="{% static 'css/jstree-style.css' %}" />
@@ -21,9 +22,9 @@
 {% block content %}
 	<article>	
 			<p>
-				<ul script="list-style:none;">
+				<ul style="list-style:none;">
 				{% for x in lqs %}
-				    <li><a href="{% url 'InDatBox' 1 x.id %}"><strong>{{x.title}}</strong></a><br/><br/></li>
+				    <li class= "InDatBox" name="1:{{x.id}}"><strong>{{x.title}}</strong></li><br/>
 				{% endfor %}
 				</ul>
 			</p>

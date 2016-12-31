@@ -1,5 +1,7 @@
 //setup JQuery's AJAX methods to setup CSRF token in the request before sending it off.
 
+
+// This function gets cookie with a given name
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -17,6 +19,41 @@ function getCookie(name) {
 }
 var csrftoken = getCookie('csrftoken');
 
+/*
+The functions below will create a header with csrftoken
+*/
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+function sameOrigin(url) {
+    // test that a given url is a same-origin URL
+    // url could be relative or scheme relative or absolute
+    var host = document.location.host; // host + port
+    var protocol = document.location.protocol;
+    var sr_origin = '//' + host;
+    var origin = protocol + sr_origin;
+    // Allow absolute or scheme relative URLs to same origin
+    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+        // or any other URL that isn't scheme relative or absolute i.e relative.
+        !(/^(\/\/|http:|https:).*/.test(url));
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+            // Send the token to same-origin, relative URLs only.
+            // Send the token only if the method warrants CSRF protection
+            // Using the CSRFToken value acquired earlier
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+
+// ############################  Objects  ##############################
 
 // The donut widget
 
@@ -64,57 +101,61 @@ var DonutChart = function (canvas, radius, lineWidth, arraySlices, label) {
     };
 };
 
+// ######################### functions ############################
+
+
+
 // ##########################  MAIN   #############################
 
 $(document).ready(function() {
 	// preload icons for JStree?????
 
 	// -------------Displaying Forms for q,exp,op etc. -------------
-	$(".opform").css('display','none');
-	//$(".expform").css('display','none');
-	$(".qform").css('display','none');
-	$(".disform").css('display','none');
-	$(".propform").css('display','none');
+	$("#opform").css('display','none');
+	$("#expform").css('display','none');
+	$("#qform").css('display','none');
+	$("#disform").css('display','none');
+	$("#propform").css('display','none');
 
 	$(".butopinion").click(function(event) {
-		if ( $(".opform").css('display') == 'none' ){
-		    $(".opform").css('display','block');
+		if ( $("#opform").css('display') == 'none' ){
+		    $("#opform").css('display','block');
 		}
 		else{
-			$(".opform").css('display','none');
+			$("#opform").css('display','none');
 		}
 	});
 	$(".butexp").click(function(event) {
-		if ( $(".expform").css('display') == 'none' ){
-		    $(".expform").css('display','block');
+		if ( $("#expform").css('display') == 'none' ){
+		    $("#expform").css('display','block');
 		}
 		else{
-			$(".expform").css('display','none');
+			$("#expform").css('display','none');
 		}
 
 	});
 	$(".butq").click(function(event) {
-		if ( $(".qform").css('display') == 'none' ){
-		    $(".qform").css('display','block');
+		if ( $("#qform").css('display') == 'none' ){
+		    $("#qform").css('display','block');
 		}
 		else{
-			$(".qform").css('display','none');
+			$("#qform").css('display','none');
 		}
 	});
 	$(".butdis").click(function(event) {
-		if ( $(".disform").css('display') == 'none' ){
-		    $(".disform").css('display','block');
+		if ( $("#disform").css('display') == 'none' ){
+		    $("#disform").css('display','block');
 		}
 		else{
-			$(".disform").css('display','none');
+			$("#disform").css('display','none');
 		}
 	});
 	$(".butprop").click(function(event) {
-		if ( $(".propform").css('display') == 'none' ){
-		    $(".propform").css('display','block');
+		if ( $("#propform").css('display') == 'none' ){
+		    $("#propform").css('display','block');
 		}
 		else{
-			$(".propform").css('display','none');
+			$("#propform").css('display','none');
 		}
 	});
 
@@ -139,14 +180,11 @@ $(document).ready(function() {
 	    window.location = data.node.a_attr.href;
 	});
 	$('#jstree_CYL').on('load_node.jstree', function (e, data) {
-		//alert(data.node.children[0])
-		//alert(Object.entries(data.node.children[0]));
-		//alert(data.node.children.length);
 		if (data.node.id != '#'){
 			for (var i= 0; i < data.node.children.length; i++) {
 				console.log('hey')
 				var child = data.instance.get_node(data.node.children[i])
-				if (child.a_attr.href.substring(0,8) === '/CYL/ref'){
+				if (child.a_attr.class === 'Reflection'){
 					data.instance.set_icon(child, "/static/icons/article.png");
 				}
 				else {
@@ -222,7 +260,7 @@ $(document).ready(function() {
      	var dontomodif = '#don' + $(this).attr('name').replace(':','');
          	 $.ajax({
                type: "POST",
-               url: '/CYL/UP', // A modifier lors de la mise en prod
+               url: '/CYL/UP',
                data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
                dataType: "json",
                success: function(response) {
@@ -247,28 +285,28 @@ $(document).ready(function() {
           }); 
     });
     // --------------- down button -----------------------
-     $('.DOWN').click(function(){
+    $('.DOWN').click(function(){
      	var tomodif = '#' + $(this).attr('name').replace(':','');
      	var dontomodif = '#don' + $(this).attr('name').replace(':','');
-         	 $.ajax({
-               type: "POST",
-               url: '/CYL/DOWN', // A modifier lors de la mise en prod
-               data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
-               dataType: "json",
-               success: function(response) {
-                    if (response.message != ""){
-                  		alert(response.message)
-                  	};
-                    $(tomodif).html(Math.round(parseFloat(response.approb)*100)/100);
-                    var context = $(dontomodif)[0].getContext('2d');
-                    context.clearRect(0, 0, context.width, context.height);
-                    $(dontomodif).trigger('MakeMyDonuts', [response.approb]);
+     	$.ajax({
+            type: "POST",
+            url: '/CYL/DOWN',
+            data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
+            dataType: "json",
+            success: function(response) {
+                if (response.message != ""){
+              		alert(response.message)
+              	};
+                $(tomodif).html(Math.round(parseFloat(response.approb)*100)/100);
+                var context = $(dontomodif)[0].getContext('2d');
+                context.clearRect(0, 0, context.width, context.height);
+                $(dontomodif).trigger('MakeMyDonuts', [response.approb]);
 
-                },
-                error: function(rs, e) {
-                    alert(rs.responseText);
-                }
-          }); 
+            },
+            error: function(rs, e) {
+                alert(rs.responseText);
+            }
+        }); 
     });
     // --------------- Checkbox suscribe -----------------------
 	$('.suscribe').click(function() {
@@ -294,4 +332,37 @@ $(document).ready(function() {
 	        },
 	    });
 	});
+	    // --------------- Box loading AJAX -----------------------
+    $("body").on("click",".InDatBox",function(){
+	 	$.ajax({
+	        type: "POST",
+	        url: '/CYL/InDatBox',
+	        data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
+	        dataType: "json",
+	        success: function(response) {
+	            $("#intro").html(response.intro);
+	            $("#content").html(response.content);
+	        },
+	        error: function(rs, e) {
+	            alert(rs.responseText);
+	        }
+	    });
+	});
+		    // --------------- Reflection loading AJAX -------------------
+    $("body").on("click",".GetReflection",function(){
+	 	$.ajax({
+	        type: "POST",
+	        url: '/CYL/reflection',
+	        data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
+	        dataType: "json",
+	        success: function(response) {
+	        	alert("wai")
+	            $("#intro").html(response.intro);
+	            $("#content").html(response.content);
+	        },
+	        error: function(rs, e) {
+	            alert(rs.responseText);
+	        }
+	    });
+	}); 
 });
