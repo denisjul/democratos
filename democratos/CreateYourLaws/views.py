@@ -48,9 +48,9 @@ def nav_up(request, idbox):
             LawArticle.objects.filter(block=id_box).order_by('id'))
     if listArticle:
         for el in listArticle:
-            children.append((str(el.id),
+            children.append(('C' + str(el.id),
                              el.title,
-                             "Reflection",
+                             "GetReflection",
                              'loi:' + str(el.id),
                              False))
     if idbox[0] == 'A':
@@ -61,18 +61,20 @@ def nav_up(request, idbox):
             CodeBlock.objects.filter(block=id_box).order_by('id'))
     if listBlock:
         for el in listBlock:
-            children.append((str(el.id),
+            children.append(('B' + str(el.id),
                              el.title,
                              "InDatBox",
                              '2:' + str(el.id),
                              True))
     for elem in children:
         # 'B' in the 'id' param inform that this is a Code BLock
-        JSON_obj.append({'id': 'B' + elem[0],
+        JSON_obj.append({'id': elem[0],
                          'text': elem[1],
                          'a_attr': {'class': elem[2],
                                     'name': elem[3]},
                          'children': elem[4]})
+    for e in JSON_obj:
+        print(e)
     return JsonResponse(JSON_obj, safe=False)
 
 
@@ -299,7 +301,6 @@ def get_reflection(request):
     """ View which display a reflection and its child
     reflections from its ID"""
     # Does the reflection extist?
-    print('fck yeah')
     slug = request.POST.get('slug', None)
     typeref, id_ref = slug.split(sep=":")
     id_ref = int(id_ref)

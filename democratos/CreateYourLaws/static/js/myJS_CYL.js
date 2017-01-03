@@ -52,6 +52,46 @@ $.ajaxSetup({
     }
 });
 
+function SetDonuts(){
+	$('.donut').each(function(){
+    	$(this).on('MakeMyDonuts', function(event, value) {
+    		var nameread = $(this).attr('name').replace(',','.')
+		    var value = (typeof value !== 'undefined') ? value : parseFloat(nameread);
+		    //var value = parseInt($(this).attr('name'));
+		    var donvalue = Math.round(((parseFloat(value))+100)*5)/10;
+		    var canvas = $(this).get(0);
+		    var sideLength = 36;
+		    canvas.width = canvas.height = sideLength;
+		    canvas.width +=  canvas.width*0.33;
+		    var lineWidth = 9;
+		    var radius = (sideLength - lineWidth) / 2;
+		    var slices = [{
+		        percent: 100-donvalue,	
+		        color: "#ff7474"
+		    }, {
+		        percent: donvalue,
+		        color: "#4ce64c"
+		    }];
+		    if (value >= 0){
+			    var label = {
+			        text: donvalue + '%',
+			        color: "#007a00",
+			        font_size: 11,
+		    	};
+		   	}
+			else{
+				var label = {
+				    text: donvalue + '%',
+				    color: "#992600",
+				    font_size: 11,
+				};
+			}
+		    var donutChart = new DonutChart(canvas, radius, lineWidth, slices, label);
+		    donutChart.render(); 
+			});
+    	$(this).trigger('MakeMyDonuts');
+	});
+}
 
 // ############################  Objects  ##############################
 
@@ -165,12 +205,12 @@ $(document).ready(function() {
 		'core' : {
 		  'data' : {
 		    'url' : function (node) {
-		      return node.id === '#' ?
-				        '/CYL/nav_init' :    // A modifier lors de la mise en prod
-					    '/CYL/nav_up/' + node.id;  // A modifier lors de la mise en prod
+		    	return node.id === '#' ?
+				    '/CYL/nav_init' :    
+					'/CYL/nav_up/' + node.id;
 		    },
 		    'data' : function (node) {
-		      return JSON.stringify({ 'id' : node.id, 'text': node.text});
+		    	return JSON.stringify({ 'id' : node.id, 'text': node.text});
 		    }
 		  }
 		},
@@ -182,9 +222,8 @@ $(document).ready(function() {
 	$('#jstree_CYL').on('load_node.jstree', function (e, data) {
 		if (data.node.id != '#'){
 			for (var i= 0; i < data.node.children.length; i++) {
-				console.log('hey')
 				var child = data.instance.get_node(data.node.children[i])
-				if (child.a_attr.class === 'Reflection'){
+				if (child.a_attr.class === 'GetReflection'){
 					data.instance.set_icon(child, "/static/icons/article.png");
 				}
 				else {
@@ -215,47 +254,10 @@ $(document).ready(function() {
     });
 
     // --------------- Set Donuts -----------------------
-    $('.donut').each(function(){
-    	$(this).on('MakeMyDonuts', function(event, value) {
-    		var nameread = $(this).attr('name').replace(',','.')
-		    var value = (typeof value !== 'undefined') ? value : parseFloat(nameread);
-		    //var value = parseInt($(this).attr('name'));
-		    var donvalue = Math.round(((parseFloat(value))+100)*5)/10;
-		    var canvas = $(this).get(0);
-		    var sideLength = 36;
-		    canvas.width = canvas.height = sideLength;
-		    canvas.width +=  canvas.width*0.33;
-		    var lineWidth = 9;
-		    var radius = (sideLength - lineWidth) / 2;
-		    var slices = [{
-		        percent: 100-donvalue,	
-		        color: "#ff7474"
-		    }, {
-		        percent: donvalue,
-		        color: "#4ce64c"
-		    }];
-		    if (value >= 0){
-			    var label = {
-			        text: donvalue + '%',
-			        color: "#007a00",
-			        font_size: 11,
-		    	};
-		   	}
-			else{
-				var label = {
-				    text: donvalue + '%',
-				    color: "#992600",
-				    font_size: 11,
-				};
-			}
-		    var donutChart = new DonutChart(canvas, radius, lineWidth, slices, label);
-		    donutChart.render(); 
-			});
-    	$(this).trigger('MakeMyDonuts');
-	});
+    SetDonuts();
 
     // --------------- up button -----------------------
-    $('.UP').click(function(){
+    $('body').on('click','.UP',function(){
     	// var tomodif = '#' + $(this).attr('name').replace(':','');
      	var dontomodif = '#don' + $(this).attr('name').replace(':','');
          	 $.ajax({
@@ -285,7 +287,7 @@ $(document).ready(function() {
           }); 
     });
     // --------------- down button -----------------------
-    $('.DOWN').click(function(){
+    $('body').on('click','.DOWN',function(){
      	var tomodif = '#' + $(this).attr('name').replace(':','');
      	var dontomodif = '#don' + $(this).attr('name').replace(':','');
      	$.ajax({
@@ -356,9 +358,9 @@ $(document).ready(function() {
 	        data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
 	        dataType: "json",
 	        success: function(response) {
-	        	alert("wai")
 	            $("#intro").html(response.intro);
 	            $("#content").html(response.content);
+	            SetDonuts();
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);
