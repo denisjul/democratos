@@ -52,46 +52,6 @@ $.ajaxSetup({
     }
 });
 
-function SetDonuts(){
-	$('.donut').each(function(){
-    	$(this).on('MakeMyDonuts', function(event, value) {
-    		var nameread = $(this).attr('name').replace(',','.')
-		    var value = (typeof value !== 'undefined') ? value : parseFloat(nameread);
-		    //var value = parseInt($(this).attr('name'));
-		    var donvalue = Math.round(((parseFloat(value))+100)*5)/10;
-		    var canvas = $(this).get(0);
-		    var sideLength = 36;
-		    canvas.width = canvas.height = sideLength;
-		    canvas.width +=  canvas.width*0.33;
-		    var lineWidth = 9;
-		    var radius = (sideLength - lineWidth) / 2;
-		    var slices = [{
-		        percent: 100-donvalue,	
-		        color: "#ff7474"
-		    }, {
-		        percent: donvalue,
-		        color: "#4ce64c"
-		    }];
-		    if (value >= 0){
-			    var label = {
-			        text: donvalue + '%',
-			        color: "#007a00",
-			        font_size: 11,
-		    	};
-		   	}
-			else{
-				var label = {
-				    text: donvalue + '%',
-				    color: "#992600",
-				    font_size: 11,
-				};
-			}
-		    var donutChart = new DonutChart(canvas, radius, lineWidth, slices, label);
-		    donutChart.render(); 
-			});
-    	$(this).trigger('MakeMyDonuts');
-	});
-}
 
 // ############################  Objects  ##############################
 
@@ -143,14 +103,7 @@ var DonutChart = function (canvas, radius, lineWidth, arraySlices, label) {
 
 // ######################### functions ############################
 
-
-
-// ##########################  MAIN   #############################
-
-$(document).ready(function() {
-	// preload icons for JStree?????
-
-	// -------------Displaying Forms for q,exp,op etc. -------------
+function Setbutform(){
 	$("#opform").css('display','none');
 	$("#expform").css('display','none');
 	$("#qform").css('display','none');
@@ -198,7 +151,62 @@ $(document).ready(function() {
 			$("#propform").css('display','none');
 		}
 	});
+}
 
+function SetDonuts(){
+	$('.donut').each(function(){
+    	$(this).on('MakeMyDonuts', function(event, value) {
+    		var nameread = $(this).attr('name').replace(',','.')
+		    var value = (typeof value !== 'undefined') ? value : parseFloat(nameread);
+		    //var value = parseInt($(this).attr('name'));
+		    var donvalue = Math.round(((parseFloat(value))+100)*5)/10;
+		    var canvas = $(this).get(0);
+		    var sideLength = 36;
+		    canvas.width = canvas.height = sideLength;
+		    canvas.width +=  canvas.width*0.33;
+		    var lineWidth = 9;
+		    var radius = (sideLength - lineWidth) / 2;
+		    var slices = [{
+		        percent: 100-donvalue,	
+		        color: "#ff7474"
+		    }, {
+		        percent: donvalue,
+		        color: "#4ce64c"
+		    }];
+		    if (value >= 0){
+			    var label = {
+			        text: donvalue + '%',
+			        color: "#007a00",
+			        font_size: 11,
+		    	};
+		   	}
+			else{
+				var label = {
+				    text: donvalue + '%',
+				    color: "#992600",
+				    font_size: 11,
+				};
+			}
+		    var donutChart = new DonutChart(canvas, radius, lineWidth, slices, label);
+		    donutChart.render(); 
+			});
+    	$(this).trigger('MakeMyDonuts');
+	});
+}
+
+function loadckeditorJS () {
+	var fileref=document.createElement('script')
+    fileref.setAttribute("type","text/javascript")
+    fileref.setAttribute("src", 'ckeditor/ckeditor-init.js')
+}
+
+// ##########################  MAIN   #############################
+
+$(document).ready(function() {
+	// preload icons for JStree?????
+
+	// -------------Displaying Forms for q,exp,op etc. -------------
+	Setbutform();
 
 	// -------------- JStree settings ---------------------
 	$("#jstree_CYL").jstree({ 
@@ -344,6 +352,7 @@ $(document).ready(function() {
 	        success: function(response) {
 	            $("#intro").html(response.intro);
 	            $("#content").html(response.content);
+	            $('html,body').scrollTop(0);
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);
@@ -358,9 +367,12 @@ $(document).ready(function() {
 	        data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
 	        dataType: "json",
 	        success: function(response) {
+	        	loadckeditorJS();
 	            $("#intro").html(response.intro);
 	            $("#content").html(response.content);
+	            Setbutform();
 	            SetDonuts();
+	            $('html,body').scrollTop(0);
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);

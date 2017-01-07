@@ -73,8 +73,6 @@ def nav_up(request, idbox):
                          'a_attr': {'class': elem[2],
                                     'name': elem[3]},
                          'children': elem[4]})
-    for e in JSON_obj:
-        print(e)
     return JsonResponse(JSON_obj, safe=False)
 
 
