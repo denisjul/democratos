@@ -200,6 +200,20 @@ function loadckeditorJS () {
     fileref.setAttribute("src", 'ckeditor/ckeditor-init.js')
 }
 
+function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auquel est attaché le form
+    $('#'+FormId).submit(function() { // catch the form's submit event
+        $.ajax({ // create an AJAX call...
+            data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            url: $(this).attr('action'), // the file to call
+            success: function(response) { // on success..
+                $('.proposition').html(response.proposition); // update the DIV
+            }
+        });
+        return false;
+    });
+}
+
 // ##########################  MAIN   #############################
 
 $(document).ready(function() {
@@ -373,6 +387,9 @@ $(document).ready(function() {
 	            Setbutform();
 	            SetDonuts();
 	            $('html,body').scrollTop(0);
+	            $('form').each(function(){
+	            	SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
+	            });
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);

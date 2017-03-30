@@ -188,7 +188,6 @@
 
             <button class="butopinion" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
                 <form action="{% url 'reflection' %}" method="post" id="opform">
-                    {% csrf_token %}
                     {{ opform.as_p }}
                     <button type="submit" class="butopinion" name="btnopform">Poster le point de vue</button>
                 </form>           
@@ -239,7 +238,6 @@
 
             <button class="butdis" type="button">Faire un démentis <br>  sur cette loi</button>
                 <form action="{% url 'reflection' %}" method="post" id="disform">
-                    {% csrf_token %}
                     {{ disform.as_p }}
                     <button type="submit" class="butdis" name="btndisform">Poster le démentis</button>
                 </form>
@@ -288,7 +286,6 @@
 
         <button class="butexp" type="button">Faire un commentaire neutre <br>  sur cette loi</button>
             <form action="{% url 'reflection' %}" method="post" id="expform">
-                {% csrf_token %}
                 {% include "base_form.html" with form=expform %}
                 <button type="submit" class="butexp" name="btnexpform">Poster le commentaire</button>
             </form>
@@ -338,7 +335,6 @@
 
         <button class="butq" type="button">Poser une question <br>  à propos de cette loi</button>
             <form action="{% url 'reflection' %}" method="post" id="qform">
-                {% csrf_token %}
                 {{ qform.as_p }}
                 <button type="submit" class="butq" name="btnqform">Poster la question</button>
             </form>
@@ -390,9 +386,10 @@
             </table> 
 
         <button class="butprop" type="button">Faire une autre proposition <br>  que cette loi</button>
-            <form action="{% url 'reflection' %}" method="post" id="propform">
-                {% csrf_token %}
+            <form action="{% url 'PostAProp' %}" method="post" id="propform">
                 {{ propform.as_p }}
+                <input type="hidden" name="typeref" value="{{typeref}}">
+                <input type="hidden" name="ref_id" value="{{ref.id}}">
                 <button type="submit" class="butprop" name="propform">Poster votre proposition </button>
             </form> 
         </section>

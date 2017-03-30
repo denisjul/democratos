@@ -410,8 +410,8 @@ def get_reflection(request):
         else:
             propform = PropositionForm()
 
-    # load all the disclaims, other proposions, opinions, comments and questions
-    # about the reflection
+    # load all the disclaims, other proposions, opinions, comments and
+    # questions about the reflection
     listexplainations = list(ref.explainations.all())
     listquestions = list(ref.questions.all())
     if typeref == 'exp' or typeref == 'opn' or typeref == 'dis':
@@ -423,6 +423,42 @@ def get_reflection(request):
     intro = render_to_string('intro_reflec.html', locals())
     content = render_to_string('content_reflec.html', locals())
     ctx = {'intro': intro, 'content': content}
+    return JsonResponse(ctx)
+
+
+def PostAProp(request):  # Trouver un moyen d'avoir ID_ref
+    typeref = request.POST.get('typeref', '')
+    idref = request.POST.get('ref_id', '')
+    if typeref == 'prp':
+        ref = Proposition.objects.get(
+                id=idref
+                )
+    else:
+        ref = LawArticle.objects.get(
+                id=request.POST.get('ref_id', '')
+                )
+    if request.method == 'POST':
+        propform = PropositionForm(request.POST)
+        print(propform.is_valid())
+        if propform.is_valid():
+            print("hello! Is it me you are looking for?")
+            proptitle = propform.cleaned_data['title']
+            prop = propform.cleaned_data['text_prop']
+            if isinstance(ref, LawArticle):
+                lawart = ref
+            else:
+                lawart = ref.law_article
+            prp = Proposition.objects.create(text_prop=prop,
+                                             title=proptitle,
+                                             autor=User,
+                                             law_article=lawart,
+                                             content_object=ref)
+            prp.save()
+    else:
+        propform = PropositionForm()
+    listpropositions = list(ref.propositions.all())
+    NewPropSection = render_to_string('UpPropSection.html', locals())
+    ctx = {'proposition': NewPropSection}
     return JsonResponse(ctx)
 
 
