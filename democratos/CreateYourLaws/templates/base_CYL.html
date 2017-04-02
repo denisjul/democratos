@@ -7,6 +7,7 @@
 	<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
 	<link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui.min.css' %}"></link>
 	<script type="text/javascript" src="{% static 'js/myJS_CYL.js' %}"></script>
+	<script type "text/javascript" data-isso="http://localhost:8080" src="http://localhost:8080/js/embed.min.js"></script>
 	<style type="text/css" media="screen">
 		nav{display: inline-block;}	
 	</style>
@@ -26,4 +27,8 @@
 	 <section id="content">
 	   {% block content %}{% endblock %}
 	 </section>
+	 <section id="isso">
+     {% block isso %}{% endblock %}
+   </section>
+
  {% endblock %}
