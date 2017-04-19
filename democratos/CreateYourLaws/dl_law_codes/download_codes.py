@@ -444,11 +444,17 @@ def _Main_():
 
     # FIRST TRY TO UPDATE EVERYTHING
     listofcodes = Get_codes_ref()
-    url_fail = Get_Constitution(url_fail, Gov)
-    # url_fail = get_code_data(listofcodes[1][1], url_fail, Gov)
     print("c'est parti!")
-    for x in range(len(listofcodes)):
-        url_fail = get_code_data(listofcodes[x][1], url_fail, Gov)
+    # url_fail = Get_Constitution(url_fail, Gov)
+    print (listofcodes[71][0])
+    """try:
+        input("Press enter to continue")
+    except SyntaxError:
+        pass"""
+    url_fail = get_code_data(listofcodes[71][1], url_fail, Gov)
+
+    """for x in range(len(listofcodes)):
+        url_fail = get_code_data(listofcodes[x][1], url_fail, Gov)"""
 
     # RECOVER ALL THE DATA FAILLED BY REQUEST ERROR
     while url_fail:

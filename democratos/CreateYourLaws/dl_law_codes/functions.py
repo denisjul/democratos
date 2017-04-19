@@ -10,9 +10,13 @@ def get_something(code_source, start, end, i):
     buf_end = ""
     text = ""
     flag = True
+    j = 1
     while flag:
         i += 1
         buf_start += code_source[i]
+        if buf_start[len(buf_start)-7:len(buf_start)] == "</html>":
+            print(buf_start)
+            flag = True
         if len(buf_start) >= length_start:
             if buf_start == start:
                 while flag:

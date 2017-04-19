@@ -38,6 +38,8 @@ def SU_Article(NewArticle, link, container, Law_Code, Gov):
         Articlesql.updated = True
         Articlesql.save()
     print(Articlesql.law_code.title,
+          " n°",
+          Articlesql.law_code.id,
           ': ',
           Articlesql.title,
           ' --> OK!')
