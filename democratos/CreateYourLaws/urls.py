@@ -31,6 +31,7 @@ urlpatterns = [
         user_manage.Create_User.as_view(form_class=Create_CYL_UserForm),
         name='registration_register'),
     url(r'^info/change/done$', views.info_change_done, name="InfoChangeDone"),
+    url(r'^test$', views.testview, name="test"),
 ] + static(
     settings.STATIC_URL,
     document_root=settings.STATIC_ROOT

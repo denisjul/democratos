@@ -489,7 +489,12 @@ def create_new_article():
     """ View to create a new article """
     pass
 
+
 @login_required
 def create_new_box():
     """ View to create a new Law Code or codeblock """
     pass
+
+
+def testview(request):
+    return render(request, 'test.html', locals())

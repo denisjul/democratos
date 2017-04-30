@@ -198,6 +198,7 @@
 <!--############################################################################################
 ##################################      The disclaims       #####################################
 #############################################################################################-->
+    {% comment %}
     {% if typeref == 'exp' or typeref == 'opn' or typeref == 'dis' %}
         <section class="disclaim">
             <h2> contestation / démentis </h2>
@@ -226,7 +227,7 @@
                                 <canvas id="dondis{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
                                 </p>
                                 {% comment %}
-                                <var id="dis{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}
+                                <var id="dis{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}{% comment %}
                             </td>                   
                         </tr>
                     {% empty %}
@@ -274,7 +275,7 @@
                             <canvas id="donexp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
                             </p>
                             {% comment %}
-                            <var id="exp{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}
+                            <var id="exp{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}{% comment %}
                         </td>                   
                     </tr>
                 {% empty %}
@@ -323,7 +324,7 @@
                                 <canvas id="donqst{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
                                 </p>
                                 {% comment %}
-                                <var id="qst{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}
+                                <var id="qst{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}{% comment %}
                             </td>                   
                         </tr>
                     {% empty %}
@@ -339,7 +340,7 @@
                 <button type="submit" class="butq" name="btnqform">Poster la question</button>
             </form>
      </section>
-    
+{% endcomment %}
 
 <!--############################################################################################
 ################################      The propositions       ###################################
@@ -395,3 +396,7 @@
         </section>
     {% endif %}
 {% endautoescape %}
+
+<!--############################################################################################
+######################################     the Debate      #####################################
+#############################################################################################-->

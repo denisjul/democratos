@@ -6,7 +6,6 @@
     {% load staticfiles %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
     <script type="text/javascript" src="{% static 'js/jquery-3.1.0.min.js' %}"></script>
-    <script type "text/javascript" data-isso="http://localhost:8181" src="http://localhost:8181/js/embed.min.js"></script>
     {% block script %} {% endblock %}
      <title>{% block title %}{% endblock %}</title>
   </head>
@@ -23,7 +22,7 @@
       {% endblock %}  
      </main>
   <footer>
-    <script type "text/javascript" data-isso="http://localhost:8181" src="http://localhost:8181/js/embed.min.js"></script>
+    <script type "text/javascript" data-isso="http://localhost:8181/isso" src="http://localhost:8181/js/embed.min.js"></script>
   </footer>
   </body>
 </html>
