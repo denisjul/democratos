@@ -21,6 +21,7 @@ from CreateYourLaws.forms import Info_Change_Form
 from CreateYourLaws.views_functions import get_path, get_the_instance
 from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
+import operator
 
 
 @login_required
@@ -105,7 +106,7 @@ def UP(request):
         # -------------------------------------------------------------
         # About proposition and User must have 1 position:
         # Impossible to approve a Law and a counter-proposition about the Law
-        # or 2 counter-proposition about the same law
+        # or 2 counter-propositions about the same law
         # -------------------------------------------------------------
         data = {}
         if isinstance(obj, Proposition):
@@ -414,6 +415,9 @@ def get_reflection(request):
     # questions about the reflection
     listexplainations = list(ref.explainations.all())
     listquestions = list(ref.questions.all())
+    listcom = listexplainations
+    listcom.extend(listquestions)
+    listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
     if typeref == 'exp' or typeref == 'opn' or typeref == 'dis':
         listdisclaims = list(ref.disclaims.all())
     if typeref == 'loi' or typeref == 'prp':

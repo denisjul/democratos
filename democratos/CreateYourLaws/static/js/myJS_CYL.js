@@ -395,5 +395,9 @@ $(document).ready(function() {
 	            alert(rs.responseText);
 	        }
 	    });
+
+	//--------------------- SET Explaination/question size -----------------
+	wdth = $('#debate').width() * 0.6;
+	$(".explaination.question").css('witdth',wdth);
 	}); 
 });

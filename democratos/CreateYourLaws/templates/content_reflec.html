@@ -195,55 +195,7 @@
     {% endif %}
 
 
-<!--############################################################################################
-##################################      The disclaims       #####################################
-#############################################################################################-->
     {% comment %}
-    {% if typeref == 'exp' or typeref == 'opn' or typeref == 'dis' %}
-        <section class="disclaim">
-            <h2> contestation / démentis </h2>
-            <table>
-                <tbody>
-                    {% for x in listdisclaims %}
-                        <tr>
-                            <td>
-                                <div onclick="location.href='{% url 'reflection' 'dis' x.id %}'" class='clickable'>
-                                {% if x.title %}
-                                    <strong>{{x.title}}</strong> <br/>
-                                    {{x.text_dis|truncatewords:25}} 
-                                {% else %}
-                                    <strong>{{x.text_dis}}</strong> <br/>
-                                {% endif %}
-                                </div>
-                                <p class="count">
-                                <img src="{% static 'icons/dis.png' %}" alt="dis" class="icn"> {{x.nb_dis}}
-                                <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
-                                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}
-                                </p>
-                                <p class="vote">
-                                <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="dis:{{x.id}}" value="UP"/>
-                                <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="dis:{{x.id}}" value="DOWN"/>
-                                    note:
-                                <canvas id="dondis{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                                </p>
-                                {% comment %}
-                                <var id="dis{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}{% comment %}
-                            </td>                   
-                        </tr>
-                    {% empty %}
-                        Aucune contestation n'a été faite pour le moment sur cette réflection.<br>
-                        Soyez le premier à en donner une!
-                    {% endfor %}                
-                </tbody>
-            </table>    
-
-            <button class="butdis" type="button">Faire un démentis <br>  sur cette loi</button>
-                <form action="{% url 'reflection' %}" method="post" id="disform">
-                    {{ disform.as_p }}
-                    <button type="submit" class="butdis" name="btndisform">Poster le démentis</button>
-                </form>
-        </section>
-    {% endif %}
 
 <!--############################################################################################
 ###############################      The neutral comments       ################################
@@ -400,3 +352,56 @@
 <!--############################################################################################
 ######################################     the Debate      #####################################
 #############################################################################################-->
+
+<section id="debate">
+    {% for x in listcom %}
+    <table>
+        <tbody>    
+            <tr>
+                {% if x|isinst:'CreateYourLaws.models.Explaination' %}    
+                    <td class='explaination'>
+                        {% if x.title %}
+                            <strong>{{x.title}}</strong> <br/>
+                            {{x.text_exp|truncatewords:80}} <br/>
+                        {% else %}
+                            <strong>{{x.text_exp}}</strong> <br/>
+                        {% endif %}
+                {% else %}
+                    <td class='question'> 
+  
+                        {% if x.title %}
+                            <strong>{{x.title}}</strong> <br/>
+                            {{x.text_q|truncatewords:80}} <br/>
+                        {% else %}
+                            <strong>{{x.text_q}}</strong> <br/>
+                        {% endif %}
+                {% endif %}                    
+                            <p class="count">
+                                <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
+                                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
+                            </p>
+                            <p class="vote">
+                            {% if x|isinst:'CreateYourLaws.models.Explaination' %}   
+                                <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="exp:{{x.id}}" value="UP"/>
+                                <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="exp:{{x.id}}" value="DOWN"/>
+                                 note:
+                                <canvas id="donexp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                           {% else %}
+                                <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="qst:{{x.id}}" value="UP"/>
+                                <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="qst:{{x.id}}" value="DOWN"/>
+                                note:
+                                <canvas id="donqst{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                            {% endif %} 
+                            </p>
+
+                        {% comment %}
+                        <var id="prp{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}
+                </td>                   
+            </tr>
+        </tbody>
+    </table> 
+    {% empty %}
+        <h2>une réaction? Commentez ou posez votre question</h2>
+    {% endfor %}
+
+</section>
