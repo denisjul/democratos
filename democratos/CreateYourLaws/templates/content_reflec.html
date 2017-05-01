@@ -367,8 +367,7 @@
                             <strong>{{x.text_exp}}</strong> <br/>
                         {% endif %}
                 {% else %}
-                    <td class='question'> 
-  
+                    <td class='question'>  
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
                             {{x.text_q|truncatewords:80}} <br/>
@@ -376,26 +375,38 @@
                             <strong>{{x.text_q}}</strong> <br/>
                         {% endif %}
                 {% endif %}                    
-                            <p class="count">
-                                <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
-                                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
-                            </p>
-                            <p class="vote">
-                            {% if x|isinst:'CreateYourLaws.models.Explaination' %}   
-                                <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="exp:{{x.id}}" value="UP"/>
-                                <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="exp:{{x.id}}" value="DOWN"/>
-                                 note:
-                                <canvas id="donexp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                           {% else %}
-                                <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="qst:{{x.id}}" value="UP"/>
-                                <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="qst:{{x.id}}" value="DOWN"/>
-                                note:
-                                <canvas id="donqst{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                            {% endif %} 
-                            </p>
-
-                        {% comment %}
-                        <var id="prp{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}
+                <p class="count">
+                    <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
+                    <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
+                </p>
+                <p class="vote">
+                {% if x|isinst:'CreateYourLaws.models.Explaination' %}   
+                    <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="exp:{{x.id}}" value="UP"/>
+                    <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="exp:{{x.id}}" value="DOWN"/>
+                     note:
+                    <canvas id="donexp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                </p>
+                <div id="devexp{{x.id}}">
+                    {% if x.nb_exp != 0 or x.nb_q != 0 %}
+                        <a href="getchild:exp{{x.id}}"> Voir les réactions à ce commentaire <a>
+                    {% else %}
+                        Poser une question ou commentez cette réaction!
+                    {% endif %}
+                </div>
+               {% else %}
+                    <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="qst:{{x.id}}" value="UP"/>
+                    <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="qst:{{x.id}}" value="DOWN"/>
+                    note:
+                    <canvas id="donqst{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                <div id="devqst{{x.id}}">
+                {% if x.nb_exp != 0 or x.nb_q != 0 %}
+                    <a href="getchild:qst{{x.id}}"> Voir les réactions à cette question <a>
+                    {% else %}
+                        Poser une question ou commentez cette réaction!
+                    {% endif %}
+                    </div>
+                </p>
+                {% endif %} 
                 </td>                   
             </tr>
         </tbody>
