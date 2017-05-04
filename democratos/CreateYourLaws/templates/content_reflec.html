@@ -194,106 +194,6 @@
         </section>
     {% endif %}
 
-
-    {% comment %}
-
-<!--############################################################################################
-###############################      The neutral comments       ################################
-#############################################################################################-->
-    
-    <section class="explaination">
-        <h2>Commentaires / Explications</h2>
-        <table>
-            <tbody>
-                {% for x in listexplainations %}
-                    <tr>
-                        <td>
-                            <div onclick="location.href='{% url 'reflection' 'exp' x.id %}'" class='clickable'>
-                            {% if x.title %}
-                                <strong>{{x.title}}</strong> <br/>
-                                {{x.text_exp|truncatewords:25}} 
-                            {% else %}
-                                <strong>{{x.text_exp}}</strong> <br/>
-                            {% endif %}
-                            </div>
-                            <p class="count">
-                            <img src="{% static 'icons/dis.png' %}" alt="dis" class="icn"> {{x.nb_dis}}
-                            <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
-                            <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}</p>
-                            <p class="vote">
-                            <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="exp:{{x.id}}" value="UP"/>
-                            <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="exp:{{x.id}}" value="DOWN"/>
-                               note:
-                            <canvas id="donexp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                            </p>
-                            {% comment %}
-                            <var id="exp{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}{% comment %}
-                        </td>                   
-                    </tr>
-                {% empty %}
-                    Aucun commentaire n'a été fait pour le moment sur cette réflection.<br>
-                    Soyez le premier à en faire un!
-                {% endfor %}
-            </tbody>
-        </table>    
-
-        <button class="butexp" type="button">Faire un commentaire neutre <br>  sur cette loi</button>
-            <form action="{% url 'reflection' %}" method="post" id="expform">
-                {% include "base_form.html" with form=expform %}
-                <button type="submit" class="butexp" name="btnexpform">Poster le commentaire</button>
-            </form>
-
-    </section>
-
-
-<!--############################################################################################
-#################################      The questions       #####################################
-#############################################################################################-->
-
-    <section class="question">
-        <h2>Questions</h2>
-            <table>
-                <tbody>
-                    {% for x in listquestions %}
-                        <tr>
-                            <td>
-                                <div onclick="location.href='{% url 'reflection' 'qst' x.id %}'" class='clickable'>
-                                    {% if x.title %}
-                                        <strong>{{x.title}}</strong> <br/>
-                                        {{x.text_q|truncatewords:80}} <br/>
-                                    {% else %}
-                                        <strong>{{x.text_q}}</strong> <br/>
-                                    {% endif %}
-                                </div>
-                                <p class="count">
-                                <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
-                                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}
-                                </p>
-                                <p class="vote">
-                                <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="qst:{{x.id}}" value="UP"/>
-                                <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="qst:{{x.id}}" value="DOWN"/>
-                                    note:
-                                <canvas id="donqst{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                                </p>
-                                {% comment %}
-                                <var id="qst{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}{% comment %}
-                            </td>                   
-                        </tr>
-                    {% empty %}
-                    Aucune question n'a été posée pour le moment sur cette réflection.<br>
-                    Soyez le premier à en poser une!
-                    {% endfor %}
-                </tbody>
-            </table>    
-
-        <button class="butq" type="button">Poser une question <br>  à propos de cette loi</button>
-            <form action="{% url 'reflection' %}" method="post" id="qform">
-                {{ qform.as_p }}
-                <button type="submit" class="butq" name="btnqform">Poster la question</button>
-            </form>
-     </section>
-{% endcomment %}
-
 <!--############################################################################################
 ################################      The propositions       ###################################
 #############################################################################################-->
@@ -385,28 +285,29 @@
                     <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="exp:{{x.id}}" value="DOWN"/>
                      note:
                     <canvas id="donexp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                </p>
-                <div id="devexp{{x.id}}">
-                    {% if x.nb_exp != 0 or x.nb_q != 0 %}
-                        <a href="getchild:exp{{x.id}}"> Voir les réactions à ce commentaire <a>
-                    {% else %}
-                        Poser une question ou commentez cette réaction!
-                    {% endif %}
-                </div>
-               {% else %}
+                {% else %}
                     <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="qst:{{x.id}}" value="UP"/>
                     <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="qst:{{x.id}}" value="DOWN"/>
                     note:
                     <canvas id="donqst{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                <div id="devqst{{x.id}}">
-                {% if x.nb_exp != 0 or x.nb_q != 0 %}
-                    <a href="getchild:qst{{x.id}}"> Voir les réactions à cette question <a>
-                    {% else %}
-                        Poser une question ou commentez cette réaction!
-                    {% endif %}
-                    </div>
+                {% endif %}
                 </p>
-                {% endif %} 
+                <br>
+                <br>
+                <br>
+                <hr>
+                {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                    <p id="devexp{{x.id}}" style='text-align: center;'>
+                {% else %}
+                    <p id="devqst{{x.id}}" style='text-align: center;'>
+                {% endif %}
+                    {% if x.nb_exp != 0 or x.nb_q != 0 %}
+                        <a href="getchild:exp{{x.id}}"> Voir les réactions à ce commentaire <a>
+                    {% endif %}
+                    Poser une question ou commentez cette réaction! <br>
+                    <button class="butexp" type="button"> Commenter </button>
+                    <button class="butq" type="button">Poser votre <br>question </button>
+                    </p>
                 </td>                   
             </tr>
         </tbody>

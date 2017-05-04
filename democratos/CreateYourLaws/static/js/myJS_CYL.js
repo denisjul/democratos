@@ -373,7 +373,8 @@ $(document).ready(function() {
 	        }
 	    });
 	});
-		    // --------------- Reflection loading AJAX -------------------
+
+	// --------------- Reflection  loading AJAX -------------------
     $("body").on("click",".GetReflection",function(){
 	 	$.ajax({
 	        type: "POST",
@@ -390,14 +391,15 @@ $(document).ready(function() {
 	            $('form').each(function(){
 	            	SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
 	            });
+	            //--------------------- SET Explaination/question size ---------------------REVOIR!!!!!
+	          	var wdth = $('#debate').width() * 0.6; 
+				$('.explaination').css('width',wdth);
+				$('.question').css('width',wdth);
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);
 	        }
 	    });
-
-	//--------------------- SET Explaination/question size -----------------
-	wdth = $('#debate').width() * 0.6;
-	$(".explaination.question").css('witdth',wdth);
 	}); 
+	//--------------------- SET Explaination/question size ---------------------REVOIR!!!!!
 });

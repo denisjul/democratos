@@ -433,6 +433,7 @@ def get_reflection(request):
 def PostAProp(request):  # Trouver un moyen d'avoir ID_ref
     typeref = request.POST.get('typeref', '')
     idref = request.POST.get('ref_id', '')
+    User = request.user
     if typeref == 'prp':
         ref = Proposition.objects.get(
                 id=idref
@@ -469,7 +470,7 @@ def PostAProp(request):  # Trouver un moyen d'avoir ID_ref
 @login_required
 def list_of_reflections(request, parent_type, parent_id, list_ref_type):
     """ display the list of given reflection type from the parent obj.
-    ex: list of the questions asked about law article X."""
+    ex: list of the questions askedUWB about law article X."""
     parent = get_the_instance(parent_type, parent_id)
     if list_ref_type == 'qst':
         list_to_display = list(parent.questions.all())
@@ -499,6 +500,36 @@ def create_new_box():
     """ View to create a new Law Code or codeblock """
     pass
 
+"""
+def getchildcomments(request, slug):
+    "" View which display a reflection and its child
+    reflections from its ID""
+    # Does the reflection extist?
+    slug = request.POST.get('slug', None)
+    slug1, slug2 = slug.split(sep=":")
+    typeref = slug2[0:2]
+    id_ref = slug2[3:len(slug2)]
+    id_ref = int(id_ref)
+    message = ""
+    try:
+        if typeref == 'qst':
+            ref = Question.objects.get(id=id_ref)
+        elif typeref == 'exp':
+            ref = Explaination.objects.get(id=id_ref)
+    except Exception:
+        message = "comment unfindable in DB"
+        ctx = {'message': message, 'newcomments': ''}
+        return JsonResponse(ctx)
+    # loadall the comments and
+    # questions about the reflection
+    listexplainations = list(ref.explainations.all())
+    listquestions = list(ref.questions.all())
+    listcom = listexplainations
+    listcom.extend(listquestions)
+    listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
 
-def testview(request):
-    return render(request, 'test.html', locals())
+    childcomments = render_to_string('childcomments.html', locals())
+    adress = "#getchild:" + slug2
+    ctx = {'message': message, 'newcomments': childcomments}
+    return JsonResponse(ctx)
+"""
