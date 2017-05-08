@@ -201,7 +201,9 @@ function loadckeditorJS () {
 }
 
 function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auquel est attaché le form
-    $('#'+FormId).submit(function() { // catch the form's submit event
+    $('#'+FormId).on('submit',function() { // catch the form's submit event
+        for ( instance in CKEDITOR.instances ) // recover data in CKeditor fields
+        	CKEDITOR.instances[instance].updateElement();
         $.ajax({ // create an AJAX call...
             data: $(this).serialize(), // get the form data
             type: $(this).attr('method'), // GET or POST

@@ -441,7 +441,6 @@ def get_reflection(request):
 
 
 def PostAProp(request):  # Trouver un moyen d'avoir ID_ref
-    print(request.POST)
     typeref = request.POST.get('typeref', '')
     idref = int(request.POST.get('ref_id', ''))
     User = request.user
@@ -456,7 +455,6 @@ def PostAProp(request):  # Trouver un moyen d'avoir ID_ref
     if request.method == 'POST':
         propform = PropositionForm(request.POST)
         if propform.is_valid():
-            print("hello! Is it me you are looking for?")
             proptitle = propform.cleaned_data['title']
             prop = propform.cleaned_data['text_prop']
             if isinstance(ref, LawArticle):
