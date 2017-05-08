@@ -300,9 +300,16 @@ def get_reflection(request):
     """ View which display a reflection and its child
     reflections from its ID"""
     # Does the reflection extist?
+    print(request.POST)
+    User = request.user
     slug = request.POST.get('slug', None)
-    typeref, id_ref = slug.split(sep=":")
-    id_ref = int(id_ref)
+    if slug is None:
+        print(request.POST)
+        typeref = request.typeref
+        id_ref = int(request.id_ref)
+    else:
+        typeref, id_ref = slug.split(sep=":")
+        id_ref = int(id_ref)
     try:
         if typeref == 'loi':
             ref = LawArticle.objects.get(id=id_ref)
@@ -331,7 +338,8 @@ def get_reflection(request):
         parent = ref.law_code
         listparents.append((parent.title, parent.id, 1))
         listparents.reverse()
-    # ######## elif typeref == 'prop'
+    elif typeref == 'prp':
+        print(" getreflection in views.py à finir")
     else:
         law_code, list_parents = get_path(ref)
     """
@@ -339,7 +347,7 @@ def get_reflection(request):
         session_id=request.session.session_key)
     User = user_session.user
     """
-    User = request.user
+
     # forms initializations
     if request.method == 'POST' and 'btnqform' in request.POST:
         qform = QuestionForm(request.POST)
@@ -365,6 +373,7 @@ def get_reflection(request):
             exp.save()
     else:
         expform = ExplainationForm()
+    """
     if typeref == 'exp' or typeref == 'opn' or typeref == 'dis':
         if request.method == 'POST' and 'btndisform' in request.POST:
             disform = DisclaimForm(request.POST)
@@ -376,7 +385,7 @@ def get_reflection(request):
                                                autor=User,
                                                content_object=ref).save()
         else:
-            disform = DisclaimForm()
+            disform = DisclaimForm()"""
     if typeref == 'loi' or typeref == 'prp':
         if request.method == 'POST' and 'btnopform' in request.POST:
             opform = OpinionForm(request.POST)
@@ -418,6 +427,7 @@ def get_reflection(request):
     listcom = listexplainations
     listcom.extend(listquestions)
     listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
+    listcom.reverse()
     if typeref == 'exp' or typeref == 'opn' or typeref == 'dis':
         listdisclaims = list(ref.disclaims.all())
     if typeref == 'loi' or typeref == 'prp':
@@ -431,8 +441,9 @@ def get_reflection(request):
 
 
 def PostAProp(request):  # Trouver un moyen d'avoir ID_ref
+    print(request.POST)
     typeref = request.POST.get('typeref', '')
-    idref = request.POST.get('ref_id', '')
+    idref = int(request.POST.get('ref_id', ''))
     User = request.user
     if typeref == 'prp':
         ref = Proposition.objects.get(
@@ -444,7 +455,6 @@ def PostAProp(request):  # Trouver un moyen d'avoir ID_ref
                 )
     if request.method == 'POST':
         propform = PropositionForm(request.POST)
-        print(propform.is_valid())
         if propform.is_valid():
             print("hello! Is it me you are looking for?")
             proptitle = propform.cleaned_data['title']
@@ -459,6 +469,8 @@ def PostAProp(request):  # Trouver un moyen d'avoir ID_ref
                                              law_article=lawart,
                                              content_object=ref)
             prp.save()
+        else:
+            print(propform.cleaned_data)
     else:
         propform = PropositionForm()
     listpropositions = list(ref.propositions.all())
@@ -489,6 +501,34 @@ def list_of_reflections(request, parent_type, parent_id, list_ref_type):
     return render(request, 'displaylist.html', locals())
 
 
+def getchildcomments(request):
+    """ View which display a reflection and its child
+    reflections from its ID"""
+    slug = request.POST.get('slug', None)
+    slug1, slug2 = slug.split(sep=":")
+    typeref = slug2[0:2]
+    id_ref = slug2[3:len(slug2)]
+    id_ref = int(id_ref)
+    message = ""
+    try:
+        if typeref == 'qst':   # Does the reflection extist?
+            ref = Question.objects.get(id=id_ref)
+        elif typeref == 'exp':
+            ref = Explaination.objects.get(id=id_ref)
+        listexplainations = list(ref.explainations.all())
+        listquestions = list(ref.questions.all())
+        listcom = listexplainations
+        listcom.extend(listquestions)
+        listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
+        childcomments = render_to_string('childcomments.html', locals())
+        adress = "#getchild:" + slug2
+        ctx = {'message': message, 'newcomments': childcomments}
+    except Exception:
+        message = "comment unfindable in DB"
+        ctx = {'message': message, 'newcomments': ""}
+    return JsonResponse(ctx)
+
+
 @login_required
 def create_new_article():
     """ View to create a new article """
@@ -499,37 +539,3 @@ def create_new_article():
 def create_new_box():
     """ View to create a new Law Code or codeblock """
     pass
-
-"""
-def getchildcomments(request, slug):
-    "" View which display a reflection and its child
-    reflections from its ID""
-    # Does the reflection extist?
-    slug = request.POST.get('slug', None)
-    slug1, slug2 = slug.split(sep=":")
-    typeref = slug2[0:2]
-    id_ref = slug2[3:len(slug2)]
-    id_ref = int(id_ref)
-    message = ""
-    try:
-        if typeref == 'qst':
-            ref = Question.objects.get(id=id_ref)
-        elif typeref == 'exp':
-            ref = Explaination.objects.get(id=id_ref)
-    except Exception:
-        message = "comment unfindable in DB"
-        ctx = {'message': message, 'newcomments': ''}
-        return JsonResponse(ctx)
-    # loadall the comments and
-    # questions about the reflection
-    listexplainations = list(ref.explainations.all())
-    listquestions = list(ref.questions.all())
-    listcom = listexplainations
-    listcom.extend(listquestions)
-    listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
-
-    childcomments = render_to_string('childcomments.html', locals())
-    adress = "#getchild:" + slug2
-    ctx = {'message': message, 'newcomments': childcomments}
-    return JsonResponse(ctx)
-"""

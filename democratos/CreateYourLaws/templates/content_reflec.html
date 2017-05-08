@@ -187,8 +187,10 @@
             </div>
 
             <button class="butopinion" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
-                <form action="{% url 'reflection' %}" method="post" id="opform">
+                <form action="{% url 'reflection' %}" method="post" id="opform" name="loi:{{ref.id_ref}}">
                     {{ opform.as_p }}
+                    <input type="hidden" name="typeref" value="{{typeref}}">
+                    <input type="hidden" name="ref_id" value="{{ref.id}}">
                     <button type="submit" class="butopinion" name="btnopform">Poster le point de vue</button>
                 </form>           
         </section>
@@ -207,7 +209,7 @@
                     {% for x in listpropositions %}
                         <tr>
                             <td>
-                                <div onclick="location.href='{% url 'reflection' 'prp' x.id %}'" class='clickable'>
+                                <div class="IDB GetReflection" name="prp:{{x.id}}">
                                     {% if x.title %}
                                         <strong>{{x.title}}</strong> <br/>
                                         {{x.text_prop|truncatewords:80}} <br/>
@@ -227,8 +229,6 @@
                                     note:
                                 <canvas id="donprp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
                                 </p>
-                                {% comment %}
-                                <var id="prp{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}
                             </td>                   
                         </tr>
                     {% empty %}
@@ -239,14 +239,16 @@
             </table> 
 
         <button class="butprop" type="button">Faire une autre proposition <br>  que cette loi</button>
-            <form action="{% url 'PostAProp' %}" method="post" id="propform">
+            <form action="{% url 'PostAProp' %}"  method="post" id="propform">
                 {{ propform.as_p }}
                 <input type="hidden" name="typeref" value="{{typeref}}">
                 <input type="hidden" name="ref_id" value="{{ref.id}}">
                 <button type="submit" class="butprop" name="propform">Poster votre proposition </button>
             </form> 
         </section>
+           
     {% endif %}
+
 {% endautoescape %}
 
 <!--############################################################################################
@@ -254,12 +256,12 @@
 #############################################################################################-->
 
 <section id="debate">
-    {% for x in listcom %}
     <table>
         <tbody>    
+             {% for x in listcom %}
             <tr>
                 {% if x|isinst:'CreateYourLaws.models.Explaination' %}    
-                    <td class='explaination'>
+                    <td class='explaination'> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
                             {{x.text_exp|truncatewords:80}} <br/>
@@ -267,7 +269,7 @@
                             <strong>{{x.text_exp}}</strong> <br/>
                         {% endif %}
                 {% else %}
-                    <td class='question'>  
+                    <td class='question'>  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
                             {{x.text_q|truncatewords:80}} <br/>
@@ -306,14 +308,15 @@
                     {% endif %}
                     Poser une question ou commentez cette réaction! <br>
                     <button class="butexp" type="button"> Commenter </button>
-                    <button class="butq" type="button">Poser votre <br>question </button>
+                    <button class="butq" type="button">Poser votre question </button>
                     </p>
                 </td>                   
             </tr>
+            {% empty %}
+                <h2>une réaction? Commentez ou posez votre question</h2>
+            {% endfor %}
         </tbody>
     </table> 
-    {% empty %}
-        <h2>une réaction? Commentez ou posez votre question</h2>
-    {% endfor %}
-
+    <button class="butexp" type="button"> Commenter </button>
+    <button class="butq" type="button">Poser votre question </button>
 </section>

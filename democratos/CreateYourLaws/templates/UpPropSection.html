@@ -14,7 +14,7 @@
         {% for x in listpropositions %}
             <tr>
                 <td>
-                    <div onclick="location.href='{% url 'reflection' 'prp' x.id %}'" class='clickable'>
+                    <div class="IDB GetReflection" name="prp:{{x.id}}"> 
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
                             {{x.text_prop|truncatewords:80}} <br/>

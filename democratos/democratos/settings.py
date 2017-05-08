@@ -171,9 +171,25 @@ CKEDITOR_CONFIGS = {
              'tablecellsmerge', 'tablecellsplithorizontal',
              'tablecellsplitvertical'],
         ],
-        'extraPlugins': 'wordcount,notification,tabletoolstoolbar',
+        'extraPlugins': ','.join(
+            [
+                'div',
+                'autolink',
+                'tabletoolstoolbar',
+                'autogrow',
+                'wordcount',
+                'notification',
+                'widget',
+                'lineutils',
+                'clipboard',
+                'elementspath',
+                'ajax',
+                'embed',
+                'codesnippet',
+            ]),
         'width': '100%',
     },
+
     'redac_law': {
         'toolbar': 'redac_law',
         'toolbar_redac_law': [
@@ -193,8 +209,23 @@ CKEDITOR_CONFIGS = {
              'tablecellsmerge', 'tablecellsplithorizontal',
              'tablecellsplitvertical'],
         ],
-        'extraPlugins': 'tabletoolstoolbar',
         'width': '100%',
+        'extraPlugins': ','.join(
+            [
+                'div',
+                'autolink',
+                'tabletoolstoolbar',
+                'autogrow',
+                'wordcount',
+                'notification',
+                'widget',
+                'lineutils',
+                'clipboard',
+                'elementspath',
+                'ajax',
+                'embed',
+                'codesnippet',
+            ]),
     }
 }
 

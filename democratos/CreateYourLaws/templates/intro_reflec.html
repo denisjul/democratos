@@ -7,7 +7,8 @@
             <var class="InDatBox" name="{{x|lookup:2}}:{{x|lookup:1}}"><strong>  {{x|lookup:0|truncatewords:4}}  </strong></var>  >>     
         {% endfor %}
         {{ref.title}}
-
+    {% elif typeref == 'prp' %}  
+        C'est une proposition!
     {% else %}   <!--         The path to the reflection       -->
         <var class="InDatBox" name="1:{{x|lookup:1}}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>
         {% for x in list_parents %}

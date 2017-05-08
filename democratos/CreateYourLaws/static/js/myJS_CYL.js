@@ -207,8 +207,12 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'), // the file to call
             success: function(response) { // on success..
+            	alert('The form is sent');
                 $('.proposition').html(response.proposition); // update the DIV
-            }
+            },
+            error: function(rs, e) {
+               alert(rs.responseText);
+            },
         });
         return false;
     });
@@ -221,7 +225,7 @@ $(document).ready(function() {
 
 	// -------------Displaying Forms for q,exp,op etc. -------------
 	Setbutform();
-
+	SetTheForm("propform");
 	// -------------- JStree settings ---------------------
 	$("#jstree_CYL").jstree({ 
 		'core' : {
@@ -400,6 +404,20 @@ $(document).ready(function() {
 	            alert(rs.responseText);
 	        }
 	    });
-	}); 
-	//--------------------- SET Explaination/question size ---------------------REVOIR!!!!!
+	});
+    $('#propform').submit(function() {
+    	for (var instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+        var temp = $("#propform").serialize();                
+        $.ajax({
+            type: "POST",
+            data: temp,
+            url: 'CYL/PostAProp',
+            success: function(data) {
+              // do s.th
+            }
+        });
+        return false;
+    });
+   	//--------------------- SET Explaination/question size ---------------------REVOIR!!!!!
 });
