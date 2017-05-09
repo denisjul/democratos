@@ -440,21 +440,28 @@ def get_reflection(request):
     return JsonResponse(ctx)
 
 
-def PostAProp(request):  # Trouver un moyen d'avoir ID_ref
+def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
+    typeform = request.POST.get('typeform', '')
     typeref = request.POST.get('typeref', '')
-    idref = int(request.POST.get('ref_id', ''))
+    id_ref = int(request.POST.get('ref_id', ''))
     User = request.user
     if typeref == 'prp':
-        ref = Proposition.objects.get(
-                id=idref
-                )
+        ref = Proposition.objects.get(id=idref)
+    elif typeref == 'qst':
+        ref = Question.objects.get(id=id_ref)
+    elif typeref == 'exp':
+        ref = Explaination.objects.get(id=id_ref)
+    elif typeref == 'opn':
+        ref = Opinion.objects.get(id=id_ref)
+    elif typeref == 'loi':
+            ref = LawArticle.objects.get(id=id_ref)
     else:
-        ref = LawArticle.objects.get(
-                id=request.POST.get('ref_id', '')
-                )
-    if request.method == 'POST':
+        print("Erreur sur le typeref")
+    # ####################  PropositionForm ###########################
+    if typeform == 'prpf'and request.method == 'POST':
         propform = PropositionForm(request.POST)
         if propform.is_valid():
+            print('yeah')
             proptitle = propform.cleaned_data['title']
             prop = propform.cleaned_data['text_prop']
             if isinstance(ref, LawArticle):
@@ -467,13 +474,64 @@ def PostAProp(request):  # Trouver un moyen d'avoir ID_ref
                                              law_article=lawart,
                                              content_object=ref)
             prp.save()
-        else:
-            print(propform.cleaned_data)
+            listpropositions = list(ref.propositions.all())
+            NewSection = render_to_string('UpPropSection.html', locals())
+            ctx = {'proposition': NewSection, 'section_type': "prp"}
     else:
         propform = PropositionForm()
-    listpropositions = list(ref.propositions.all())
-    NewPropSection = render_to_string('UpPropSection.html', locals())
-    ctx = {'proposition': NewPropSection}
+    # ####################  ExplainationForm ###########################
+    if request.method == 'POST' and typeform == 'expf':
+        expform = ExplainationForm(request.POST)
+        if expform.is_valid():
+            exptitle = expform.cleaned_data['title']
+            explain = expform.cleaned_data['text_exp']
+            exp = Explaination.objects.create(title=exptitle,
+                                              text_exp=explain,
+                                              autor=User,
+                                              content_object=ref)
+            exp.save()
+        else:
+            expform = ExplainationForm()
+        listexplainations = list(ref.explainations.all())
+        NewSection = render_to_string('UpExpSection.html', locals())
+        ctx = {'proposition': NewSection, 'section_type': "exp"}
+    # ####################  OpinionForm #########################
+    #      <---- Revoir si séparer Posop et Negop
+    if request.method == 'POST' and typeform == 'opnf':
+        opform = OpinionForm(request.POST)
+        if opform.is_valid():
+            pos = opform.cleaned_data['positive']
+            optitle = opform.cleaned_data['title']
+            opin = opform.cleaned_data['text_op']
+            op = Opinion.objects.create(text_op=opin,
+                                        title=optitle,
+                                        positive=pos,
+                                        autor=User,
+                                        content_object=ref)
+            op.save()
+            listposop = list(ref.opinions.filter(positive=True))
+            listnegop = list(ref.opinions.filter(positive=False))
+            NewSection = render_to_string('UpOpnSection.html', locals())
+            ctx = {'proposition': NewSection,  'section_type': "opn"}
+    else:
+        opform = OpinionForm()
+    # ####################  QuestionForm ###########################
+    if request.method == 'POST' and typeform == 'qstf':
+        qform = QuestionForm(request.POST)
+        if qform.is_valid():
+            qtitle = qform.cleaned_data['title']
+            question = qform.cleaned_data['text_q']
+            q = Question.objects.create(text_q=question,
+                                        title=qtitle,
+                                        autor=User,
+                                        content_object=ref)
+            q.save()
+            listquestions = list(ref.questions.all())
+            NewSection = render_to_string('UpQstSection.html', locals())
+            ctx = {'proposition': NewSection, 'section_type': "qst"}
+    else:
+        qform = QuestionForm()
+    print(NewSection)
     return JsonResponse(ctx)
 
 

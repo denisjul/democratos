@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^childcomments$',
         views.getchildcomments,
         name='chilcomments'),
-    url(r'^postaprop$', views.PostAProp, name='PostAProp'),
+    url(r'^postreflection$', views.PostReflection, name='PostReflection'),
     url(r'^listref/(?P<parent_type>\w{3})/(?P<parent_id>\d+)/(?P<list_ref_type>\w{3})$',
         views.list_of_reflections,
         name='list_ref'),
