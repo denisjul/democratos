@@ -204,13 +204,31 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
     $('#'+FormId).on('submit',function() { // catch the form's submit event
         for ( instance in CKEDITOR.instances ) // recover data in CKeditor fields
         	CKEDITOR.instances[instance].updateElement();
+        var datatosend = $(this).serialize()
+        datatosend['csrfmiddlewaretoken']=csrftoken
         $.ajax({ // create an AJAX call...
-            data: $(this).serialize(), // get the form data
+            data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'), // the file to call
             success: function(response) { // on success..
-            	alert('The form is sent');
-                $('.proposition').html(response.proposition); // update the DIV
+            	switch(response.section_type){
+                	case'exp':
+                		$('.proposition').html(response.reflection); // update the DIV
+            			break;
+               		case'opn':
+                		$('.proposition').html(response.reflection); // update the DIV
+            			break;
+                   	case'opn':
+                		$('.proposition').html(response.reflection); // update the DIV
+            			break;
+            		case 'prp':
+                		$('.proposition').html(response.reflection); // update the DIV
+            			break;
+            		default:
+            			alert('erreur sur la nature de la réflexion retournée')
+            			break;
+            	};
+            	$(dontomodif).trigger('MakeMyDonuts', [response.approb]);
             },
             error: function(rs, e) {
                alert(rs.responseText);
@@ -312,7 +330,7 @@ $(document).ready(function() {
                 error: function(rs, e) {
                        alert(rs.responseText);
                 }
-          }); 
+        	}); 
     });
     // --------------- down button -----------------------
     $('body').on('click','.DOWN',function(){
@@ -327,7 +345,6 @@ $(document).ready(function() {
                 if (response.message != ""){
               		alert(response.message)
               	};
-                $(tomodif).html(Math.round(parseFloat(response.approb)*100)/100);
                 var context = $(dontomodif)[0].getContext('2d');
                 context.clearRect(0, 0, context.width, context.height);
                 $(dontomodif).trigger('MakeMyDonuts', [response.approb]);
@@ -338,12 +355,28 @@ $(document).ready(function() {
             }
         }); 
     });
+        // --------------- ask fo exp form -----------------------
+    $('body').on('click','.butexp, .butq',function(){
+     	$.ajax({
+            type: "GET",
+            url: '/CYL/GetForm',
+            data: {'name': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
+            dataType: "json",
+            success: function(response) {
+                var idtomodif = "#" +  response.typeref + 'askform:' + response.idref;
+                $(idtomodif).html(response.newform);
+            },
+            error: function(rs, e) {
+                alert(rs.responseText);
+            }
+        }); 
+    });
     // --------------- Checkbox suscribe -----------------------
 	$('.suscribe').click(function() {
 	    var checked = $(this).is(':checked');
-	    var idbox = $(this).attr('id').replace('check','')
-	    var typeref = idbox.substring(0,3)
-	    var ref_id = idbox.slice(3,idbox.length)
+	    var idbox = $(this).attr('id').replace('check','');
+	    var typeref = idbox.substring(0,3);
+	    var ref_id = idbox.slice(3,idbox.length);
 	    $.ajax({
 	        type: "POST",
 	        url: '/CYL/checkbox',
@@ -407,19 +440,5 @@ $(document).ready(function() {
 	        }
 	    });
 	});
-    $('#propform').submit(function() {
-    	for (var instance in CKEDITOR.instances)
-            CKEDITOR.instances[instance].updateElement();
-        var temp = $("#propform").serialize();                
-        $.ajax({
-            type: "POST",
-            data: temp,
-            url: 'CYL/PostAProp',
-            success: function(data) {
-              // do s.th
-            }
-        });
-        return false;
-    });
    	//--------------------- SET Explaination/question size ---------------------REVOIR!!!!!
 });

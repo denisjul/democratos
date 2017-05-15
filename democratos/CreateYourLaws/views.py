@@ -339,87 +339,14 @@ def get_reflection(request):
         listparents.append((parent.title, parent.id, 1))
         listparents.reverse()
     elif typeref == 'prp':
-        print(" getreflection in views.py à finir")
+        print(" getreflection in views.py à finir")  # <---------- A Finir ici
     else:
         law_code, list_parents = get_path(ref)
-    """
-    user_session = UserSession.objects.get(
-        session_id=request.session.session_key)
-    User = user_session.user
-    """
-
     # forms initializations
-    if request.method == 'POST' and 'btnqform' in request.POST:
-        qform = QuestionForm(request.POST)
-        if qform.is_valid():
-            qtitle = qform.cleaned_data['title']
-            question = qform.cleaned_data['text_q']
-            q = Question.objects.create(text_q=question,
-                                        title=qtitle,
-                                        autor=User,
-                                        content_object=ref)
-            q.save()
-    else:
-        qform = QuestionForm()
-    if request.method == 'POST' and 'btnexpform' in request.POST:
-        expform = ExplainationForm(request.POST)
-        if expform.is_valid():
-            exptitle = expform.cleaned_data['title']
-            explain = expform.cleaned_data['text_exp']
-            exp = Explaination.objects.create(title=exptitle,
-                                              text_exp=explain,
-                                              autor=User,
-                                              content_object=ref)
-            exp.save()
-    else:
-        expform = ExplainationForm()
-    """
-    if typeref == 'exp' or typeref == 'opn' or typeref == 'dis':
-        if request.method == 'POST' and 'btndisform' in request.POST:
-            disform = DisclaimForm(request.POST)
-            if disform.is_valid():
-                distitle = disform.cleaned_data['title']
-                distext = disform.cleaned_data['text_dis']
-                disc = Disclaim.objects.create(title=distitle,
-                                               text_dis=distext,
-                                               autor=User,
-                                               content_object=ref).save()
-        else:
-            disform = DisclaimForm()"""
-    if typeref == 'loi' or typeref == 'prp':
-        if request.method == 'POST' and 'btnopform' in request.POST:
-            opform = OpinionForm(request.POST)
-            if opform.is_valid():
-                pos = opform.cleaned_data['positive']
-                optitle = opform.cleaned_data['title']
-                opin = opform.cleaned_data['text_op']
-                op = Opinion.objects.create(text_op=opin,
-                                            title=optitle,
-                                            positive=pos,
-                                            autor=User,
-                                            content_object=ref)
-                op.save()
-        else:
-            opform = OpinionForm()
-        if request.method == 'POST' and 'propform' in request.POST:
-            propform = PropositionForm(request.POST)
-            if propform.is_valid():
-                proptitle = propform.cleaned_data['title']
-                prop = propform.cleaned_data['text_prop']
-                if isinstance(ref, LawArticle):
-                    lawart = ref
-                else:
-                    lawart = ref.law_article
-                prp = Proposition.objects.create(text_prop=prop,
-                                                 title=proptitle,
-                                                 autor=User,
-                                                 law_article=lawart,
-                                                 content_object=ref)
-
-                prp.save()
-        else:
-            propform = PropositionForm()
-
+    qform = QuestionForm()
+    expform = ExplainationForm()
+    opform = OpinionForm()
+    propform = PropositionForm()
     # load all the disclaims, other proposions, opinions, comments and
     # questions about the reflection
     listexplainations = list(ref.explainations.all())
@@ -476,7 +403,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             prp.save()
             listpropositions = list(ref.propositions.all())
             NewSection = render_to_string('UpPropSection.html', locals())
-            ctx = {'proposition': NewSection, 'section_type': "prp"}
+            ctx = {'reflection': NewSection, 'section_type': "prp"}
     else:
         propform = PropositionForm()
     # ####################  ExplainationForm ###########################
@@ -490,11 +417,11 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                               autor=User,
                                               content_object=ref)
             exp.save()
-        else:
-            expform = ExplainationForm()
-        listexplainations = list(ref.explainations.all())
-        NewSection = render_to_string('UpExpSection.html', locals())
-        ctx = {'proposition': NewSection, 'section_type': "exp"}
+            listexplainations = list(ref.explainations.all())
+            NewSection = render_to_string('UpExpSection.html', locals())
+            ctx = {'reflection': NewSection, 'section_type': "exp"}
+    else:
+        expform = ExplainationForm()
     # ####################  OpinionForm #########################
     #      <---- Revoir si séparer Posop et Negop
     if request.method == 'POST' and typeform == 'opnf':
@@ -512,7 +439,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             listposop = list(ref.opinions.filter(positive=True))
             listnegop = list(ref.opinions.filter(positive=False))
             NewSection = render_to_string('UpOpnSection.html', locals())
-            ctx = {'proposition': NewSection,  'section_type': "opn"}
+            ctx = {'reflection': NewSection,  'section_type': "opn"}
     else:
         opform = OpinionForm()
     # ####################  QuestionForm ###########################
@@ -528,10 +455,9 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             q.save()
             listquestions = list(ref.questions.all())
             NewSection = render_to_string('UpQstSection.html', locals())
-            ctx = {'proposition': NewSection, 'section_type': "qst"}
+            ctx = {'reflection': NewSection, 'section_type': "qst"}
     else:
         qform = QuestionForm()
-    print(NewSection)
     return JsonResponse(ctx)
 
 
@@ -557,6 +483,7 @@ def list_of_reflections(request, parent_type, parent_id, list_ref_type):
     return render(request, 'displaylist.html', locals())
 
 
+@login_required
 def getchildcomments(request):
     """ View which display a reflection and its child
     reflections from its ID"""
@@ -577,11 +504,37 @@ def getchildcomments(request):
         listcom.extend(listquestions)
         listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
         childcomments = render_to_string('childcomments.html', locals())
-        adress = "#getchild:" + slug2
         ctx = {'message': message, 'newcomments': childcomments}
     except Exception:
         message = "comment unfindable in DB"
         ctx = {'message': message, 'newcomments': ""}
+    return JsonResponse(ctx)
+
+
+@login_required
+def GetForm(request):
+    """ View which display a reflection and its child
+    reflections from its ID"""
+    name = request.GET.get('name', None)
+    typeref, typeform, id_ref = name.split(sep=":")
+    id_ref = int(id_ref)
+    if typeref == 'qst':  # Does the reflection extist?
+        ref = Question.objects.get(id=id_ref)
+    elif typeref == 'exp':
+        ref = Explaination.objects.get(id=id_ref)
+    elif typeref == 'opn':
+        ref = Opinion.objects.get(id=id_ref)
+    elif typeref == 'loi':
+            ref = LawArticle.objects.get(id=id_ref)
+    elif typeref == 'prp':
+        ref = Proposition.objects.get(id=idref)
+    if typeform == 'qst':   # which form to load?
+        form = QuestionForm()
+    elif typeform == 'exp':
+        form = ExplainationForm()
+    NewForm = render_to_string('GetForm.html', locals())
+    print(NewForm)
+    ctx = {'newform': NewForm, 'typeref': typeref, "idref": id_ref}
     return JsonResponse(ctx)
 
 

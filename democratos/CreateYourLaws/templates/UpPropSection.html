@@ -45,12 +45,12 @@
     </tbody>
 </table> 
 
-<button class="butprop" type="button">Faire une autre proposition <br>  que cette loi</button>
-<form action="{% url 'PostAProp' %}" method="post" id="propform">
-    {{ propform.as_p }}
-    <input type="hidden" name="typeref" value="{{typeref}}">
-    <input type="hidden" name="ref_id" value="{{idref}}">
-    <button type="submit" class="butprop" name="propform">Poster votre proposition </button>
-</form> 
+          <form action="{% url 'PostReflection' %}"  method="post" id="propform">
+                {{ propform.as_p }} 
+                <input type="hidden" name="typeform" value="prpf">
+                <input type="hidden" name="typeref" value="{{typeref}}">
+                <input type="hidden" name="ref_id" value="{{ref.id}}">
+                <button type="submit" class="butprop" name="propform">Poster votre proposition </button>
+            </form> 
 
 {% endautoescape %}

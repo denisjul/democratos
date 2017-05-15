@@ -263,7 +263,7 @@
              {% for x in listcom %}
             <tr>
                 {% if x|isinst:'CreateYourLaws.models.Explaination' %}    
-                    <td class='explaination'> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
+                    <td class='explaination' id="exp:{{x.id}}"> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
                             {{x.text_exp|truncatewords:80}} <br/>
@@ -271,7 +271,7 @@
                             <strong>{{x.text_exp}}</strong> <br/>
                         {% endif %}
                 {% else %}
-                    <td class='question'>  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
+                    <td class='question' id="qst:{{x.id}}">  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
                             {{x.text_q|truncatewords:80}} <br/>
@@ -309,16 +309,24 @@
                         <a href="getchild:exp{{x.id}}"> Voir les réactions à ce commentaire <a>
                     {% endif %}
                     Poser une question ou commentez cette réaction! <br>
-                    <button class="butexp" type="button"> Commenter </button>
-                    <button class="butq" type="button">Poser votre question </button>
+                    {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                        <button class="butexp" type="button" name="exp:exp:{{x.id}}"> Commenter </button>
+                        <button class="butq" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
+                        <p id="expaskform:{{x.id}}"></p>
+                    {% else %}
+                        <button class="butexp" type="button" name="qst:exp:{{x.id}}"> Commenter </button>
+                        <button class="butq" type="button" name="qst:qst:{{x.id}}">Poser votre question </button>
+                        <p id="qstaskform:{{x.id}}"></p>
+                    {% endif %}
                     </p>
                 </td>                   
             </tr>
             {% empty %}
                 <h2>une réaction? Commentez ou posez votre question</h2>
             {% endfor %}
+            <button class="butexp" name="exp:{{typeref}}:{{x.id}}" type="button"> Commenter </button>
+            <button class="butq" name="qst:{{typeref}}:{{x.id}}" type="button">Poser votre question </button>
+            <p id="{{typeref}}askform:{{x.id}}"></p>
         </tbody>
     </table> 
-    <button class="butexp" type="button"> Commenter </button>
-    <button class="butq" type="button">Poser votre question </button>
 </section>
