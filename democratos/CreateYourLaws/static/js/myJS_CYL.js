@@ -104,18 +104,18 @@ var DonutChart = function (canvas, radius, lineWidth, arraySlices, label) {
 // ######################### functions ############################
 
 function Setbutform(){
-	$("#opform").css('display','none');
+	$("#opnform").css('display','none');
 	$("#expform").css('display','none');
-	$("#qform").css('display','none');
+	$("#qstform").css('display','none');
 	$("#disform").css('display','none');
-	$("#propform").css('display','none');
+	$("#prpform").css('display','none');
 
-	$(".butopinion").click(function(event) {
-		if ( $("#opform").css('display') == 'none' ){
-		    $("#opform").css('display','block');
+	$(".butopn").click(function(event) {
+		if ( $("#opnform").css('display') == 'none' ){
+		    $("#opnform").css('display','block');
 		}
 		else{
-			$("#opform").css('display','none');
+			$("#opnform").css('display','none');
 		}
 	});
 	$(".butexp").click(function(event) {
@@ -127,12 +127,12 @@ function Setbutform(){
 		}
 
 	});
-	$(".butq").click(function(event) {
-		if ( $("#qform").css('display') == 'none' ){
-		    $("#qform").css('display','block');
+	$(".butqst").click(function(event) {
+		if ( $("#qstform").css('display') == 'none' ){
+		    $("#qstform").css('display','block');
 		}
 		else{
-			$("#qform").css('display','none');
+			$("#qstform").css('display','none');
 		}
 	});
 	$(".butdis").click(function(event) {
@@ -143,12 +143,12 @@ function Setbutform(){
 			$("#disform").css('display','none');
 		}
 	});
-	$(".butprop").click(function(event) {
-		if ( $("#propform").css('display') == 'none' ){
-		    $("#propform").css('display','block');
+	$(".butprp").click(function(event) {
+		if ( $("#prpform").css('display') == 'none' ){
+		    $("#prpform").css('display','block');
 		}
 		else{
-			$("#propform").css('display','none');
+			$("#prpform").css('display','none');
 		}
 	});
 }
@@ -245,7 +245,7 @@ $(document).ready(function() {
 
 	// -------------Displaying Forms for q,exp,op etc. -------------
 	Setbutform();
-	SetTheForm("propform");
+	SetTheForm("prpform");
 	// -------------- JStree settings ---------------------
 	$("#jstree_CYL").jstree({ 
 		'core' : {
@@ -363,8 +363,8 @@ $(document).ready(function() {
             data: {'name': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(response) {
-                var idtomodif = "#" +  response.typeref + 'askform:' + response.idref;
-                $(idtomodif).html(response.newform);
+                var idtomodif = "#" +  response.typeref + 'askform' + response.idref;
+                $('#content').find(idtomodif).html(response.newform);
             },
             error: function(rs, e) {
                 alert(rs.responseText);
@@ -434,6 +434,7 @@ $(document).ready(function() {
 	          	var wdth = $('#debate').width() * 0.6; 
 				$('.explaination').css('width',wdth);
 				$('.question').css('width',wdth);
+                window.history.pushState({}, "modifié","modifié")
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);

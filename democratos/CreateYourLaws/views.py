@@ -343,10 +343,10 @@ def get_reflection(request):
     else:
         law_code, list_parents = get_path(ref)
     # forms initializations
-    qform = QuestionForm()
+    qstform = QuestionForm()
     expform = ExplainationForm()
-    opform = OpinionForm()
-    propform = PropositionForm()
+    opnform = OpinionForm()
+    prpform = PropositionForm()
     # load all the disclaims, other proposions, opinions, comments and
     # questions about the reflection
     listexplainations = list(ref.explainations.all())
@@ -386,11 +386,11 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         print("Erreur sur le typeref")
     # ####################  PropositionForm ###########################
     if typeform == 'prpf'and request.method == 'POST':
-        propform = PropositionForm(request.POST)
-        if propform.is_valid():
+        prpform = PropositionForm(request.POST)
+        if prpform.is_valid():
             print('yeah')
-            proptitle = propform.cleaned_data['title']
-            prop = propform.cleaned_data['text_prop']
+            proptitle = prpform.cleaned_data['title']
+            prop = prpform.cleaned_data['text_prop']
             if isinstance(ref, LawArticle):
                 lawart = ref
             else:
@@ -405,7 +405,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             NewSection = render_to_string('UpPropSection.html', locals())
             ctx = {'reflection': NewSection, 'section_type': "prp"}
     else:
-        propform = PropositionForm()
+        prpform = PropositionForm()
     # ####################  ExplainationForm ###########################
     if request.method == 'POST' and typeform == 'expf':
         expform = ExplainationForm(request.POST)
@@ -425,11 +425,11 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     # ####################  OpinionForm #########################
     #      <---- Revoir si séparer Posop et Negop
     if request.method == 'POST' and typeform == 'opnf':
-        opform = OpinionForm(request.POST)
-        if opform.is_valid():
-            pos = opform.cleaned_data['positive']
-            optitle = opform.cleaned_data['title']
-            opin = opform.cleaned_data['text_op']
+        opnform = OpinionForm(request.POST)
+        if opnform.is_valid():
+            pos = opnform.cleaned_data['positive']
+            optitle = opnform.cleaned_data['title']
+            opin = opnform.cleaned_data['text_op']
             op = Opinion.objects.create(text_op=opin,
                                         title=optitle,
                                         positive=pos,
@@ -441,13 +441,13 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             NewSection = render_to_string('UpOpnSection.html', locals())
             ctx = {'reflection': NewSection,  'section_type': "opn"}
     else:
-        opform = OpinionForm()
+        opnform = OpinionForm()
     # ####################  QuestionForm ###########################
     if request.method == 'POST' and typeform == 'qstf':
-        qform = QuestionForm(request.POST)
-        if qform.is_valid():
-            qtitle = qform.cleaned_data['title']
-            question = qform.cleaned_data['text_q']
+        qstform = QuestionForm(request.POST)
+        if qstform.is_valid():
+            qtitle = qstform.cleaned_data['title']
+            question = qstform.cleaned_data['text_q']
             q = Question.objects.create(text_q=question,
                                         title=qtitle,
                                         autor=User,
@@ -457,7 +457,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             NewSection = render_to_string('UpQstSection.html', locals())
             ctx = {'reflection': NewSection, 'section_type': "qst"}
     else:
-        qform = QuestionForm()
+        qstform = QuestionForm()
     return JsonResponse(ctx)
 
 
@@ -534,7 +534,7 @@ def GetForm(request):
         form = ExplainationForm()
     NewForm = render_to_string('GetForm.html', locals())
     print(NewForm)
-    ctx = {'newform': NewForm, 'typeref': typeref, "idref": id_ref}
+    ctx = {'newform': NewForm, 'typeref': typeref, "idref": str(id_ref)}
     return JsonResponse(ctx)
 
 

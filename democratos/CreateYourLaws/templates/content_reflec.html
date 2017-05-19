@@ -186,13 +186,13 @@
                 </p>    
             </div>
 
-            <button class="butopinion" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
+            <button class="butopn" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
                 <form action="{% url 'PostReflection' %}" method="post" id="opform" name="loi:{{ref.id_ref}}">
                     {{ opform.as_p }}
                     <input type="hidden" name="typeform" value="opnf">
                     <input type="hidden" name="typeref" value="{{typeref}}">
                     <input type="hidden" name="ref_id" value="{{ref.id}}">
-                    <button type="submit" class="butopinion" name="btnopform">Poster le point de vue</button>
+                    <button type="submit" class="butopn" name="btnopform">Poster le point de vue</button>
                 </form>           
         </section>
     {% endif %}
@@ -240,12 +240,12 @@
             </table> 
 
         <button class="butprop" type="button">Faire une autre proposition <br>  que cette loi</button>
-            <form action="{% url 'PostReflection' %}"  method="post" id="propform">
-                {{ propform.as_p }} 
+            <form action="{% url 'PostReflection' %}"  method="post" id="prpform">
+                {{ prpform.as_p }} 
                 <input type="hidden" name="typeform" value="prpf">
                 <input type="hidden" name="typeref" value="{{typeref}}">
                 <input type="hidden" name="ref_id" value="{{ref.id}}">
-                <button type="submit" class="butprop" name="propform">Poster votre proposition </button>
+                <button type="submit" class="butprop" name="prpform">Poster votre proposition </button>
             </form> 
         </section>
            
@@ -312,11 +312,11 @@
                     {% if x|isinst:'CreateYourLaws.models.Explaination' %}
                         <button class="butexp" type="button" name="exp:exp:{{x.id}}"> Commenter </button>
                         <button class="butq" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
-                        <p id="expaskform:{{x.id}}"></p>
+                        <p id="expaskform{{x.id}}"></p>
                     {% else %}
                         <button class="butexp" type="button" name="qst:exp:{{x.id}}"> Commenter </button>
                         <button class="butq" type="button" name="qst:qst:{{x.id}}">Poser votre question </button>
-                        <p id="qstaskform:{{x.id}}"></p>
+                        <p id="qstaskform{{x.id}}"></p>
                     {% endif %}
                     </p>
                 </td>                   
@@ -326,7 +326,7 @@
             {% endfor %}
             <button class="butexp" name="exp:{{typeref}}:{{x.id}}" type="button"> Commenter </button>
             <button class="butq" name="qst:{{typeref}}:{{x.id}}" type="button">Poser votre question </button>
-            <p id="{{typeref}}askform:{{x.id}}"></p>
+            <p id="{{typeref}}askform{{x.id}}"></p>
         </tbody>
     </table> 
 </section>

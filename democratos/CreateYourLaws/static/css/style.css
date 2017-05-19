@@ -97,7 +97,7 @@ button{
 	cursor: pointer;
 }
 
-.butopinion{
+.butopn{
 	background: -moz-linear-gradient(110deg,#f98b8b 50%,#93f99a 50%);
 }
 
@@ -112,12 +112,12 @@ button{
 }
 
 
-.butq{
+.butqst{
 	background-color: #a477cc;
 	border-color: #5f2f89;
 }
 
-.butprop{
+.butprp{
 	background-color: #7ab3e7;
 	border-color: #378ddd;
 }
