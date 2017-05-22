@@ -239,13 +239,13 @@
                 </tbody>
             </table> 
 
-        <button class="butprop" type="button">Faire une autre proposition <br>  que cette loi</button>
+        <button class="butprp" type="button">Faire une autre proposition <br>  que cette loi</button>
             <form action="{% url 'PostReflection' %}"  method="post" id="prpform">
                 {{ prpform.as_p }} 
                 <input type="hidden" name="typeform" value="prpf">
                 <input type="hidden" name="typeref" value="{{typeref}}">
                 <input type="hidden" name="ref_id" value="{{ref.id}}">
-                <button type="submit" class="butprop" name="prpform">Poster votre proposition </button>
+                <button type="submit" class="butprp" name="prpform">Poster votre proposition </button>
             </form> 
         </section>
            
@@ -306,18 +306,24 @@
                     <p id="devqst{{x.id}}" style='text-align: center;'>
                 {% endif %}
                     {% if x.nb_exp != 0 or x.nb_q != 0 %}
-                        <a href="getchild:exp{{x.id}}"> Voir les réactions à ce commentaire <a>
-                    {% endif %}
-                    Poser une question ou commentez cette réaction! <br>
-                    {% if x|isinst:'CreateYourLaws.models.Explaination' %}
-                        <button class="butexp" type="button" name="exp:exp:{{x.id}}"> Commenter </button>
-                        <button class="butq" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
-                        <p id="expaskform{{x.id}}"></p>
+                        {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                            <a class="GetDebateChild" name="childexp{{x.id}}"> Voir les réactions à ce commentaire <a>
+                        {% else %}
+                            <a class="GetDebateChild" name="childqst{{x.id}}"> Voir les réactions à ce commentaire <a>
+                        {% endif %}
                     {% else %}
-                        <button class="butexp" type="button" name="qst:exp:{{x.id}}"> Commenter </button>
-                        <button class="butq" type="button" name="qst:qst:{{x.id}}">Poser votre question </button>
-                        <p id="qstaskform{{x.id}}"></p>
+                        Poser une question ou commentez cette réaction! <br>
+                        {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                            <button class="butexp" type="button" name="exp:exp:{{x.id}}"> Commenter </button>
+                            <button class="butqst" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
+                            <p id="expaskform{{x.id}}"></p>
+                        {% else %}
+                            <button class="butexp" type="button" name="qst:exp:{{x.id}}"> Commenter </button>
+                            <button class="butqst" type="button" name="qst:qst:{{x.id}}">Poser votre question </button>
+                            <p id="qstaskform{{x.id}}"></p>
+                        {% endif %}
                     {% endif %}
+
                     </p>
                 </td>                   
             </tr>
@@ -325,7 +331,7 @@
                 <h2>une réaction? Commentez ou posez votre question</h2>
             {% endfor %}
             <button class="butexp" name="exp:{{typeref}}:{{x.id}}" type="button"> Commenter </button>
-            <button class="butq" name="qst:{{typeref}}:{{x.id}}" type="button">Poser votre question </button>
+            <button class="butqst" name="qst:{{typeref}}:{{x.id}}" type="button">Poser votre question </button>
             <p id="{{typeref}}askform{{x.id}}"></p>
         </tbody>
     </table> 

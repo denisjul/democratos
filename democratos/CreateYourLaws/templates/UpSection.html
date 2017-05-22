@@ -1,0 +1,109 @@
+{% load special_filters %}
+{% load staticfiles %}
+
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+
+{% autoescape off %}
+{% if typeform == 'qst' %} 
+    <h2>Autres propositions de lois pour cette réflection</h2>
+{% elif typeform== 'exp' %}
+    <h2>Autres propositions de lois pour cette réflection</h2>
+{% elif typeform == 'opn' %}
+    {% if ref.positive %}
+        <h2>Autres propositions de lois pour cette réflection</h2>
+    {% else %}
+        <h2>Autres propositions de lois pour cette réflection</h2>
+    {% endif %}
+{% elif typeform == 'prp' %}
+    <h2>Autres propositions de lois pour cette réflection</h2>
+{% endif %} 
+
+
+</p>
+<table>
+    <tbody>
+   {% comment %}
+    {% if typeform == 'qst' %} 
+        <h2>Autres propositions de lois pour cette réflection</h2>
+    {% elif typeform== 'exp' %}
+        <h2>Autres propositions de lois pour cette réflection</h2>
+    {% elif typeform == 'opn' %}
+        {% if ref.positive %}
+            <h2>Autres propositions de lois pour cette réflection</h2>
+        {% else %}
+            <h2>Autres propositions de lois pour cette réflection</h2>
+        {% endif %}
+    {% elif typeform == 'prp' %}
+        <h2>Autres propositions de lois pour cette réflection</h2>
+    {% endif %} 
+ {% endcomment %}
+        {% for x in listref %}
+            <tr>
+                <td>
+                    <div class="IDB GetReflection" name="prp:{{x.id}}"> 
+                        {% if x.title %}
+                            <strong>{{x.title}}</strong> <br/>
+                            {% if typeform == 'qst' %} 
+                                {{x.text_q|truncatewords:80}} <br/>
+                            {% elif typeform== 'exp' %}
+                                {{x.text_exp|truncatewords:80}} <br/>
+                            {% elif typeform == 'opn' %}
+                                {{x.text_op|truncatewords:80}} <br/>
+                            {% elif typeform == 'prp' %}
+                                {{x.text_prop|truncatewords:80}} <br/>
+                            {% endif %}  
+                       {% else %}
+                            {% if typeform == 'qst' %} 
+                                <strong>{{x.text_q}}</strong> <br/>
+                            {% elif typeform== 'exp' %}
+                                <strong>{{x.text_exp}}</strong> <br/>
+                            {% elif typeform == 'opn' %}
+                                <strong>{{x.text_op}}</strong> <br/>
+                            {% elif typeform == 'prp' %}
+                                <strong>{{x.text_prop}}</strong> <br/>
+                            {% endif %} 
+                        {% endif %}
+                    </div>
+                    <p class="count">
+                    <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
+                    <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
+                    {% if typeform == 'opn' or if typeform == 'prp' %}
+                        <img src="{% static 'icons/opv2.png' %}" alt="op+" class="icn"> {{x.nb_posop}}
+                        <img src="{% static 'icons/opx2.png' %}" alt="op-" class="icn"> {{x.nb_negop}}
+                        </p>
+                    {% endif %}
+                    <p class="vote">
+                    <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="prp:{{x.id}}" value="UP"/>
+                    <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="prp:{{x.id}}" value="DOWN"/>
+                        note:
+                    <canvas id="donprp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                    </p>
+                </td>                   
+            </tr>
+        {% empty %}
+        Aucune contre-proposition n'a été faite pour le moment sur cette réflection.<br>
+        Soyez le premier à en faire une!
+        {% endfor %}
+    </tbody>
+</table> 
+
+{% comment %}
+{% if typeform == 'qst' %} 
+    <strong>{{x.text_q}}</strong> <br/>
+{% elif typeform== 'exp' %}
+    <strong>{{x.text_exp}}</strong> <br/>
+{% elif typeform == 'opn' %}
+    <strong>{{x.text_op}}</strong> <br/>
+{% elif typeform == 'prp' %}
+    <strong>{{x.text_prop}}</strong> <br/>
+{% endif %}
+<form action="{% url 'PostReflection' %}"  method="post" id="propform">
+    {{ propform.as_p }} 
+    <input type="hidden" name="typeform" value="prpf">
+    <input type="hidden" name="typeref" value="{{typeref}}">
+    <input type="hidden" name="ref_id" value="{{ref.id}}">
+    <button type="submit" class="butprop" name="propform">Poster votre proposition </button>
+</form> 
+{% endcomment %}
+
+{% endautoescape %}

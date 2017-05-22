@@ -400,14 +400,13 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                              autor=User,
                                              law_article=lawart,
                                              content_object=ref)
-            prp.save()
-            listpropositions = list(ref.propositions.all())
-            NewSection = render_to_string('UpPropSection.html', locals())
+            listref = list(ref.propositions.all())
+            NewSection = render_to_string('UpSection.html', locals())
             ctx = {'reflection': NewSection, 'section_type': "prp"}
-    else:
-        prpform = PropositionForm()
+            prp.save()
+
     # ####################  ExplainationForm ###########################
-    if request.method == 'POST' and typeform == 'expf':
+    elif request.method == 'POST' and typeform == 'expf':
         expform = ExplainationForm(request.POST)
         if expform.is_valid():
             exptitle = expform.cleaned_data['title']
@@ -416,15 +415,13 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                               text_exp=explain,
                                               autor=User,
                                               content_object=ref)
-            exp.save()
-            listexplainations = list(ref.explainations.all())
-            NewSection = render_to_string('UpExpSection.html', locals())
+            llistref = list(ref.explainations.all())
+            NewSection = render_to_string('UpSection.html', locals())
             ctx = {'reflection': NewSection, 'section_type': "exp"}
-    else:
-        expform = ExplainationForm()
+            exp.save()
     # ####################  OpinionForm #########################
     #      <---- Revoir si séparer Posop et Negop
-    if request.method == 'POST' and typeform == 'opnf':
+    elif request.method == 'POST' and typeform == 'opnf':
         opnform = OpinionForm(request.POST)
         if opnform.is_valid():
             pos = opnform.cleaned_data['positive']
@@ -435,15 +432,16 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                         positive=pos,
                                         autor=User,
                                         content_object=ref)
-            op.save()
-            listposop = list(ref.opinions.filter(positive=True))
-            listnegop = list(ref.opinions.filter(positive=False))
-            NewSection = render_to_string('UpOpnSection.html', locals())
+            if op.pos:
+                listref = list(ref.opinions.filter(positive=True))
+            else:
+                listref = list(ref.opinions.filter(positive=True))
+            NewSection = render_to_string('UpSection.html', locals())
             ctx = {'reflection': NewSection,  'section_type': "opn"}
-    else:
-        opnform = OpinionForm()
+            op.save()
+
     # ####################  QuestionForm ###########################
-    if request.method == 'POST' and typeform == 'qstf':
+    elif request.method == 'POST' and typeform == 'qstf':
         qstform = QuestionForm(request.POST)
         if qstform.is_valid():
             qtitle = qstform.cleaned_data['title']
@@ -452,12 +450,10 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                         title=qtitle,
                                         autor=User,
                                         content_object=ref)
-            q.save()
-            listquestions = list(ref.questions.all())
-            NewSection = render_to_string('UpQstSection.html', locals())
+            listref = list(ref.questions.all())
+            NewSection = render_to_string('UpSection.html', locals())
             ctx = {'reflection': NewSection, 'section_type': "qst"}
-    else:
-        qstform = QuestionForm()
+            q.save()
     return JsonResponse(ctx)
 
 
@@ -488,9 +484,8 @@ def getchildcomments(request):
     """ View which display a reflection and its child
     reflections from its ID"""
     slug = request.POST.get('slug', None)
-    slug1, slug2 = slug.split(sep=":")
-    typeref = slug2[0:2]
-    id_ref = slug2[3:len(slug2)]
+    typeref = slug[5:7]
+    id_ref = slug[8:len(slug2)]
     id_ref = int(id_ref)
     message = ""
     try:
@@ -504,10 +499,18 @@ def getchildcomments(request):
         listcom.extend(listquestions)
         listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
         childcomments = render_to_string('childcomments.html', locals())
-        ctx = {'message': message, 'newcomments': childcomments}
+        ctx = {'message': message,
+               'newcomments': childcomments,
+               'typeref': typeref,
+               "idref": str(id_ref)
+               }
     except Exception:
         message = "comment unfindable in DB"
-        ctx = {'message': message, 'newcomments': ""}
+        ctx = {'message': message,
+               'newcomments': "",
+               'typeref': typeref,
+               "idref": str(id_ref)
+               }
     return JsonResponse(ctx)
 
 

@@ -246,6 +246,7 @@ $(document).ready(function() {
 	// -------------Displaying Forms for q,exp,op etc. -------------
 	Setbutform();
 	SetTheForm("prpform");
+    SetTheForm("opform");
 	// -------------- JStree settings ---------------------
 	$("#jstree_CYL").jstree({ 
 		'core' : {
@@ -332,6 +333,7 @@ $(document).ready(function() {
                 }
         	}); 
     });
+
     // --------------- down button -----------------------
     $('body').on('click','.DOWN',function(){
      	var tomodif = '#' + $(this).attr('name').replace(':','');
@@ -355,22 +357,31 @@ $(document).ready(function() {
             }
         }); 
     });
-        // --------------- ask fo exp form -----------------------
-    $('body').on('click','.butexp, .butq',function(){
-     	$.ajax({
-            type: "GET",
-            url: '/CYL/GetForm',
-            data: {'name': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
-            dataType: "json",
-            success: function(response) {
-                var idtomodif = "#" +  response.typeref + 'askform' + response.idref;
-                $('#content').find(idtomodif).html(response.newform);
-            },
-            error: function(rs, e) {
-                alert(rs.responseText);
-            }
-        }); 
+    
+    // --------------- ask fo exp form -----------------------
+    $('body').on('click','.butexp, .butqst',function(){
+        if ($(this).attr('name').substring(3,6) != "form"){
+            $.ajax({
+                type: "GET",
+                url: '/CYL/GetForm',
+                data: {'name': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
+                dataType: "json",
+                success: function(response) {
+                    var idtomodif = "#" +  response.typeref + 'askform' + response.idref;
+                    $('#content').find(idtomodif).html(response.newform);
+                    $('#content').find("form").each(function(){
+                        SetTheForm($(this).attr('id'));
+                    });
+                    Setbutform();
+                },
+                error: function(rs, e) {
+                    alert(rs.responseText);
+                }
+            }); 
+        };
+
     });
+    
     // --------------- Checkbox suscribe -----------------------
 	$('.suscribe').click(function() {
 	    var checked = $(this).is(':checked');
@@ -395,7 +406,8 @@ $(document).ready(function() {
 	        },
 	    });
 	});
-	    // --------------- Box loading AJAX -----------------------
+	
+    // --------------- Box loading AJAX -----------------------
     $("body").on("click",".InDatBox",function(){
 	 	$.ajax({
 	        type: "POST",
@@ -441,5 +453,21 @@ $(document).ready(function() {
 	        }
 	    });
 	});
-   	//--------------------- SET Explaination/question size ---------------------REVOIR!!!!!
+   	//---------------------  Get Child comments---------------------
+    $("body").on("click", ".GetDebateChild",function(){
+        $.ajax({
+            type: "POST",
+            url: '/CYL/childcomments',
+            data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
+            dataType: "json",
+            success: function(response) {
+                alert("passe!");
+                var idtomodif = "#" +  response.typeref + 'askform' + response.idref;
+                $('#content').find(idtomodif).html(response.newform);
+            },
+            error: function(rs, e) {
+                alert(rs.responseText);
+            }
+        });
+    });
 });
