@@ -1,0 +1,85 @@
+{% load special_filters %}
+{% load staticfiles %}
+
+
+{% autoescape off %}
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<table>
+    <tbody>    
+         {% for x in listcom %}
+        <tr>
+            {% if x|isinst:'CreateYourLaws.models.Explaination' %}    
+                <td class='explaination' id="exp:{{x.id}}"> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
+                    {% if x.title %}
+                        <strong>{{x.title}}</strong> <br/>
+                        {{x.text_exp|truncatewords:80}} <br/>
+                    {% else %}
+                        <strong>{{x.text_exp}}</strong> <br/>
+                    {% endif %}
+            {% else %}
+                <td class='question' id="qst:{{x.id}}">  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
+                    {% if x.title %}
+                        <strong>{{x.title}}</strong> <br/>
+                        {{x.text_q|truncatewords:80}} <br/>
+                    {% else %}
+                        <strong>{{x.text_q}}</strong> <br/>
+                    {% endif %}
+            {% endif %}                    
+            <p class="count">
+                <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
+                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
+            </p>
+            <p class="vote">
+            {% if x|isinst:'CreateYourLaws.models.Explaination' %}   
+                <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="exp:{{x.id}}" value="UP"/>
+                <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="exp:{{x.id}}" value="DOWN"/>
+                 note:
+                <canvas id="donexp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+            {% else %}
+                <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="qst:{{x.id}}" value="UP"/>
+                <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="qst:{{x.id}}" value="DOWN"/>
+                note:
+                <canvas id="donqst{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+            {% endif %}
+            </p>
+            <br>
+            <br>
+            <br>
+            <hr>
+            {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                <p id="devexp{{x.id}}" style='text-align: center;'>
+            {% else %}
+                <p id="devqst{{x.id}}" style='text-align: center;'>
+            {% endif %}
+                {% if x.nb_exp != 0 or x.nb_q != 0 %}
+                    {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                        <div class="GetDebateChild" name="childexp{{x.id}}" id="childexp{{x.id}}"> Voir les réactions à ce commentaire </div>
+                    {% else %}
+                        <div class="GetDebateChild" name="childqst{{x.id}}" id="childqst{{x.id}}"> Voir les réactions à ce commentaire </div>
+                    {% endif %}
+                {% else %}
+                    Poser une question ou commentez cette réaction! <br>
+                    {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                        <button class="butexp" type="button" name="exp:exp:{{x.id}}"> Commenter </button>
+                        <button class="butqst" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
+                        <p id="expaskform{{x.id}}"></p>
+                    {% else %}
+                        <button class="butexp" type="button" name="qst:exp:{{x.id}}"> Commenter </button>
+                        <button class="butqst" type="button" name="qst:qst:{{x.id}}">Poser votre question </button>
+                        <p id="qstaskform{{x.id}}"></p>
+                    {% endif %}
+                {% endif %}
+
+                </p>
+            </td>                   
+        </tr>
+        {% empty %}
+            <h2>une réaction? Commentez ou posez votre question</h2>
+        {% endfor %}
+        <button class="butexp" name="{{typeref}}:exp:{{id_ref}}" type="button"> Commenter </button>
+        <button class="butqst" name="{{typeref}}:qst:{{id_ref}}" type="button">Poser votre question </button>
+        <p id="{{typeref}}askform{{id_ref}}"></p>
+    </tbody>
+</table> 
+
+{% endautoescape %}

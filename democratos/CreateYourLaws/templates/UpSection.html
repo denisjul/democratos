@@ -4,88 +4,124 @@
 <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
 
 {% autoescape off %}
-{% if typeform == 'qst' %} 
-    <h2>Autres propositions de lois pour cette réflection</h2>
-{% elif typeform== 'exp' %}
-    <h2>Autres propositions de lois pour cette réflection</h2>
-{% elif typeform == 'opn' %}
+
+{% if typeform == 'opnf' %}
     {% if ref.positive %}
         <h2>Autres propositions de lois pour cette réflection</h2>
     {% else %}
         <h2>Autres propositions de lois pour cette réflection</h2>
     {% endif %}
-{% elif typeform == 'prp' %}
+{% elif typeform == 'prpf' %}
     <h2>Autres propositions de lois pour cette réflection</h2>
 {% endif %} 
 
 
-</p>
 <table>
-    <tbody>
-   {% comment %}
-    {% if typeform == 'qst' %} 
-        <h2>Autres propositions de lois pour cette réflection</h2>
-    {% elif typeform== 'exp' %}
-        <h2>Autres propositions de lois pour cette réflection</h2>
-    {% elif typeform == 'opn' %}
-        {% if ref.positive %}
-            <h2>Autres propositions de lois pour cette réflection</h2>
-        {% else %}
-            <h2>Autres propositions de lois pour cette réflection</h2>
-        {% endif %}
-    {% elif typeform == 'prp' %}
-        <h2>Autres propositions de lois pour cette réflection</h2>
-    {% endif %} 
- {% endcomment %}
         {% for x in listref %}
             <tr>
-                <td>
-                    <div class="IDB GetReflection" name="prp:{{x.id}}"> 
+                {% if x|isinst:'CreateYourLaws.models.Explaination' %} 
+                    <td class="IDB GetReflection" id="exptd{{x.id}}"> 
+                {% elif x|isinst:'CreateYourLaws.models.Question' %}
+                    <td class="IDB GetReflection" id="qsttd{{x.id}}"> 
+                {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
+                    {% if x.positive %}
+                        <td class="posopinion" id="postd{{x.id}}"> 
+                    {% else %}
+                        <td class="negopi" id="negtd{{x.id}}"> 
+                    {% endif %}
+                {% elif x|isinst:'CreateYourLaws.models.Proposition' %}
+                    <td class="I.proposition" id="prptd{{x.id}}"> 
+                {% endif %} 
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
-                            {% if typeform == 'qst' %} 
+                            {% if x|isinst:'CreateYourLaws.models.Question' %} 
                                 {{x.text_q|truncatewords:80}} <br/>
-                            {% elif typeform== 'exp' %}
+                            {% elif x|isinst:'CreateYourLaws.models.Explaination' %}
                                 {{x.text_exp|truncatewords:80}} <br/>
-                            {% elif typeform == 'opn' %}
+                            {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
                                 {{x.text_op|truncatewords:80}} <br/>
-                            {% elif typeform == 'prp' %}
+                            {% elif x|isinst:'CreateYourLaws.models.Proposition' %}
                                 {{x.text_prop|truncatewords:80}} <br/>
                             {% endif %}  
                        {% else %}
-                            {% if typeform == 'qst' %} 
+                            {% if x|isinst:'CreateYourLaws.models.Question' %} 
                                 <strong>{{x.text_q}}</strong> <br/>
-                            {% elif typeform== 'exp' %}
+                            {% elif x|isinst:'CreateYourLaws.models.Explaination' %}
                                 <strong>{{x.text_exp}}</strong> <br/>
-                            {% elif typeform == 'opn' %}
+                            {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
                                 <strong>{{x.text_op}}</strong> <br/>
-                            {% elif typeform == 'prp' %}
+                            {% elif x|isinst:'CreateYourLaws.models.Proposition' %}
                                 <strong>{{x.text_prop}}</strong> <br/>
                             {% endif %} 
                         {% endif %}
-                    </div>
                     <p class="count">
                     <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
                     <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
-                    {% if typeform == 'opn' or if typeform == 'prp' %}
+                    {% if x|isinst:'CreateYourLaws.models.Opinion' or x|isinst:'CreateYourLaws.models.Proposition' %}
                         <img src="{% static 'icons/opv2.png' %}" alt="op+" class="icn"> {{x.nb_posop}}
                         <img src="{% static 'icons/opx2.png' %}" alt="op-" class="icn"> {{x.nb_negop}}
-                        </p>
                     {% endif %}
-                    <p class="vote">
-                    <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="prp:{{x.id}}" value="UP"/>
-                    <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="prp:{{x.id}}" value="DOWN"/>
-                        note:
-                    <canvas id="donprp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
                     </p>
+
+                    {% if x|isinst:'CreateYourLaws.models.Question' %} 
+                        <p class="vote">
+                        <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="qst:{{x.id}}" value="UP"/>
+                        <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="qst:{{x.id}}" value="DOWN"/>
+                            note:
+                        <canvas id="donqst{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                        </p>
+                    {% elif x|isinst:'CreateYourLaws.models.Explaination' %}
+                        <p class="vote">
+                        <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="exp:{{x.id}}" value="UP"/>
+                        <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="exp:{{x.id}}" value="DOWN"/>
+                            note:
+                        <canvas id="donexp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                        </p>
+                    {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
+                        <p class="vote">
+                        <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="opn:{{x.id}}" value="UP"/>
+                        <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="opn:{{x.id}}" value="DOWN"/>
+                            note:
+                        <canvas id="donopn{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                        </p>
+                    {% elif x|isinst:'CreateYourLaws.models.Proposition' %}
+                        <p class="vote">
+                        <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="prp:{{x.id}}" value="UP"/>
+                        <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="prp:{{x.id}}" value="DOWN"/>
+                            note:
+                        <canvas id="donprp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                    </p>
+                    {% endif %}  
                 </td>                   
             </tr>
-        {% empty %}
-        Aucune contre-proposition n'a été faite pour le moment sur cette réflection.<br>
-        Soyez le premier à en faire une!
         {% endfor %}
-    </tbody>
 </table> 
+
+{% comment %}
+            {% x|isinst:'CreateYourLaws.models.Explaination' %} 
+                Aucun commentaire n'a été fait pour le moment sur cette réflection.<br>
+            {% elif x|isinst:'CreateYourLaws.models.Question' %}
+                Aucune question n'a été posée pour le moment sur cette réflection.<br>
+                Soyez le premier à en poser une!
+            {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
+                {% if ref.positive %}
+                    Aucun avis positifs n'a été donné pour le moment sur cette réflection
+                {% else %}
+                    Aucune contre-proposition n'a été faite pour le moment sur cette réflection
+                {% endif %}
+            {% elif x|isinst:'CreateYourLaws.models.Proposition' %}
+                Aucune contre-proposition n'a été faite pour le moment sur cette réflection.<br>
+                Soyez le premier à en faire une!
+            {% endif %} 
+<button class="butprp" type="button">Faire une autre proposition <br>  que cette loi</button>
+    <form action="{% url 'PostReflection'%}"  method="post" id="prpform">
+        {{ prpform.as_p }} 
+        <input type="hidden" name="typeform" value="prpf">
+        <input type="hidden" name="typeref" value="{{typeref}}">
+        <input type="hidden" name="ref_id" value="{{ref.id}}">
+        <button type="submit" class="butprp" name="prpform">Poster votre proposition </button>
+    </form> 
+
 
 {% comment %}
 {% if typeform == 'qst' %} 

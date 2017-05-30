@@ -187,7 +187,7 @@
             </div>
 
             <button class="butopn" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
-                <form action="{% url 'PostReflection' %}" method="post" id="opform" name="loi:{{ref.id_ref}}">
+                <form action="{% url 'PostReflection'%}" method="post" id="opnform" name="loi:{{ref.id_ref}}">
                     {{ opform.as_p }}
                     <input type="hidden" name="typeform" value="opnf">
                     <input type="hidden" name="typeref" value="{{typeref}}">
@@ -240,7 +240,7 @@
             </table> 
 
         <button class="butprp" type="button">Faire une autre proposition <br>  que cette loi</button>
-            <form action="{% url 'PostReflection' %}"  method="post" id="prpform">
+            <form action="{% url 'PostReflection'%}"  method="post" id="prpform">
                 {{ prpform.as_p }} 
                 <input type="hidden" name="typeform" value="prpf">
                 <input type="hidden" name="typeref" value="{{typeref}}">
@@ -258,12 +258,11 @@
 #############################################################################################-->
 
 <section id="debate">
-    <table>
-        <tbody>    
+    <table>    
              {% for x in listcom %}
             <tr>
                 {% if x|isinst:'CreateYourLaws.models.Explaination' %}    
-                    <td class='explaination' id="exp:{{x.id}}"> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
+                    <td class='explaination' id="exptd{{x.id}}"> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
                             {{x.text_exp|truncatewords:80}} <br/>
@@ -271,7 +270,7 @@
                             <strong>{{x.text_exp}}</strong> <br/>
                         {% endif %}
                 {% else %}
-                    <td class='question' id="qst:{{x.id}}">  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
+                    <td class='question' id="qsttd{{x.id}}">  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
                             {{x.text_q|truncatewords:80}} <br/>
@@ -307,9 +306,9 @@
                 {% endif %}
                     {% if x.nb_exp != 0 or x.nb_q != 0 %}
                         {% if x|isinst:'CreateYourLaws.models.Explaination' %}
-                            <a class="GetDebateChild" name="childexp{{x.id}}"> Voir les réactions à ce commentaire <a>
+                            <div class="GetDebateChild" name="childexp{{x.id}}" id="childexp{{x.id}}"> Voir les réactions à ce commentaire </div>
                         {% else %}
-                            <a class="GetDebateChild" name="childqst{{x.id}}"> Voir les réactions à ce commentaire <a>
+                            <div class="GetDebateChild" name="childqst{{x.id}}" id="childqst{{x.id}}"> Voir les réactions à ce commentaire </div>
                         {% endif %}
                     {% else %}
                         Poser une question ou commentez cette réaction! <br>
@@ -330,9 +329,8 @@
             {% empty %}
                 <h2>une réaction? Commentez ou posez votre question</h2>
             {% endfor %}
-            <button class="butexp" name="exp:{{typeref}}:{{x.id}}" type="button"> Commenter </button>
-            <button class="butqst" name="qst:{{typeref}}:{{x.id}}" type="button">Poser votre question </button>
-            <p id="{{typeref}}askform{{x.id}}"></p>
-        </tbody>
+            <button class="butexp" name="{{typeref}}:exp:{{id_ref}}" type="button"> Commenter </button>
+            <button class="butqst" name="{{typeref}}:qst:{{id_ref}}" type="button">Poser votre question </button>
+            <p id="{{typeref}}askform{{id_ref}}"></p>
     </table> 
 </section>

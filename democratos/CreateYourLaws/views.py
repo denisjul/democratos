@@ -388,7 +388,6 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     if typeform == 'prpf'and request.method == 'POST':
         prpform = PropositionForm(request.POST)
         if prpform.is_valid():
-            print('yeah')
             proptitle = prpform.cleaned_data['title']
             prop = prpform.cleaned_data['text_prop']
             if isinstance(ref, LawArticle):
@@ -402,7 +401,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                              content_object=ref)
             listref = list(ref.propositions.all())
             NewSection = render_to_string('UpSection.html', locals())
-            ctx = {'reflection': NewSection, 'section_type': "prp"}
+            ctx = {'reflection': NewSection, 'section_type': "prp", 'tdid': ""}
             prp.save()
 
     # ####################  ExplainationForm ###########################
@@ -415,9 +414,16 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                               text_exp=explain,
                                               autor=User,
                                               content_object=ref)
-            llistref = list(ref.explainations.all())
+            listexplainations = list(ref.explainations.all())
+            listquestions = list(ref.questions.all())
+            listref = listexplainations
+            listref.extend(listquestions)
+            listref = sorted(listref,
+                             key=operator.attrgetter('approval_factor'))
             NewSection = render_to_string('UpSection.html', locals())
-            ctx = {'reflection': NewSection, 'section_type': "exp"}
+            ctx = {'reflection': NewSection,
+                   'section_type': "exp",
+                   'tdid': str(id_ref)}
             exp.save()
     # ####################  OpinionForm #########################
     #      <---- Revoir si séparer Posop et Negop
@@ -437,7 +443,9 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             else:
                 listref = list(ref.opinions.filter(positive=True))
             NewSection = render_to_string('UpSection.html', locals())
-            ctx = {'reflection': NewSection,  'section_type': "opn"}
+            ctx = {'reflection': NewSection,
+                   'section_type': "opn",
+                   'tdid': ""}
             op.save()
 
     # ####################  QuestionForm ###########################
@@ -450,10 +458,18 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                         title=qtitle,
                                         autor=User,
                                         content_object=ref)
-            listref = list(ref.questions.all())
+            listexplainations = list(ref.explainations.all())
+            listquestions = list(ref.questions.all())
+            listref = listexplainations
+            listref.extend(listquestions)
+            listref = sorted(listref,
+                             key=operator.attrgetter('approval_factor'))
             NewSection = render_to_string('UpSection.html', locals())
-            ctx = {'reflection': NewSection, 'section_type': "qst"}
+            ctx = {'reflection': NewSection,
+                   'section_type': "qst",
+                   'tdid': str(id_ref)}
             q.save()
+    print(ctx)
     return JsonResponse(ctx)
 
 
@@ -484,8 +500,8 @@ def getchildcomments(request):
     """ View which display a reflection and its child
     reflections from its ID"""
     slug = request.POST.get('slug', None)
-    typeref = slug[5:7]
-    id_ref = slug[8:len(slug2)]
+    typeref = slug[5:8]
+    id_ref = slug[8:len(slug)]
     id_ref = int(id_ref)
     message = ""
     try:
@@ -519,6 +535,7 @@ def GetForm(request):
     """ View which display a reflection and its child
     reflections from its ID"""
     name = request.GET.get('name', None)
+    print(name)
     typeref, typeform, id_ref = name.split(sep=":")
     id_ref = int(id_ref)
     if typeref == 'qst':  # Does the reflection extist?
