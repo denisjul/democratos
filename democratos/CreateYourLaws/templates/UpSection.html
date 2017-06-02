@@ -20,17 +20,17 @@
         {% for x in listref %}
             <tr>
                 {% if x|isinst:'CreateYourLaws.models.Explaination' %} 
-                    <td class="IDB GetReflection" id="exptd{{x.id}}"> 
+                    <td class="explaination" id="exptd{{x.id}}"> 
                 {% elif x|isinst:'CreateYourLaws.models.Question' %}
-                    <td class="IDB GetReflection" id="qsttd{{x.id}}"> 
+                    <td class="question" id="qsttd{{x.id}}"> 
                 {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
                     {% if x.positive %}
                         <td class="posopinion" id="postd{{x.id}}"> 
                     {% else %}
-                        <td class="negopi" id="negtd{{x.id}}"> 
+                        <td class="negopinion" id="negtd{{x.id}}"> 
                     {% endif %}
                 {% elif x|isinst:'CreateYourLaws.models.Proposition' %}
-                    <td class="I.proposition" id="prptd{{x.id}}"> 
+                    <td class="proposition" id="prptd{{x.id}}"> 
                 {% endif %} 
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>

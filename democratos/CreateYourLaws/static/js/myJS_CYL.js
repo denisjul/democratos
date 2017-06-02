@@ -206,12 +206,15 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         	CKEDITOR.instances[instance].updateElement();
         var datatosend = $(this).serialize()
         datatosend['csrfmiddlewaretoken']=csrftoken
+        var place = '#' + $(this).parent().attr('id')
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'), // the file to call
             success: function(response) { // on success..
-            	switch(response.section_type){
+                alert(place);
+                $(place).replaceWith(response.reflection);
+            	/*switch(response.section_type){
                 	case'exp':
                 		$('#content').find('#exptd' + response.tdid).html(response.reflection); // update the DIV
                         break;
@@ -227,7 +230,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
             		default:
             			alert('erreur sur la nature de la réflexion retournée');
             			break;
-            	};
+            	};*/   
                 Setbutform();
                 SetDonuts();
             },
@@ -369,12 +372,10 @@ $(document).ready(function() {
                 dataType: "json",
                 success: function(response) {
                     var idtomodif = "#" +  response.typeref + 'askform' + response.idref;
-                    alert(idtomodif);
-                    $('#content').find(idtomodif).html(response.newform);
+                    $('#content').find(idtomodif).html(response.newform);;
                     $('#content').find("form").each(function(){
                         SetTheForm($(this).attr('id'));
                     });
-                    Setbutform();
                 },
                 error: function(rs, e) {
                     alert(rs.responseText);
