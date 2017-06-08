@@ -107,7 +107,7 @@
 #############################################################################################-->
     {% if typeref == 'loi' or typeref == 'prp' %}
         <section class="opinion">
-            <div class="posopinion">
+            <div class="posopinion" id="posopdiv">
                 <h2>Points positifs</h2>
                 <p>
                     <table>
@@ -146,7 +146,7 @@
                 </p>    
             </div>
 
-            <div class="negopinion">
+            <div class="negopinion" id="negopdiv">
                 <h2>Points négatifs</h2>
                 <p>
                     <table>
@@ -203,7 +203,7 @@
     {% if typeref == 'loi' or typeref == 'prp' %}
     <hr>
 
-        <section class="proposition">
+        <section class="proposition" id="propsection">
             <h2>Autres propositions de lois pour cette réflection</h2>
             <table>
                 <tbody>
@@ -251,13 +251,11 @@
            
     {% endif %}
 
-{% endautoescape %}
-
 <!--############################################################################################
 ######################################     the Debate      #####################################
 #############################################################################################-->
 
-<section id="debate">
+<section id="{{typeref}}newdebate{{id_ref}}">
     <table>    
              {% for x in listcom %}
             <tr>
@@ -326,11 +324,12 @@
                     </p>
                 </td>                   
             </tr>
-            {% empty %}
-                <h2>une réaction? Commentez ou posez votre question</h2>
-            {% endfor %}
-            <button class="butexp" name="{{typeref}}:exp:{{id_ref}}" type="button"> Commenter </button>
-            <button class="butqst" name="{{typeref}}:qst:{{id_ref}}" type="button">Poser votre question </button>
-            <p id="{{typeref}}askform{{id_ref}}"></p>
-    </table> 
+            {% endfor %}            
+        </table> 
+        <h2>une réaction? Commentez ou posez votre question</h2>
+        <button class="butexp" name="{{typeref}}:exp:{{id_ref}}" type="button"> Commenter </button>
+        <button class="butqst" name="{{typeref}}:qst:{{id_ref}}" type="button">Poser votre question </button>
+        <p id="{{typeref}}askform{{id_ref}}"></p>
 </section>
+
+{% endautoescape %}

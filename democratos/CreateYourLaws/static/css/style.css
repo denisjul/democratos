@@ -6,7 +6,7 @@ html{
 
 body{
 	font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
-	font-size: 14px;
+	font-size: 12px;
     margin: 0;
     padding: 0;
     border: 0 none;
@@ -52,7 +52,7 @@ main{
 	border-color: black;
 	border-style: solid;
 	border-radius: 8px;
-	border-spacing: 10px;
+	border-spacing: 5px;
 	padding: 10px;
 }
 
@@ -225,6 +225,7 @@ section form{
 	border-spacing: 10px;
 	margin: 1%;
 	padding: 10px;
+	width: 500px;
 }
 
 .question
@@ -237,6 +238,7 @@ section form{
 	border-spacing: 10px;
 	margin: 1%;
 	padding: 10px;
+	width: 500px;
 }
 
 .donut

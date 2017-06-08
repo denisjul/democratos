@@ -28,13 +28,12 @@ def SU_Article(NewArticle, link, container, Law_Code, Gov):
         Articlesql.updated = True
         Articlesql.save()
     else:
-        if Articlesql.html != NewArticlehtml:
+        if Articlesql.text_law != NewArticlehtml:
             Articlesql.autor = Gov
             Articlesql.title = NewArticle.name
             Articlesql.text_law = NewArticlehtml
             Articlesql.law_code = Law_Code
             Articlesql.block = container
-            Articlesql.save()
         Articlesql.updated = True
         Articlesql.save()
     print(Articlesql.law_code.title,

@@ -103,11 +103,10 @@ var DonutChart = function (canvas, radius, lineWidth, arraySlices, label) {
 
 // ######################### functions ############################
 
-function Setbutform(){
+function Setbutform(){ 
 	$("#opnform").css('display','none');
 	$("#expform").css('display','none');
 	$("#qstform").css('display','none');
-	// $("#disform").css('display','none');
 	$("#prpform").css('display','none');
 
 	$(".butopn").click(function(event) {
@@ -135,14 +134,6 @@ function Setbutform(){
 			$("#qstform").css('display','none');
 		}
 	});
-	/*$(".butdis").click(function(event) {
-		if ( $("#disform").css('display') == 'none' ){
-		    $("#disform").css('display','block');
-		}
-		else{
-			$("#disform").css('display','none');
-		}
-	});*/
 	$(".butprp").click(function(event) {
 		if ( $("#prpform").css('display') == 'none' ){
 		    $("#prpform").css('display','block');
@@ -152,6 +143,7 @@ function Setbutform(){
 		}
 	});
 }
+
 
 function SetDonuts(){
 	$('.donut').each(function(){
@@ -207,13 +199,15 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         var datatosend = $(this).serialize()
         datatosend['csrfmiddlewaretoken']=csrftoken
         var place = '#' + $(this).parent().attr('id')
+
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'), // the file to call
             success: function(response) { // on success..
-                alert(place);
-                $(place).replaceWith(response.reflection);
+                $(place).html(response.reflection);
+                var formtodel = "#" +  response.typeref + 'askform' + response.idref;
+                $('#content').find(formtodel).html(' ');
             	/*switch(response.section_type){
                 	case'exp':
                 		$('#content').find('#exptd' + response.tdid).html(response.reflection); // update the DIV
@@ -249,8 +243,6 @@ $(document).ready(function() {
 
 	// -------------Displaying Forms for q,exp,op etc. -------------
 	Setbutform();
-	SetTheForm("prpform");
-    SetTheForm("opform");
 	// -------------- JStree settings ---------------------
 	$("#jstree_CYL").jstree({ 
 		'core' : {
@@ -351,6 +343,13 @@ $(document).ready(function() {
                 if (response.message != ""){
               		alert(response.message)
               	};
+                if(response.data != {}){
+                    for (var key in response.data) {
+                        var context = $(key)[0].getContext('2d');
+                        context.clearRect(0, 0, context.width, context.height);
+                        $(key).trigger('MakeMyDonuts', response.data[key]);
+                    }
+                };
                 var context = $(dontomodif)[0].getContext('2d');
                 context.clearRect(0, 0, context.width, context.height);
                 $(dontomodif).trigger('MakeMyDonuts', [response.approb]);
@@ -362,7 +361,7 @@ $(document).ready(function() {
         }); 
     });
     
-    // --------------- ask fo exp form -----------------------
+    // --------------- ask for form -----------------------
     $('body').on('click','.butexp, .butqst',function(){
         if ($(this).attr('name').substring(3,7) != "form"){
             $.ajax({
@@ -372,7 +371,7 @@ $(document).ready(function() {
                 dataType: "json",
                 success: function(response) {
                     var idtomodif = "#" +  response.typeref + 'askform' + response.idref;
-                    $('#content').find(idtomodif).html(response.newform);;
+                    $('#content').find(idtomodif).html(response.newform);
                     $('#content').find("form").each(function(){
                         SetTheForm($(this).attr('id'));
                     });
@@ -381,9 +380,9 @@ $(document).ready(function() {
                     alert(rs.responseText);
                 }
             }); 
-        }
+        /*}
         else {
-            SetTheForm($(this).attr('name'));
+            SetTheForm($(this).attr('name'));*/
         };
 
     });
@@ -449,10 +448,10 @@ $(document).ready(function() {
 	            	SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
 	            });
 	            //--------------------- SET Explaination/question size ---------------------REVOIR!!!!!
-	          	var wdth = $('#debate').width() * 0.6; 
+	            /*var wdth = $('#debate').width() * 0.6; 
 				$('.explaination').css('width',wdth);
 				$('.question').css('width',wdth);
-                window.history.pushState({}, "modifié","modifié")
+                window.history.pushState({}, "modifié","modifié") */
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);
@@ -468,7 +467,7 @@ $(document).ready(function() {
             dataType: "json",
             success: function(response) {
                 var idtomodif = "#child" +  response.typeref + response.idref;
-                $('#content').find(idtomodif).attr('class', 'explaination').html(response.newcomments);
+                $('#content').find(idtomodif).replaceWith(response.newcomments);
             },
             error: function(rs, e) {
                 alert(rs.responseText);
