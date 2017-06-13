@@ -146,7 +146,7 @@ function Setbutform(){
 
 
 function SetDonuts(){
-	$('.donut').each(function(){
+	$("#content").find('.donut').each(function(){
     	$(this).on('MakeMyDonuts', function(event, value) {
     		var nameread = $(this).attr('name').replace(',','.')
 		    var value = (typeof value !== 'undefined') ? value : parseFloat(nameread);
@@ -198,8 +198,8 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         	CKEDITOR.instances[instance].updateElement();
         var datatosend = $(this).serialize()
         datatosend['csrfmiddlewaretoken']=csrftoken
-        var place = '#' + $(this).parent().attr('id')
-
+        alert($(this).parent().parent().attr('id'));
+        var place = '#' + $(this).parent().parent().attr('id')
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -468,6 +468,7 @@ $(document).ready(function() {
             success: function(response) {
                 var idtomodif = "#child" +  response.typeref + response.idref;
                 $('#content').find(idtomodif).replaceWith(response.newcomments);
+                SetDonuts();
             },
             error: function(rs, e) {
                 alert(rs.responseText);

@@ -74,10 +74,13 @@
                         {% if x.nb_exp != 0 or x.nb_q != 0 %}
                             <div class="GetDebateChild" name="childqst{{x.id}}" id="childqst{{x.id}}"> Voir les réactions à ce commentaire </div>
                         {% else %}
-                        Poser une question ou commentez cette réaction! <br>
+                        <br>
+                        <div id='qst{{x.id}}comments'>
+                            Poser une question ou commentez cette réaction! <br>
                             <button class="butexp" type="button" name="qst:exp:{{x.id}}"> Commenter </button>
                             <button class="butqst" type="button" name="qst:qst:{{x.id}}">Poser votre question </button>
                             <p id="qstaskform{{x.id}}"></p>
+                        </div>
                         {% endif %}
                     {% elif x|isinst:'CreateYourLaws.models.Explaination' %}
                         <p class="vote">
@@ -90,10 +93,13 @@
                         {% if x.nb_exp != 0 or x.nb_q != 0 %}
                             <div class="GetDebateChild" name="childexp{{x.id}}" id="childexp{{x.id}}"> Voir les réactions à ce commentaire </div>
                         {% else %}
+                        <br>
+                        <div id='exp{{x.id}}comments'>
                             Poser une question ou commentez cette réaction! <br>
                             <button class="butexp" type="button" name="exp:exp:{{x.id}}"> Commenter </button>
                             <button class="butqst" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
                             <p id="expaskform{{x.id}}"></p>
+                        </div>
                         {% endif %}
                     {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
                         <p class="vote">

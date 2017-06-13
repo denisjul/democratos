@@ -309,15 +309,21 @@
                             <div class="GetDebateChild" name="childqst{{x.id}}" id="childqst{{x.id}}"> Voir les réactions à ce commentaire </div>
                         {% endif %}
                     {% else %}
-                        Poser une question ou commentez cette réaction! <br>
+                        <br>
                         {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                        <div id='exp{{x.id}}comments'>
+                            Poser une question ou commentez cette réaction! <br>
                             <button class="butexp" type="button" name="exp:exp:{{x.id}}"> Commenter </button>
                             <button class="butqst" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
                             <p id="expaskform{{x.id}}"></p>
+                        </div>
                         {% else %}
+                        <div id='qst{{x.id}}comments'>
+                            Poser une question ou commentez cette réaction! <br>
                             <button class="butexp" type="button" name="qst:exp:{{x.id}}"> Commenter </button>
                             <button class="butqst" type="button" name="qst:qst:{{x.id}}">Poser votre question </button>
                             <p id="qstaskform{{x.id}}"></p>
+                        </div>
                         {% endif %}
                     {% endif %}
 
