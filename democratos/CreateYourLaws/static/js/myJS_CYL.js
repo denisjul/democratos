@@ -450,8 +450,8 @@ $(document).ready(function() {
 	            //--------------------- SET Explaination/question size ---------------------REVOIR!!!!!
 	            /*var wdth = $('#debate').width() * 0.6; 
 				$('.explaination').css('width',wdth);
-				$('.question').css('width',wdth);
-                window.history.pushState({}, "modifié","modifié") */
+				$('.question').css('width',wdth);*/
+                window.history.pushState({}, "modifié","CYL/Reflection/"+response.typeref+"/"+response.id_ref);
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);

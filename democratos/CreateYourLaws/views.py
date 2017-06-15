@@ -296,20 +296,20 @@ def In_dat_box(request):
 
 
 @login_required
-def get_reflection(request):
+def get_reflection(request, typeref=None, id_ref=None):
     """ View which display a reflection and its child
     reflections from its ID"""
     # Does the reflection extist?
-    print(request.POST)
     User = request.user
-    slug = request.POST.get('slug', None)
-    if slug is None:
-        print(request.POST)
-        typeref = request.typeref
-        id_ref = int(request.id_ref)
-    else:
-        typeref, id_ref = slug.split(sep=":")
-        id_ref = int(id_ref)
+    if request.POST:
+        slug = request.POST.get('slug', None)
+        if slug is None:
+            print(request.POST)
+            typeref = request.typeref
+            id_ref = int(request.id_ref)
+        else:
+            typeref, id_ref = slug.split(sep=":")
+            id_ref = int(id_ref)
     try:
         if typeref == 'loi':
             ref = LawArticle.objects.get(id=id_ref)
@@ -361,10 +361,16 @@ def get_reflection(request):
         listposop = list(ref.opinions.filter(positive=True))
         listnegop = list(ref.opinions.filter(positive=False))
         listpropositions = list(ref.propositions.all())
-    intro = render_to_string('intro_reflec.html', locals())
-    content = render_to_string('content_reflec.html', locals())
-    ctx = {'intro': intro, 'content': content}
-    return JsonResponse(ctx)
+    if request.POST:
+        intro = render_to_string('intro_reflec.html', locals())
+        content = render_to_string('content_reflec.html', locals())
+        ctx = {'intro': intro,
+               'content': content,
+               'typeref': typeref,
+               'id_ref': str(id_ref)}
+        return JsonResponse(ctx)
+    else:
+        return render(request, 'GetReflection.html', locals())
 
 
 def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
