@@ -23,12 +23,10 @@
                     <td class="explaination" id="exptd{{x.id}}"> 
                 {% elif x|isinst:'CreateYourLaws.models.Question' %}
                     <td class="question" id="qsttd{{x.id}}"> 
-                {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
-                    {% if x.positive %}
-                        <td class="posopinion" id="postd{{x.id}}"> 
-                    {% else %}
-                        <td class="negopinion" id="negtd{{x.id}}"> 
-                    {% endif %}
+                {% elif x|isinst:'CreateYourLaws.models.Posopinion' %}
+                    <td class="posopinion" id="postd{{x.id}}"> 
+                {% elif x|isinst:'CreateYourLaws.models.Negopinion' %}
+                    <td class="negopinion" id="negtd{{x.id}}"> 
                 {% elif x|isinst:'CreateYourLaws.models.Proposition' %}
                     <td class="proposition" id="prptd{{x.id}}"> 
                 {% endif %} 
@@ -38,8 +36,10 @@
                                 {{x.text_q|truncatewords:80}} <br/>
                             {% elif x|isinst:'CreateYourLaws.models.Explaination' %}
                                 {{x.text_exp|truncatewords:80}} <br/>
-                            {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
-                                {{x.text_op|truncatewords:80}} <br/>
+                            {% elif x|isinst:'CreateYourLaws.models.Posopinion' %}
+                                {{x.text_opp|truncatewords:80}} <br/>
+                            {% elif x|isinst:'CreateYourLaws.models.Negopinion' %}
+                                {{x.text_opn|truncatewords:80}} <br/>
                             {% elif x|isinst:'CreateYourLaws.models.Proposition' %}
                                 {{x.text_prop|truncatewords:80}} <br/>
                             {% endif %}  
@@ -48,8 +48,10 @@
                                 <strong>{{x.text_q}}</strong> <br/>
                             {% elif x|isinst:'CreateYourLaws.models.Explaination' %}
                                 <strong>{{x.text_exp}}</strong> <br/>
-                            {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
-                                <strong>{{x.text_op}}</strong> <br/>
+                            {% elif x|isinst:'CreateYourLaws.models.Posopinion' %}
+                                <strong>{{x.text_opp}}</strong> <br/>
+                            {% elif x|isinst:'CreateYourLaws.models.Negopinion' %}
+                                <strong>{{x.text_opn}}</strong> <br/>
                             {% elif x|isinst:'CreateYourLaws.models.Proposition' %}
                                 <strong>{{x.text_prop}}</strong> <br/>
                             {% endif %} 
@@ -57,7 +59,7 @@
                     <p class="count">
                     <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
                     <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
-                    {% if x|isinst:'CreateYourLaws.models.Opinion' or x|isinst:'CreateYourLaws.models.Proposition' %}
+                    {% if x|isinst:'CreateYourLaws.models.Posopinion' or x|isinst:'CreateYourLaws.models.Negopinion' or x|isinst:'CreateYourLaws.models.Proposition' %}
                         <img src="{% static 'icons/opv2.png' %}" alt="op+" class="icn"> {{x.nb_posop}}
                         <img src="{% static 'icons/opx2.png' %}" alt="op-" class="icn"> {{x.nb_negop}}
                     {% endif %}
@@ -101,7 +103,14 @@
                             <p id="expaskform{{x.id}}"></p>
                         </div>
                         {% endif %}
-                    {% elif x|isinst:'CreateYourLaws.models.Opinion' %}
+                    {% elif x|isinst:'CreateYourLaws.models.Posopinion' %}
+                        <p class="vote">
+                        <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="opp:{{x.id}}" value="UP"/>
+                        <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="opp:{{x.id}}" value="DOWN"/>
+                            note:
+                        <canvas id="donopp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                        </p>
+                    {% elif x|isinst:'CreateYourLaws.models.Negopinion' %}
                         <p class="vote">
                         <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="opn:{{x.id}}" value="UP"/>
                         <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="opn:{{x.id}}" value="DOWN"/>

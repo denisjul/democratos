@@ -1,15 +1,17 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from CreateYourLaws.models import Question, Explaination, Proposition
-from CreateYourLaws.models import Disclaim, Opinion, LawArticle
+from CreateYourLaws.models import Disclaim, Posopinion, Negopinion, LawArticle
 from CreateYourLaws.models import Note  # UserSession,
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 
 
 @receiver(post_delete, sender=Proposition)
 @receiver(post_save, sender=Proposition)
-@receiver(post_delete, sender=Opinion)
-@receiver(post_save, sender=Opinion)
+@receiver(post_delete, sender=Posopinion)
+@receiver(post_save, sender=Posopinion)
+@receiver(post_delete, sender=Negopinion)
+@receiver(post_save, sender=Negopinion)
 @receiver(post_delete, sender=Disclaim)
 @receiver(post_save, sender=Disclaim)
 @receiver(post_delete, sender=Explaination)
@@ -26,10 +28,8 @@ def autoset(sender, instance, **kwargs):
                 (type(parent) is not Proposition)):
             parent.nb_dis = parent.disclaims.count()
         else:
-            parent.nb_negop = parent.opinions.filter(
-                positive=False).count()  # A tester
-            parent.nb_posop = parent.opinions.filter(
-                positive=True).count()  # Idem
+            parent.nb_negop = parent.posopinions.count()
+            parent.nb_posop = parent.negopinions.count()
             if type(parent) is LawArticle:
                 parent.nb_prop = parent.propositions.count()
     parent.save()

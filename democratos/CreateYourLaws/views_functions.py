@@ -50,7 +50,9 @@ def get_model_type_in_str(obj):
         return 'exp'
     elif type(obj) is CreateYourLaws.models.Disclaim:
         return 'dis'
-    elif type(obj) is CreateYourLaws.models.Opinion:
+    elif type(obj) is CreateYourLaws.models.Posopinion:
+        return 'opp'
+    elif type(obj) is CreateYourLaws.models.Negopinion:
         return 'opn'
     elif type(obj) is CreateYourLaws.models.Proposition:
         return 'prp'
@@ -67,8 +69,10 @@ def get_ref_text(obj):
         return obj.text_exp
     elif type(obj) is CreateYourLaws.models.Disclaim:
         return obj.text_dis
-    elif type(obj) is CreateYourLaws.models.Opinion:
-        return obj.text_op
+    elif type(obj) is CreateYourLaws.models.Posopinion:
+        return obj.text_opp
+    elif type(obj) is CreateYourLaws.models.Negopinion:
+        return obj.text_opn
     elif type(obj) is CreateYourLaws.models.Proposition:
         return obj.text_prop
     elif type(obj) is CreateYourLaws.models.LawArticle:
@@ -84,7 +88,9 @@ def get_the_instance(obj, Id):
     elif obj == 'dis':
         return CreateYourLaws.models.Disclaim.objects.get(id=Id)
     elif obj == 'opn':
-        return CreateYourLaws.models.Opinion.objects.get(id=Id)
+        return CreateYourLaws.models.Posopinion.objects.get(id=Id)
+    elif obj == 'opn':
+        return CreateYourLaws.models.Negopinion.objects.get(id=Id)
     elif obj == 'prp':
         return CreateYourLaws.models.Proposition.objects.get(id=Id)
     elif obj == 'loi':

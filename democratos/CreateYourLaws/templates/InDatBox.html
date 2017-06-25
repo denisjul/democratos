@@ -10,7 +10,7 @@
 		<h1> Où suis-je? </h1>
 		<p> 
 		{% for x in listparents %}
-			<a href="{% url 'InDatBox' x|lookup:2 x|lookup:1 %}"><strong> {{x|lookup:0|truncatewords:4}}  </strong></a>  >>     
+			<var class= "InDatBox" name="{{x|lookup:2}}:{{x|lookup:1}}"><strong> {{x|lookup:0|truncatewords:4}}  </strong></var>  >>     
 		{% endfor %}
 		{{Box.title}}
 		</p>
@@ -26,7 +26,7 @@
 				{% for x in lqs %}
 					<li>
 				    {% if x|isinst:'CreateYourLaws.models.LawArticle' %}
-					    <div {# onclick="location.href='{% url 'reflection' 'loi' x.id %}'" #} class="IDB"><label class="suscribe" id="checkloi{{x.id}}"><input type="checkbox" name="checkloi{{x.id}}">s'abonner</label>
+					    <div class="IDB GetReflection" name="loi:{{x.id}}"><label class="suscribe" id="checkloi{{x.id}}"><input type="checkbox" name="checkloi{{x.id}}">s'abonner</label>
 					    {% autoescape off %}
 						    <strong>{{x.title}}</strong><br>
 					    	<p>{{x.text_law}}</p>
@@ -34,7 +34,7 @@
 					    {% endautoescape %}
 					    </div>
 				    {% else %}
-					    <div onclick="location.href='{% url 'InDatBox' 2 x.id %}'" class="IDB" ><label class="suscribe"><input type="checkbox" id="checkbox{{x.id}}">s'abonner</label>
+					    <div class="InDatBox" name="2:{{x.id}}"><label class="suscribe"><input type="checkbox" id="checkbox{{x.id}}">s'abonner</label>
 					    	<p style="color: navy; font-weight:bold;"><strong>{{x.title}}</strong><br/></p>
 					    </div>
 				    {% endif %}

@@ -56,8 +56,11 @@
             <section class="explaination">
                 <h1> Commentaire/explication à propos de:
         {% elif typeref == 'dis' %}
+        {% comment %}
             <section class="disclaim">
-                <h1> démentis/contradiction sur:  
+                <h1> démentis/contradiction sur:
+                {% endcomment %}
+
         {% elif typeref == 'opn' %}
             {% if ref.positive %}
                 <section class="posopinon">
@@ -115,116 +118,119 @@
                 <br><br>
                 <p class="count"> <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{ref.nb_q}}
                 <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{ref.nb_exp}} 
-                {% if typeref == 'prp' or typeref == 'loi'%}
-                    <img src="{% static 'icons/opv2.png' %}" alt="op+" class="icn"> {{ref.nb_posop}}
-                    <img src="{% static 'icons/opx2.png' %}" alt="op-" class="icn"> {{ref.nb_negop}}
-                {% endif %}
                 </p>
                 <p class="vote">
-                <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="{{typeref}}:{{ref.id}}" value="UP"/>
-                <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="{{typeref}}:{{ref.id}}" value="DOWN"/>
-                    note:
-                <canvas id="don{{typeref}}{{ref.id}}" name="{{ref.approval_ratio}}" class="donut"></canvas>
-                {% comment %}
-                <var id="{{typeref}}{{ref.id}}">{{ref.approval_ratio|floatformat:2}}</var> % d'approbation{% endcomment %}
+                    <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="{{typeref}}:{{ref.id}}" value="UP"/>
+                    <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="{{typeref}}:{{ref.id}}" value="DOWN"/>
+                        note:
+                    <canvas id="don{{typeref}}{{ref.id}}" name="{{ref.approval_ratio}}" class="donut"></canvas>
                 </p>
+                {% if typeref == 'prp' or typeref == 'loi'%}
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <article class="posopinion">
+                        <h2>Points positifs</h2>
+                        <div id="posopdiv">
+                            <table>
+                                <tbody>
+                                    {% for x in listposop %}
+                                        <tr>
+                                            <td> 
+                                                <div class='clickable GetReflection' name='opn:{{x.id}}'>
+                                                {% if x.title%}
+                                                    {{x.title}} <br/>
+                                                    {{x.text_op|truncatewords:250}} <br/>
+                                                {% else %}
+                                                    {{x.text_op}} <br/>
+                                                {% endif %}
+                                                </div>
+                                                <p class="count">
+                                                <img src="{% static 'icons/dis.png' %}" alt="dis" class="icn"> {{x.nb_dis}}
+                                                <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
+                                                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}
+                                                </p>
+                                                <p class="vote">
+                                                <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="opn:{{x.id}}" value="UP"/>
+                                                <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="opn:{{x.id}}" value="DOWN"/>
+                                                    note:
+                                                <canvas id="donopn{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                                                <p>
+                                                {% comment %}
+                                                <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation</td> {% endcomment %}
+                                        </tr>
+                                    {% empty %}
+                                        Aucun point positif n'a été relevé pour le moment sur cette réflection.<br>
+                                        Soyez le premier à en donner un!
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <p id="posopform{{typeref}}{{id_ref}}">
+                                <button class="butop+" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
+                                <form action="{% url 'PostReflection'%}" method="post" class="opnform" name="loi:op-:{{ref.id_ref}}">
+                                    {{ opform.as_p }}
+                                    <input type="hidden" name="typeform" value="op+f">
+                                    <input type="hidden" name="typeref" value="{{typeref}}">
+                                    <input type="hidden" name="ref_id" value="{{ref.id}}">
+                                    <!-- <input type="hidden" name="ref_id" value="{{ref.id}}"> -->
+                                    <button type="submit" class="posopinion" name="btnop+form">Poster le point de vue</button>
+                                </form>
+                            </p>  
+                        </div>    
+                    </article>
+
+                    <article class="negopinion">
+                        <h2>Points négatifs</h2>
+                        <div id="negopdiv">
+                            <table>
+                                <tbody>
+                                    {% for x in listnegop %}
+                                        <tr>
+                                            <td>
+                                                <div onclick="location.href='{% url 'reflection' 'opn' x.id %}'" class='clickable'>
+                                                {% if x.title%}
+                                                    {{x.title}} <br/>
+                                                    {{x.text_op|truncatewords:250}} <br/>
+                                                {% else %}
+                                                    {{x.text_op}} <br/>
+                                                {% endif %}
+                                                </div>
+                                                <p class="count">
+                                                <img src="{% static 'icons/dis.png' %}" alt="dis" class="icn"> {{x.nb_dis}}
+                                                <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
+                                                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}
+                                                </p>
+                                                <p class="vote">
+                                                <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="opn:{{x.id}}" value="UP"/>
+                                                <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="opn:{{x.id}}" value="DOWN"/>
+                                                    note:
+                                                <canvas id="donopn{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                                                </p>
+                                                {% comment %}
+                                                <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation {% endcomment %}
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        Aucun point négatif n'a été relevé pour le moment sur cette réflection.<br>
+                                        Soyez le premier à en donner un! 
+                                    {% endfor %}
+                                </tbody>
+                            </table> 
+                            <p id="negopform{{typeref}}{{id_ref}}">
+                                <button class="butop-" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
+                                <form action="{% url 'PostReflection'%}" method="post"  class="opnform" name="loi:op-:{{ref.id_ref}}">
+                                    {{ opform.as_p }}
+                                    <input type="hidden" name="typeform" value="op-f">
+                                    <input type="hidden" name="typeref" value="{{typeref}}">
+                                    <input type="hidden" name="ref_id" value="{{ref.id}}">
+                                    <button type="submit" class="negopinion" name="btnop-form">Poster le point de vue</button>
+                                </form>    
+                            </p>   
+                        </div>    
+                    </article>
+                {% endif %}
             </section>
-
-
-<!--############################################################################################
-##################################      The opinions       #####################################
-#############################################################################################-->
-    {% if typeref == 'loi' or typeref == 'prp' %}
-        <section class="opinion">
-            <div class="posopinion" id="posopdiv">
-                <h2>Points positifs</h2>
-                <p>
-                    <table>
-                        <tbody>
-                            {% for x in listposop %}
-                                <tr>
-                                    <td> 
-                                        <div class='clickable GetReflection' name='opn:{{x.id}}'>
-                                        {% if x.title%}
-                                            {{x.title}} <br/>
-                                            {{x.text_op|truncatewords:250}} <br/>
-                                        {% else %}
-                                            {{x.text_op}} <br/>
-                                        {% endif %}
-                                        </div>
-                                        <p class="count">
-                                        <img src="{% static 'icons/dis.png' %}" alt="dis" class="icn"> {{x.nb_dis}}
-                                        <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
-                                        <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}
-                                        </p>
-                                        <p class="vote">
-                                        <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="opn:{{x.id}}" value="UP"/>
-                                        <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="opn:{{x.id}}" value="DOWN"/>
-                                            note:
-                                        <canvas id="donopn{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                                        <p>
-                                        {% comment %}
-                                        <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation</td> {% endcomment %}
-                                </tr>
-                            {% empty %}
-                                Aucun point positif n'a été relevé pour le moment sur cette réflection.<br>
-                                Soyez le premier à en donner un!
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </p>    
-            </div>
-
-            <div class="negopinion" id="negopdiv">
-                <h2>Points négatifs</h2>
-                <p>
-                    <table>
-                        <tbody>
-                            {% for x in listnegop %}
-                                <tr>
-                                    <td>
-                                        <div onclick="location.href='{% url 'reflection' 'opn' x.id %}'" class='clickable'>
-                                        {% if x.title%}
-                                            {{x.title}} <br/>
-                                            {{x.text_op|truncatewords:250}} <br/>
-                                        {% else %}
-                                            {{x.text_op}} <br/>
-                                        {% endif %}
-                                        </div>
-                                        <p class="count">
-                                        <img src="{% static 'icons/dis.png' %}" alt="dis" class="icn"> {{x.nb_dis}}
-                                        <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
-                                        <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}
-                                        </p>
-                                        <p class="vote">
-                                        <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="opn:{{x.id}}" value="UP"/>
-                                        <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="opn:{{x.id}}" value="DOWN"/>
-                                            note:
-                                        <canvas id="donopn{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                                        </p>
-                                        {% comment %}
-                                        <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation {% endcomment %}
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                Aucun point négatif n'a été relevé pour le moment sur cette réflection.<br>
-                                Soyez le premier à en donner un! 
-                            {% endfor %}
-                        </tbody>
-                    </table>    
-                </p>    
-            </div>
-
-            <button class="butopn" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
-                <form action="{% url 'PostReflection'%}" method="post" id="opnform" name="loi:{{ref.id_ref}}">
-                    {{ opform.as_p }}
-                    <input type="hidden" name="typeform" value="opnf">
-                    <input type="hidden" name="typeref" value="{{typeref}}">
-                    <input type="hidden" name="ref_id" value="{{ref.id}}">
-                    <button type="submit" class="butopn" name="btnopform">Poster le point de vue</button>
-                </form>           
-        </section>
-    {% endif %}
 
 <!--############################################################################################
 ################################      The propositions       ###################################

@@ -11,13 +11,13 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.contenttypes.models import ContentType
 from CreateYourLaws.models import LawCode, LawArticle
-from CreateYourLaws.models import CodeBlock, Question, Disclaim
-from CreateYourLaws.models import Explaination, Opinion, Proposition
+from CreateYourLaws.models import CodeBlock, Question, Disclaim, Negopinion
+from CreateYourLaws.models import Explaination, Posopinion, Proposition
 from CreateYourLaws.models import Note
 from CreateYourLaws.forms import QuestionForm, Create_CYL_UserForm
 from CreateYourLaws.forms import PropositionForm, Del_account_form
-from CreateYourLaws.forms import ExplainationForm, OpinionForm, DisclaimForm
-from CreateYourLaws.forms import Info_Change_Form
+from CreateYourLaws.forms import ExplainationForm, PosopinionForm
+from CreateYourLaws.forms import Info_Change_Form, NegopinionForm
 from CreateYourLaws.views_functions import get_path, get_the_instance
 from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
@@ -261,11 +261,12 @@ def view_profile(request, set_var="info"):
 
 
 @login_required
-def In_dat_box(request):
+def In_dat_box(request, box_type=None, box_id=None):
     """ List the blocks or articles contained in a law code or boxe """
-    slug = request.POST.get('slug', None)
-    box_type, box_id = slug.split(sep=":")
-    box_id = int(box_id)
+    if request.POST:
+        slug = request.POST.get('slug', None)
+        box_type, box_id = slug.split(sep=":")
+        box_id = int(box_id)
     if box_type == '1':
         lqs = list(
             LawArticle.objects.filter(law_code=box_id,
@@ -289,10 +290,16 @@ def In_dat_box(request):
         parent = Box.law_code
         listparents.append((parent.title, parent.id, 1))
         listparents.reverse()
-    intro = render_to_string('intro_InDatBox.html', locals())
-    content = render_to_string('content_InDatBox.html', locals())
-    ctx = {'intro': intro, 'content': content}
-    return JsonResponse(ctx)
+    if request.POST:
+        intro = render_to_string('intro_InDatBox.html', locals())
+        content = render_to_string('content_InDatBox.html', locals())
+        ctx = {'intro': intro,
+               'content': content,
+               'box_type': str(box_type),
+               'box_id': box_id}
+        return JsonResponse(ctx)
+    else:
+        return render(request, 'InDatBox.html', locals())
 
 
 @login_required
@@ -319,8 +326,10 @@ def get_reflection(request, typeref=None, id_ref=None):
             ref = Explaination.objects.get(id=id_ref)
         elif typeref == 'dis':
             ref = Disclaim.objects.get(id=id_ref)
+        elif typeref == 'opp':
+            ref = Posopinion.objects.get(id=id_ref)
         elif typeref == 'opn':
-            ref = Opinion.objects.get(id=id_ref)
+            ref = Negopinion.objects.get(id=id_ref)
         elif typeref == 'prp':
             ref = Proposition.objects.get(id=id_ref)
     except Exception:
@@ -345,7 +354,8 @@ def get_reflection(request, typeref=None, id_ref=None):
     # forms initializations
     qstform = QuestionForm()
     expform = ExplainationForm()
-    opnform = OpinionForm()
+    oppform = PosopinionForm()
+    opnform = NegopinionForm()
     prpform = PropositionForm()
     # load all the disclaims, other proposions, opinions, comments and
     # questions about the reflection
@@ -358,8 +368,8 @@ def get_reflection(request, typeref=None, id_ref=None):
     if typeref == 'exp' or typeref == 'opn' or typeref == 'dis':
         listdisclaims = list(ref.disclaims.all())
     if typeref == 'loi' or typeref == 'prp':
-        listposop = list(ref.opinions.filter(positive=True))
-        listnegop = list(ref.opinions.filter(positive=False))
+        listposop = list(ref.posopinions.all())
+        listnegop = list(ref.negopinions.all())
         listpropositions = list(ref.propositions.all())
     if request.POST:
         intro = render_to_string('intro_reflec.html', locals())
@@ -385,7 +395,9 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     elif typeref == 'exp':
         ref = Explaination.objects.get(id=id_ref)
     elif typeref == 'opn':
-        ref = Opinion.objects.get(id=id_ref)
+        ref = Posopinion.objects.get(id=id_ref)
+    elif typeref == 'opp':
+        ref = Negopinion.objects.get(id=id_ref)
     elif typeref == 'loi':
             ref = LawArticle.objects.get(id=id_ref)
     else:
@@ -434,20 +446,35 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     # ####################  OpinionForm #########################
     #      <---- Revoir si séparer Posop et Negop
     elif request.method == 'POST' and typeform == 'opnf':
-        opnform = OpinionForm(request.POST)
+        opnform = NegopinionForm(request.POST)
         if opnform.is_valid():
             pos = opnform.cleaned_data['positive']
             optitle = opnform.cleaned_data['title']
             opin = opnform.cleaned_data['text_op']
-            op = Opinion.objects.create(text_op=opin,
-                                        title=optitle,
-                                        positive=pos,
-                                        autor=User,
-                                        content_object=ref)
-            if op.pos:
-                listref = list(ref.opinions.filter(positive=True))
-            else:
-                listref = list(ref.opinions.filter(positive=True))
+            op = Negopinion.objects.create(text_op=opin,
+                                           title=optitle,
+                                           positive=pos,
+                                           autor=User,
+                                           content_object=ref)
+            listref = list(ref.negopinions.all())
+            NewSection = render_to_string('UpSection.html', locals())
+            ctx = {'reflection': NewSection,
+                   'section_type': "opn",
+                   'tdid': ""}
+            op.save()
+
+    elif request.method == 'POST' and typeform == 'oppf':
+        oppform = PosopinionForm(request.POST)
+        if oppform.is_valid():
+            pos = oppform.cleaned_data['positive']
+            optitle = oppform.cleaned_data['title']
+            opin = oppform.cleaned_data['text_op']
+            op = Posopinion.objects.create(text_op=opin,
+                                           title=optitle,
+                                           positive=pos,
+                                           autor=User,
+                                           content_object=ref)
+            listref = list(ref.posopinions.all())
             NewSection = render_to_string('UpSection.html', locals())
             ctx = {'reflection': NewSection,
                    'section_type': "opn",
@@ -490,12 +517,10 @@ def list_of_reflections(request, parent_type, parent_id, list_ref_type):
         list_to_display = list(parent.explainations.all())
     elif list_ref_type == 'dis':
         list_to_display = list(parent.disclaims.all())
-    elif list_ref_type == 'opv':
-        list_to_display = list(parent.opinions.filter(positive=True))
-        positif = True
-    elif list_ref_type == 'opx':
-        list_to_display = list(parent.opinions.filter(positive=False))
-        positif = False
+    elif list_ref_type == 'opp':
+        list_to_display = list(parent.posopinions.all())
+    elif list_ref_type == 'opn':
+        list_to_display = list(parent.negopinions.all())
     elif list_ref_type == 'prp':
         list_to_display = list(parent.propositions.all())
     return render(request, 'displaylist.html', locals())
@@ -548,8 +573,10 @@ def GetForm(request):
         ref = Question.objects.get(id=id_ref)
     elif typeref == 'exp':
         ref = Explaination.objects.get(id=id_ref)
+    elif typeref == 'opp':
+        ref = Posopinion.objects.get(id=id_ref)
     elif typeref == 'opn':
-        ref = Opinion.objects.get(id=id_ref)
+        ref = Negopinion.objects.get(id=id_ref)
     elif typeref == 'loi':
             ref = LawArticle.objects.get(id=id_ref)
     elif typeref == 'prp':

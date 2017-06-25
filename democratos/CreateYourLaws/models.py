@@ -95,9 +95,18 @@ class Explaination(Reflection):
     nb_dis = models.IntegerField(default=0)
 
 
-class Opinion(Reflection):
-    text_op = RichTextField()
-    positive = models.BooleanField()
+class Posopinion(Reflection):
+    text_opp = RichTextField()
+    questions = GenericRelation(Question)
+    explainations = GenericRelation(Explaination)
+    disclaims = GenericRelation(Disclaim)
+    nb_exp = models.IntegerField(default=0)
+    nb_q = models.IntegerField(default=0)
+    nb_dis = models.IntegerField(default=0)
+
+
+class Negopinion(Reflection):
+    text_opn = RichTextField()
     questions = GenericRelation(Question)
     explainations = GenericRelation(Explaination)
     disclaims = GenericRelation(Disclaim)
@@ -111,7 +120,8 @@ class Proposition(Reflection):
     law_article = models.ForeignKey('LawArticle', on_delete=models.CASCADE)
     questions = GenericRelation(Question)
     explainations = GenericRelation(Explaination)
-    opinions = GenericRelation(Opinion)
+    posopinions = GenericRelation(Posopinion)
+    negopinions = GenericRelation(Negopinion)
     propositions = GenericRelation('self')
     nb_exp = models.IntegerField(default=0)
     nb_q = models.IntegerField(default=0)
@@ -136,7 +146,8 @@ class LawArticle(Reflection):
     updated = models.BooleanField(default='True')
     questions = GenericRelation(Question)
     explainations = GenericRelation(Explaination)
-    opinions = GenericRelation(Opinion)
+    posopinions = GenericRelation(Posopinion)
+    negopinions = GenericRelation(Negopinion)
     propositions = GenericRelation(Proposition)
     nb_exp = models.IntegerField(default=0)
     nb_q = models.IntegerField(default=0)

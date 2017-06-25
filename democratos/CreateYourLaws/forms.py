@@ -8,7 +8,8 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.contrib.auth.forms import UserCreationForm
 from registration.forms import RegistrationFormUniqueEmail
 from CreateYourLaws.models import LawArticle, Explaination, Proposition
-from CreateYourLaws.models import Opinion, Disclaim, Question, CYL_user
+from CreateYourLaws.models import Posopinion, Negopinion, Question, CYL_user
+# Disclaim
 from ckeditor.widgets import CKEditorWidget
 
 
@@ -154,7 +155,7 @@ class ExplainationForm(forms.ModelForm):
     class Meta:
         model = Explaination
         fields = ('title', 'text_exp')
-        labels = {'title': ("Titre (Décrivez votre idée en quelques mots. max 200 charactères):"),
+        labels = {'title': ("Titre (Décrivez votre idée en quelques mots):"),
                   'text_exp': ('Développez votre commentaire')}
         widgets = {
             'title': forms.TextInput(attrs={'size': 140}),
@@ -170,7 +171,7 @@ class ExplainationForm(forms.ModelForm):
                            'Titre nécessaire car votre commentaire est long')
         return cleaned_data
 
-
+"""
 class DisclaimForm(forms.ModelForm):
     class Meta:
         model = Disclaim
@@ -180,24 +181,30 @@ class DisclaimForm(forms.ModelForm):
         widgets = {
             'text_dis': CKEditorWidget()
         }
+"""
 
 
-POSITIVE_CHOICE = (
-    ('1', 'positif'),
-    ('0', 'négatif')
-)
-
-
-class OpinionForm(forms.ModelForm):
+class PosopinionForm(forms.ModelForm):
     class Meta:
-        model = Opinion
-        fields = ('positive', 'title', 'text_op')
+        model = Posopinion
+        fields = ('title', 'text_opp')
         labels = {'title': ('En quelques mots...'),
-                  'text_op': ("Votre opinion:"),
-                  'positive': ("catégorie de l'opinion")}
+                  'text_opp': ("Votre opinion:"),
+                  }
         widgets = {
-            'positive': forms.RadioSelect(choices=POSITIVE_CHOICE),
-            'text_op': CKEditorWidget()
+            'text_opp': CKEditorWidget()
+        }
+
+
+class NegopinionForm(forms.ModelForm):
+    class Meta:
+        model = Negopinion
+        fields = ('title', 'text_opn')
+        labels = {'title': ('En quelques mots...'),
+                  'text_opn': ("Votre opinion:"),
+                  }
+        widgets = {
+            'text_opn': CKEditorWidget()
         }
 
 

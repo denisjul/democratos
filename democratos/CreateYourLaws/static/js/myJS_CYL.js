@@ -104,19 +104,28 @@ var DonutChart = function (canvas, radius, lineWidth, arraySlices, label) {
 // ######################### functions ############################
 
 function Setbutform(){ 
-	$("#opnform").css('display','none');
+	$("#oppform").css('display','none');
+    $("#opnform").css('display','none');
 	$("#expform").css('display','none');
 	$("#qstform").css('display','none');
 	$("#prpform").css('display','none');
 
-	$(".butopn").click(function(event) {
-		if ( $("#opnform").css('display') == 'none' ){
-		    $("#opnform").css('display','block');
+	$(".butopp").click(function(event) {
+		if ( $("#oppform").css('display') == 'none' ){
+		    $("#oppform").css('display','block');
 		}
 		else{
-			$("#opnform").css('display','none');
+			$("#oppform").css('display','none');
 		}
 	});
+    $(".butopn").click(function(event) {
+        if ( $("#opnform").css('display') == 'none' ){
+            $("#opnform").css('display','block');
+        }
+        else{
+            $("#opnform").css('display','none');
+        }
+    });
 	$(".butexp").click(function(event) {
 		if ( $("#expform").css('display') == 'none' ){
 		    $("#expform").css('display','block');
@@ -423,6 +432,7 @@ $(document).ready(function() {
 	            $("#intro").html(response.intro);
 	            $("#content").html(response.content);
 	            $('html,body').scrollTop(0);
+                window.history.pushState({}, "InDatBox/"+response.type_box+"/"+response.box_id,"/CYL/InDatBox/"+response.type_box+"/"+response.box_id);
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);
@@ -438,20 +448,20 @@ $(document).ready(function() {
 	        data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
 	        dataType: "json",
 	        success: function(response) {
-	        	loadckeditorJS();
 	            $("#intro").html(response.intro);
 	            $("#content").html(response.content);
 	            Setbutform();
 	            SetDonuts();
 	            $('html,body').scrollTop(0);
+                loadckeditorJS();
+                /*
+                $( 'textarea').each( function() {
+                    CKEDITOR.replace( $(this).attr('id') );
+                }); */
 	            $('form').each(function(){
 	            	SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
 	            });
-	            //--------------------- SET Explaination/question size ---------------------REVOIR!!!!!
-	            /*var wdth = $('#debate').width() * 0.6; 
-				$('.explaination').css('width',wdth);
-				$('.question').css('width',wdth);*/
-                window.history.pushState({}, "modifié","CYL/Reflection/"+response.typeref+"/"+response.id_ref);
+                window.history.pushState({}, "Reflection/"+response.typeref+"/"+response.id_ref,"/CYL/Reflection/"+response.typeref+"/"+response.id_ref);
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);
