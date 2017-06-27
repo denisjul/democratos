@@ -448,36 +448,32 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     elif request.method == 'POST' and typeform == 'opnf':
         opnform = NegopinionForm(request.POST)
         if opnform.is_valid():
-            pos = opnform.cleaned_data['positive']
             optitle = opnform.cleaned_data['title']
-            opin = opnform.cleaned_data['text_op']
-            op = Negopinion.objects.create(text_op=opin,
+            opin = opnform.cleaned_data['text_opn']
+            op = Negopinion.objects.create(text_opn=opin,
                                            title=optitle,
-                                           positive=pos,
                                            autor=User,
                                            content_object=ref)
             listref = list(ref.negopinions.all())
             NewSection = render_to_string('UpSection.html', locals())
             ctx = {'reflection': NewSection,
-                   'section_type': "opn",
+                   'section_type': "opp",
                    'tdid': ""}
             op.save()
 
     elif request.method == 'POST' and typeform == 'oppf':
         oppform = PosopinionForm(request.POST)
         if oppform.is_valid():
-            pos = oppform.cleaned_data['positive']
             optitle = oppform.cleaned_data['title']
-            opin = oppform.cleaned_data['text_op']
-            op = Posopinion.objects.create(text_op=opin,
+            opin = oppform.cleaned_data['text_opp']
+            op = Posopinion.objects.create(text_opp=opin,
                                            title=optitle,
-                                           positive=pos,
                                            autor=User,
                                            content_object=ref)
             listref = list(ref.posopinions.all())
             NewSection = render_to_string('UpSection.html', locals())
             ctx = {'reflection': NewSection,
-                   'section_type': "opn",
+                   'section_type': "opp",
                    'tdid': ""}
             op.save()
 

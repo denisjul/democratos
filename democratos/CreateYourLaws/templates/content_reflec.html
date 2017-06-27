@@ -100,14 +100,15 @@
                     <br>
                     <br>
                     <br>
-                    <article class="posopinion">
+                    <hr>
+                    <article class="Bigposopinion">
                         <h2>Points positifs</h2>
                         <div id="posopdiv">
                             <table>
                                 <tbody>
                                     {% for x in listposop %}
                                         <tr>
-                                            <td> 
+                                            <td class="posopinion"> 
                                                 <div class='clickable GetReflection' name='opn:{{x.id}}'>
                                                 {% if x.title%}
                                                     {{x.title}} <br/>
@@ -116,23 +117,22 @@
                                                     {{x.text_op}} <br/>
                                                 {% endif %}
                                                 </div>
-                                                <p class="count">
-                                                <img src="{% static 'icons/dis.png' %}" alt="dis" class="icn"> {{x.nb_dis}}
+                                                <hr>
+                                                <div class="count">
                                                 <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
                                                 <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}
-                                                </p>
-                                                <p class="vote">
+                                                </div>
+                                                <div class="vote">
                                                 <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="opn:{{x.id}}" value="UP"/>
                                                 <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="opn:{{x.id}}" value="DOWN"/>
                                                     note:
                                                 <canvas id="donopn{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                                                <p>
+                                                </div>
                                                 {% comment %}
                                                 <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation</td> {% endcomment %}
                                         </tr>
                                     {% empty %}
-                                        Aucun point positif n'a été relevé pour le moment sur cette réflection.<br>
-                                        Soyez le premier à en donner un!
+                                        Aucun point positif n'a été relevé pour le moment sur cette réflection. Soyez le premier à en donner un!
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -149,13 +149,13 @@
                         </div>    
                     </article>
 
-                    <article class="negopinion">
+                    <article class="Bignegopinion">
                         <h2>Points négatifs</h2>
                             <table>
                                 <tbody>
                                     {% for x in listnegop %}
                                         <tr>
-                                            <td>
+                                            <td class="negopinion">
                                                 <div onclick="location.href='{% url 'reflection' 'opn' x.id %}'" class='clickable'>
                                                 {% if x.title%}
                                                     {{x.title}} <br/>
@@ -164,24 +164,23 @@
                                                     {{x.text_op}} <br/>
                                                 {% endif %}
                                                 </div>
-                                                <p class="count">
-                                                <img src="{% static 'icons/dis.png' %}" alt="dis" class="icn"> {{x.nb_dis}}
+                                                <hr>
+                                                <div class="count">
                                                 <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
                                                 <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}
-                                                </p>
-                                                <p class="vote">
+                                                </div>
+                                                <div class="vote">
                                                 <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="opn:{{x.id}}" value="UP"/>
                                                 <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="opn:{{x.id}}" value="DOWN"/>
                                                     note:
                                                 <canvas id="donopn{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                                                </p>
+                                                </div>
                                                 {% comment %}
                                                 <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation {% endcomment %}
                                             </td>
                                         </tr>
                                     {% empty %}
-                                        Aucun point négatif n'a été relevé pour le moment sur cette réflection.<br>
-                                        Soyez le premier à en donner un! 
+                                        Aucun point négatif n'a été relevé pour le moment sur cette réflection. Soyez le premier à en donner un! 
                                     {% endfor %}
                                 </tbody>
                             </table> 
@@ -205,13 +204,13 @@
     {% if typeref == 'loi' or typeref == 'prp' %}
     <hr>
 
-        <section class="proposition" id="propsection">
+        <section class="Bigproposition" id="propsection">
             <h2>Autres propositions de lois pour cette réflection</h2>
             <table>
                 <tbody>
                     {% for x in listpropositions %}
                         <tr>
-                            <td>
+                            <td class="proposition" >
                                 <div class="IDB GetReflection" name="prp:{{x.id}}">
                                     {% if x.title %}
                                         <strong>{{x.title}}</strong> <br/>
@@ -220,18 +219,19 @@
                                         <strong>{{x.text_prop}}</strong> <br/>
                                     {% endif %}
                                 </div>
-                                <p class="count">
+                                <hr>
+                                <div class="count">
                                 <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
                                 <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
                                 <img src="{% static 'icons/opv2.png' %}" alt="opp" class="icn"> {{x.nb_posop}}
                                 <img src="{% static 'icons/opx2.png' %}" alt="opn" class="icn"> {{x.nb_negop}}
-                                </p>
-                                <p class="vote">
+                                </div>
+                                <div class="vote">
                                 <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="prp:{{x.id}}" value="UP"/>
                                 <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="prp:{{x.id}}" value="DOWN"/>
                                     note:
                                 <canvas id="donprp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                                </p>
+                                </div>
                             </td>                   
                         </tr>
                     {% empty %}
@@ -278,12 +278,13 @@
                         {% else %}
                             <strong>{{x.text_q}}</strong> <br/>
                         {% endif %}
-                {% endif %}                    
-                <p class="count">
+                {% endif %}  
+                <hr>                  
+                <div class="count">
                     <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
                     <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
-                </p>
-                <p class="vote">
+                </div>
+                <div class="vote">
                 {% if x|isinst:'CreateYourLaws.models.Explaination' %}   
                     <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="exp:{{x.id}}" value="UP"/>
                     <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="exp:{{x.id}}" value="DOWN"/>
@@ -295,7 +296,7 @@
                     note:
                     <canvas id="donqst{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
                 {% endif %}
-                </p>
+                </div>
                 <br>
                 <br>
                 <br>
