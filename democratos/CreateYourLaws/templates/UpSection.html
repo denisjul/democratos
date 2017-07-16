@@ -144,7 +144,23 @@
         <button type="submit" class="butprp" name="prpform">Poster votre proposition </button>
     </form> 
 {% elif typeform == "opn" %}
-    Faut finir ici
+        <button class="butprp" type="button">donner un point positif qu'apporte cette loi</button>
+    <form action="{% url 'PostReflection'%}"  method="post" id="prpform">
+        {{ prpform.as_p }} 
+        <input type="hidden" name="typeform" value="prpf">
+        <input type="hidden" name="typeref" value="{{typeref}}">
+        <input type="hidden" name="ref_id" value="{{ref.id}}">
+        <button type="submit" class="butprp" name="prpform">Poster</button>
+    </form> 
+{% elif typeform == "opp" %}
+    <button class="butprp" type="button">donner un point négatif qu'engendre cette loi</button>
+    <form action="{% url 'PostReflection'%}"  method="post" id="prpform">
+        {{ prpform.as_p }} 
+        <input type="hidden" name="typeform" value="prpf">
+        <input type="hidden" name="typeref" value="{{typeref}}">
+        <input type="hidden" name="ref_id" value="{{ref.id}}">
+        <button type="submit" class="butprp" name="prpform">Poster</button>
+    </form> 
 {% endif %}
 
 {% comment %}

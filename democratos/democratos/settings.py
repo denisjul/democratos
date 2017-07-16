@@ -75,6 +75,13 @@ TEMPLATES = [
     },
 ]
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'xapian_backend.XapianEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'xapian_index')
+    },
+}
+
 WSGI_APPLICATION = 'democratos.wsgi.application'
 
 

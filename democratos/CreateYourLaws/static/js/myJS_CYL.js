@@ -432,7 +432,8 @@ $(document).ready(function() {
 	            $("#intro").html(response.intro);
 	            $("#content").html(response.content);
 	            $('html,body').scrollTop(0);
-                window.history.pushState({}, "InDatBox/"+response.type_box+"/"+response.box_id,"/CYL/InDatBox/"+response.type_box+"/"+response.box_id);
+                alert(response.box_type + "   "+ response.box_id)
+                window.history.pushState({}, "InDatBox/"+response.box_type+"/"+response.box_id,"/CYL/InDatBox/"+response.box_type+"/"+response.box_id);
 	        },
 	        error: function(rs, e) {
 	            alert(rs.responseText);

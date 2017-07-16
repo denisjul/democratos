@@ -296,7 +296,7 @@ def In_dat_box(request, box_type=None, box_id=None):
         ctx = {'intro': intro,
                'content': content,
                'box_type': str(box_type),
-               'box_id': box_id}
+               'box_id': str(box_id)}
         return JsonResponse(ctx)
     else:
         return render(request, 'InDatBox.html', locals())
