@@ -245,9 +245,117 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
     });
 }
 
+// #################  AJAX, Back and Forward ##########################
+
+// revoir pilot et InDatbox pushState
+
+window.histstate = {pop:false, hash: false, pilot: false};
+
+var popstatehaspoped = new Event("popstatehaspoped", {"bubbles":true, "cancelable":true});
+
+window.addEventListener("popstatehaspoped",function(e){
+    popstatehaspoped.stopPropagation();
+    setTimeout(isbackorforward, 100);
+});
+
+function isbackorforward(){
+    if (window.histstate.pop){
+        if (window.histstate.hash){
+            window.histstate.hash = false;
+            window.histstate.pop = false;
+            /*try{
+                window.histstate.pilot = true;
+                history.forward();
+                console.log("Go forward")
+                GoAjax(history.state.url, history.state.slug, false);
+            }
+            catch (e){
+                console.log("Ajax in progress or no forward possible");
+            }*/
+            //window.histstate.pilot = false;
+        }
+        else{
+            window.histstate.pop = false; 
+            console.log("on back    ", window.histstate)
+            //window.histstate.pilot = true; 
+            history.back();
+            GoAjax(history.state.url, history.state.slug, false);
+            //window.histstate.pilot = false;
+        } 
+    }
+} 
+
+window.addEventListener("hashchange",function(e){
+    //if (!e.target.histstate.pilot){
+    e.target.histstate.hash = true;
+    //console.log("hashchange: ", e.target.histstate.hash);
+    /*}
+    else{
+        e.target.histstate.pilot = false;
+    }*/
+});
+
+
+window.addEventListener("popstate",function(e){
+    if (!e.target.histstate.pilot){
+        e.target.histstate.pop = true; 
+        //console.log("popstate: ", e.target.histstate.pop);
+        document.dispatchEvent(popstatehaspoped)
+    }
+    else{
+        e.target.histstate.pilot = false;
+    }
+}); 
+
+function GoAjax(url, slug, push) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: {'slug': slug ,csrfmiddlewaretoken: csrftoken},
+        dataType: "json",
+        success: function(response) {
+            $("#intro").html(response.intro);
+            $("#content").html(response.content);
+             $('html,body').scrollTop(0);
+            if (url == "/CYL/InDatBox"){ 
+                //alert(response.box_type + "   "+ response.box_id)
+            }
+            else{
+                Setbutform();
+                SetDonuts();
+                loadckeditorJS();
+                /*
+                $('textarea').each( function() {
+                    CKEDITOR.replace( $(this).attr('id') );
+                }); */
+                $('form').each(function(){
+                    SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
+                });
+            }
+            // need a pushState if not Back or Forward
+            if (push){
+                if (url == "/CYL/InDatBox"){
+                    window.history.pushState({url: url,slug: slug}, null, url + "/" + response.box_type + "/" + response.box_id);
+                }
+                else{
+                    window.history.pushState({url: url,slug: slug}, null, url + response.typeref + "/" + response.id_ref);
+                }
+            }
+        },
+        error: function(rs, e) {
+            alert(rs.responseText);
+        }
+    });
+}
+
+
 // ##########################  MAIN   #############################
 
+
+
 $(document).ready(function() {
+    console.log("doc ready");
+
 	// preload icons for JStree?????
 
 	// -------------Displaying Forms for q,exp,op etc. -------------
@@ -423,51 +531,16 @@ $(document).ready(function() {
 	
     // --------------- Box loading AJAX -----------------------
     $("body").on("click",".InDatBox",function(){
-	 	$.ajax({
-	        type: "POST",
-	        url: '/CYL/InDatBox',
-	        data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
-	        dataType: "json",
-	        success: function(response) {
-	            $("#intro").html(response.intro);
-	            $("#content").html(response.content);
-	            $('html,body').scrollTop(0);
-                alert(response.box_type + "   "+ response.box_id)
-                window.history.pushState({}, "InDatBox/"+response.box_type+"/"+response.box_id,"/CYL/InDatBox/"+response.box_type+"/"+response.box_id);
-	        },
-	        error: function(rs, e) {
-	            alert(rs.responseText);
-	        }
-	    });
+        var url = '/CYL/InDatBox';
+        var slug = $(this).attr('name');
+        GoAjax(url,slug,true);
 	});
 
 	// --------------- Reflection  loading AJAX -------------------
     $("body").on("click",".GetReflection",function(){
-	 	$.ajax({
-	        type: "POST",
-	        url: '/CYL/reflection',
-	        data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
-	        dataType: "json",
-	        success: function(response) {
-	            $("#intro").html(response.intro);
-	            $("#content").html(response.content);
-	            Setbutform();
-	            SetDonuts();
-	            $('html,body').scrollTop(0);
-                loadckeditorJS();
-                /*
-                $( 'textarea').each( function() {
-                    CKEDITOR.replace( $(this).attr('id') );
-                }); */
-	            $('form').each(function(){
-	            	SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
-	            });
-                window.history.pushState({}, "Reflection/"+response.typeref+"/"+response.id_ref,"/CYL/Reflection/"+response.typeref+"/"+response.id_ref);
-	        },
-	        error: function(rs, e) {
-	            alert(rs.responseText);
-	        }
-	    });
+        var url = '/CYL/reflection';
+        var slug = $(this).attr('name');
+        GoAjax(url,slug,true);
 	});
    	//---------------------  Get Child comments---------------------
     $("body").on("click", ".GetDebateChild",function(){
