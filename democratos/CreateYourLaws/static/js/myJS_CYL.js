@@ -249,7 +249,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
 
 // revoir pilot et InDatbox pushState
 
-window.histstate = {pop:false, hash: false, pilot: false};
+window.histstate = {pop:false, hash: false, lastref:false};
 
 var popstatehaspoped = new Event("popstatehaspoped", {"bubbles":true, "cancelable":true});
 
@@ -263,51 +263,49 @@ function isbackorforward(){
         if (window.histstate.hash){
             window.histstate.hash = false;
             window.histstate.pop = false;
-            /*try{
-                window.histstate.pilot = true;
+            if (window.histstate.lastref && location.href.charAt(location.href.length - 1) == "#"){
                 history.forward();
-                console.log("Go forward")
-                GoAjax(history.state.url, history.state.slug, false);
+                console.log(location.href.slice(0,37));
+                if (location.href.slice(0,37) == "http://127.0.0.1:8000/CYL/reflection/"){
+                    window.histstate.lastref = true;
+                }
+                else{
+                    window.histstate.lastref = false;
+                }                
             }
-            catch (e){
-                console.log("Ajax in progress or no forward possible");
-            }*/
-            //window.histstate.pilot = false;
         }
         else{
             window.histstate.pop = false; 
-            console.log("on back    ", window.histstate)
-            //window.histstate.pilot = true; 
-            history.back();
-            GoAjax(history.state.url, history.state.slug, false);
-            //window.histstate.pilot = false;
+            console.log("on back    ", window.histstate,"   ", location.href)
+            if (location.href.charAt(location.href.length - 1) == "#"){
+                history.back();                
+            }
+            try{
+                GoAjax(history.state.url, history.state.slug, false);
+            }
+            catch (e){
+                GoAjax('/', null, false);
+            }
         } 
     }
 } 
 
+// http://127.0.0.1:8000/CYL/reflection/
+
 window.addEventListener("hashchange",function(e){
-    //if (!e.target.histstate.pilot){
     e.target.histstate.hash = true;
-    //console.log("hashchange: ", e.target.histstate.hash);
-    /*}
-    else{
-        e.target.histstate.pilot = false;
-    }*/
+    console.log("hashchange: ", e.target.histstate.hash);
 });
 
 
 window.addEventListener("popstate",function(e){
-    if (!e.target.histstate.pilot){
-        e.target.histstate.pop = true; 
-        //console.log("popstate: ", e.target.histstate.pop);
-        document.dispatchEvent(popstatehaspoped)
-    }
-    else{
-        e.target.histstate.pilot = false;
-    }
+    e.target.histstate.pop = true; 
+    console.log("popstate: ", e.target.histstate.pop);
+    document.dispatchEvent(popstatehaspoped)
 }); 
 
 function GoAjax(url, slug, push) {
+    console.log(url);
     $.ajax({
         type: "POST",
         url: url,
@@ -316,9 +314,9 @@ function GoAjax(url, slug, push) {
         success: function(response) {
             $("#intro").html(response.intro);
             $("#content").html(response.content);
-             $('html,body').scrollTop(0);
+            $('html,body').scrollTop(0);
             if (url == "/CYL/InDatBox"){ 
-                //alert(response.box_type + "   "+ response.box_id)
+                console.log("InDatbox");
             }
             else{
                 Setbutform();
@@ -336,13 +334,16 @@ function GoAjax(url, slug, push) {
             if (push){
                 if (url == "/CYL/InDatBox"){
                     window.history.pushState({url: url,slug: slug}, null, url + "/" + response.box_type + "/" + response.box_id);
+                    window.histstate.lastref = false;
                 }
                 else{
-                    window.history.pushState({url: url,slug: slug}, null, url + response.typeref + "/" + response.id_ref);
+                    window.history.pushState({url: url,slug: slug}, null, url + "/" + response.typeref + "/" + response.id_ref);
+                    window.histstate.lastref = true;
                 }
             }
         },
         error: function(rs, e) {
+            console.log("erreur");
             alert(rs.responseText);
         }
     });

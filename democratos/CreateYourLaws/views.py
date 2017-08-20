@@ -29,7 +29,14 @@ def home(request):
     """ Exemple de page HTML, non valide pour que l'exemple soit concis """
     qs = LawCode.objects.all()
     lqs = list(qs)
-    return render(request, 'home.html', locals())
+    if request.POST:
+        intro = render_to_string('home_intro.html', locals())
+        content = render_to_string('home_content.html', locals())
+        ctx = {'intro': intro,
+               'content': content}
+        return JsonResponse(ctx)
+    else:
+        return render(request, 'home.html', locals())
 
 
 # ################################# nav JStree ################################
