@@ -595,6 +595,23 @@ def GetForm(request):
 
 
 @login_required
+def ModifyReflection():
+    """ Enable an Autor to modify his own reflection content once posted"""
+    pass
+
+
+@login_required
+def DeleteReflection(request):
+    """ Enable the Autor or the comunity to delete a comment """
+    typeref = request.GET.get('typeref', None)
+    idref = request.GEt.get('idref', None)
+    obj = get_the_instance(typeref, idref)
+    obj.delete()
+    ctx = {'message': 'Votre commentaire a bien été supprimé'}
+    return JsonResponse(ctx)
+
+
+@login_required
 def create_new_article():
     """ View to create a new article """
     pass

@@ -416,7 +416,6 @@ $(document).ready(function() {
 
     // --------------- Set Donuts -----------------------
     SetDonuts();
-
     // --------------- up button -----------------------
     $('body').on('click','.UP',function(){
     	// var tomodif = '#' + $(this).attr('name').replace(':','');
@@ -559,5 +558,19 @@ $(document).ready(function() {
                 alert(rs.responseText);
             }
         });
+    });
+    //---------------------  Delete own ref---------------------
+    $('body').on('click', '.DelOwnRef', function(){
+        var name = $(this).attr('name');
+
+        // ... replace by yes//no
+    });
+
+    $('body').on('click', '.DelOwnRefYes', function(){
+        // Ajax + delete
+    });
+    
+    $('body').on('click', '.DelOwnRefNo', function(){
+        // ... replace by del button
     });
 });
