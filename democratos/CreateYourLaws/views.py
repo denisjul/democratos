@@ -505,7 +505,6 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                    'section_type': "qst",
                    'tdid': str(id_ref)}
             q.save()
-    print(ctx)
     return JsonResponse(ctx)
 
 
@@ -595,9 +594,21 @@ def GetForm(request):
 
 
 @login_required
-def ModifyReflection():
+def ModifyReflection(request):
     """ Enable an Autor to modify his own reflection content once posted"""
-    pass
+    if request.method == 'POST':
+
+        # A COMLETER
+        newrefhtml = render_to_string('NewRef.html', locals())return JsonResponse(ctx)
+        ctx = {}  # completer
+    else:
+        typeref = request.GET.get('typeref', None)
+        idref = request.GEt.get('idref', None)
+        obj = get_the_instance(typeref, idref)
+        modifrefform = ModifForm()  # + PREFILL !!!!!!!!!!!!
+        formhtml = render_to_string('ModifrefForm.html', locals())return JsonResponse(ctx)
+        ctx = {}  # completer
+    return JsonResponse(ctx)
 
 
 @login_required
