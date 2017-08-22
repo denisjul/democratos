@@ -3,7 +3,6 @@
 
 
 {% autoescape off %}
-
 <!--############################################################################################
 ##################################      The Reflection       ###################################
 #############################################################################################-->
@@ -211,7 +210,12 @@
                     {% for x in listpropositions %}
                         <tr>
                             <td class="proposition" >
+                                {% if User == x.autor %}
+                                    <ins class="DelOwnRef" name="del:prp:{{x.id}}">supprimer</ins>
+                                    <br>
+                                {% endif %}
                                 <div class="IDB GetReflection" name="prp:{{x.id}}">
+
                                     {% if x.title %}
                                         <strong>{{x.title}}</strong> <br/>
                                         {{x.text_prop|truncatewords:80}} <br/>

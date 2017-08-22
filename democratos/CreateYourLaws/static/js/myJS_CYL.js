@@ -1,5 +1,31 @@
 //setup JQuery's AJAX methods to setup CSRF token in the request before sending it off.
 
+function ConfirmDialog(message) {
+    var answer = true;
+    $('<div></div>').appendTo('body')
+                    .html('<div><h6>'+message+'?</h6></div>')
+                    .dialog({
+                        modal: true, title: 'Delete message', zIndex: 10000, autoOpen: true,
+                        width: 'auto', resizable: false,
+                        buttons: {
+                            Yes: function () {
+                                $('body').append('<h1>Confirm Dialog Result: <i>Oui</i></h1>');
+                                answer = true;
+                                $(this).dialog("close");                                
+                            },
+                            No: function () {                                                                 
+                                $('body').append('<h1>Confirm Dialog Result: <i>Annuler</i></h1>');
+                                answer = false;
+                                $(this).dialog("close");
+                            }
+                        },
+                        close: function (event, ui) {
+                            $(this).remove();
+                        }
+                    })
+                    .promise().remove();
+    return answer;
+};
 
 // This function gets cookie with a given name
 function getCookie(name) {
@@ -266,7 +292,7 @@ function isbackorforward(){
             if (window.histstate.lastref && location.href.charAt(location.href.length - 1) == "#"){
                 history.forward();
                 console.log(location.href.slice(0,37));
-                if (location.href.slice(0,37) == "http://127.0.0.1:8000/CYL/reflection/"){
+                if (location.href.slice(0,37) == "http://127.0.0.1:8000/CYL/Reflection/"){
                     window.histstate.lastref = true;
                 }
                 else{
@@ -283,7 +309,7 @@ function isbackorforward(){
             try{
                 GoAjax(history.state.url, history.state.slug, false);
             }
-            catch (e){
+            catch(e){
                 GoAjax('/', null, false);
             }
         } 
@@ -306,6 +332,9 @@ window.addEventListener("popstate",function(e){
 
 function GoAjax(url, slug, push) {
     console.log(url);
+    if (url.indexOf("Reflection") > 0){ 
+        url = url.replace("Reflection","reflection");
+    }
     $.ajax({
         type: "POST",
         url: url,
@@ -332,19 +361,25 @@ function GoAjax(url, slug, push) {
             }
             // need a pushState if not Back or Forward
             if (push){
-                if (url == "/CYL/InDatBox"){
-                    window.history.pushState({url: url,slug: slug}, null, url + "/" + response.box_type + "/" + response.box_id);
-                    window.histstate.lastref = false;
+                switch(url){
+                    case "/CYL/InDatBox":
+                        window.history.pushState({url: url,slug: slug}, null, url + "/" + response.box_type + "/" + response.box_id);
+                        window.histstate.lastref = false;
+                    default:
+                        if (url.indexOf("reflection") > 0) 
+                            url = url.replace("reflection","Reflection");
+                        }
+                        try{
+                            window.history.pushState({url: url,slug: slug}, null, url + "/" + response.typeref + "/" + response.id_ref);
+                            window.histstate.lastref = true;                            
+                        }
+                         catch(e){
+                            console.log("GoAjax error")
+                         }   
                 }
-                else{
-                    window.history.pushState({url: url,slug: slug}, null, url + "/" + response.typeref + "/" + response.id_ref);
-                    window.histstate.lastref = true;
-                }
-            }
-        },
+            },
         error: function(rs, e) {
-            console.log("erreur");
-            alert(rs.responseText);
+        alert(rs.responseText);
         }
     });
 }
@@ -520,7 +555,7 @@ $(document).ready(function() {
 	        		alert('Vous êtes abonné');
 	        	}
 	        	else{
-	        		alert('Vous êtes désabonné')
+	        		alert('Vous êtes désabonné');
 	        	}
 	        },
 	        error: function() {
@@ -553,6 +588,7 @@ $(document).ready(function() {
                 var idtomodif = "#child" +  response.typeref + response.idref;
                 $('#content').find(idtomodif).replaceWith(response.newcomments);
                 SetDonuts();
+                ConfirmDialog('Êtes vous sûr de vouloir supprimer cette réflexion?');
             },
             error: function(rs, e) {
                 alert(rs.responseText);
@@ -561,16 +597,22 @@ $(document).ready(function() {
     });
     //---------------------  Delete own ref---------------------
     $('body').on('click', '.DelOwnRef', function(){
-        var name = $(this).attr('name');
-
-        // ... replace by yes//no
-    });
-
-    $('body').on('click', '.DelOwnRefYes', function(){
-        // Ajax + delete
-    });
-    
-    $('body').on('click', '.DelOwnRefNo', function(){
-        // ... replace by del button
+        var name = $(this).attr('name').split(":");
+        var answer = ConfirmDialog('Êtes vous sûr de vouloir supprimer cette réflexion?');
+        console.log(answer);
+        if (answer){
+            $.ajax({
+                type: "POST",
+                url: '/CYL/DeleteReflection',
+                data: {'typeref': name[1] ,'idref': name[2] ,csrfmiddlewaretoken: csrftoken},
+                dataType: "json",
+                success: function(rs) {
+                    alert(rs.message);
+                },
+                error: function(rs, e) {
+                    alert(rs.responseText);
+                }
+            });
+        }
     });
 });

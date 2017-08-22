@@ -415,3 +415,9 @@ section form{
 .error_message{
 	color: 	#b30000;
 }
+
+.DelOwnRef{
+	color: blue;
+	text-decoration: underline, bold;
+	text-align: right;
+}
