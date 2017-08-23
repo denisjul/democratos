@@ -241,7 +241,9 @@
                         <tr>
                             <td class="proposition" >
                                 {% if User == x.autor %}
-                                    <ins class="DelOwnRef" name="del:prp:{{x.id}}">supprimer</ins>
+                                    <div class="SmallMenu">
+                                       <ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:prp:{{x.id}}">Modifier</ins> 
+                                    </div>
                                     <br>
                                 {% endif %}
                                 <div class="IDB GetReflection" name="prp:{{x.id}}">
@@ -377,5 +379,6 @@
 </section>
 
 {% endautoescape %}
-
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
 {% endblock %}
+

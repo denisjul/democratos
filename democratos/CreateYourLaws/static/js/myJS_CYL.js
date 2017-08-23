@@ -1,31 +1,50 @@
 //setup JQuery's AJAX methods to setup CSRF token in the request before sending it off.
 
-function ConfirmDialog(message) {
-    var answer = true;
+
+function ConfirmDialog(qorigin, title, message, data) {
     $('<div></div>').appendTo('body')
-                    .html('<div><h6>'+message+'?</h6></div>')
+                    .html('<div>'+message+'?</div>')
                     .dialog({
-                        modal: true, title: 'Delete message', zIndex: 10000, autoOpen: true,
+                        modal: true, title: title, zIndex: 10000, autoOpen: true,
                         width: 'auto', resizable: false,
                         buttons: {
-                            Yes: function () {
-                                $('body').append('<h1>Confirm Dialog Result: <i>Oui</i></h1>');
-                                answer = true;
+                            Oui: function () {
+                                Confirmresult(qorigin, true, data);
                                 $(this).dialog("close");                                
                             },
-                            No: function () {                                                                 
-                                $('body').append('<h1>Confirm Dialog Result: <i>Annuler</i></h1>');
-                                answer = false;
+                            Annuler: function () {                                                                 
+                                Confirmresult(qorigin, false, data);
                                 $(this).dialog("close");
                             }
                         },
                         close: function (event, ui) {
                             $(this).remove();
                         }
-                    })
-                    .promise().remove();
-    return answer;
+                    });
 };
+
+function Confirmresult(qorigin, answer, data) {
+    switch (qorigin){
+        case "DelOwnRef":
+            if (answer){
+                $.ajax({
+                    type: "POST",
+                    url: '/CYL/DeleteReflection',
+                    data: {'typeref': data[1] ,'idref': data[2] ,csrfmiddlewaretoken: csrftoken},
+                    dataType: "json",
+                    success: function(rs) {
+                        alert(rs.message);
+                        GoAjax(history.state.url, history.state.slug, false);
+
+                    },
+                    error: function(rs, e) {
+                        alert(rs.responseText);
+                    }
+                });
+            }
+        //case
+    }
+}
 
 // This function gets cookie with a given name
 function getCookie(name) {
@@ -179,7 +198,6 @@ function Setbutform(){
 	});
 }
 
-
 function SetDonuts(){
 	$("#content").find('.donut').each(function(){
     	$(this).on('MakeMyDonuts', function(event, value) {
@@ -316,7 +334,6 @@ function isbackorforward(){
     }
 } 
 
-// http://127.0.0.1:8000/CYL/reflection/
 
 window.addEventListener("hashchange",function(e){
     e.target.histstate.hash = true;
@@ -598,21 +615,7 @@ $(document).ready(function() {
     //---------------------  Delete own ref---------------------
     $('body').on('click', '.DelOwnRef', function(){
         var name = $(this).attr('name').split(":");
-        var answer = ConfirmDialog('Êtes vous sûr de vouloir supprimer cette réflexion?');
-        console.log(answer);
-        if (answer){
-            $.ajax({
-                type: "POST",
-                url: '/CYL/DeleteReflection',
-                data: {'typeref': name[1] ,'idref': name[2] ,csrfmiddlewaretoken: csrftoken},
-                dataType: "json",
-                success: function(rs) {
-                    alert(rs.message);
-                },
-                error: function(rs, e) {
-                    alert(rs.responseText);
-                }
-            });
-        }
+        console.log(name);
+        ConfirmDialog("DelOwnRef", "supprimer réflexion", 'Êtes vous sûr de vouloir supprimer cette réflexion?', name);
     });
 });

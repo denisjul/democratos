@@ -416,8 +416,8 @@ section form{
 	color: 	#b30000;
 }
 
-.DelOwnRef{
+.SmallMenu{
 	color: blue;
 	text-decoration: underline, bold;
-	text-align: right;
+	float: right;
 }

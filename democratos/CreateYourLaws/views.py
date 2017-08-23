@@ -598,16 +598,16 @@ def GetForm(request):
 def ModifyReflection(request):
     """ Enable an Autor to modify his own reflection content once posted"""
     if request.method == 'POST':
-
-        # A COMLETER
-        newrefhtml = render_to_string('NewRef.html', locals())
-        ctx = {}  # completer
-    else:
-        typeref = request.GET.get('typeref', None)
-        idref = request.GEt.get('idref', None)
+        typeref = request.POST.get('typeref', None)
+        idref = request.POST.get('idref', None)
         obj = get_the_instance(typeref, idref)
         modifrefform = ModifForm()  # + PREFILL !!!!!!!!!!!!
         formhtml = render_to_string('ModifrefForm.html', locals())
+        ctx = {}  # completer
+    else:
+
+        # A COMLETER
+        newrefhtml = render_to_string('NewRef.html', locals())
         ctx = {}  # completer
     return JsonResponse(ctx)
 
@@ -615,8 +615,9 @@ def ModifyReflection(request):
 @login_required
 def DeleteReflection(request):
     """ Enable the Autor or the comunity to delete a comment """
-    typeref = request.GET.get('typeref', None)
-    idref = int(request.GEt.get('idref', None))
+    print(request)
+    typeref = request.POST.get('typeref', None)
+    idref = int(request.POST.get('idref', None))
     obj = get_the_instance(typeref, idref)
     obj.delete()
     ctx = {'message': 'Votre commentaire a bien été supprimé'}
