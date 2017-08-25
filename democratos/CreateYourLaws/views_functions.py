@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 from CreateYourLaws.models import LawArticle  # , UserSession
 import CreateYourLaws.models
+from django.template.loader_tags import BlockNode, ExtendsNode
 
 
 def get_path(obj):

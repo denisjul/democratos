@@ -21,6 +21,7 @@ from CreateYourLaws.forms import Info_Change_Form, NegopinionForm
 from CreateYourLaws.views_functions import get_path, get_the_instance
 from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
+from templates.template_tools import render_block_to_string
 import operator
 
 
@@ -30,8 +31,11 @@ def home(request):
     qs = LawCode.objects.all()
     lqs = list(qs)
     if request.POST:
+        print(dict(locals()))
         intro = render_to_string('home_intro.html', locals())
-        content = render_to_string('home_content.html', locals())
+        content = render_block_to_string('home.html',
+                                         block="content",
+                                         context_instance=locals())
         ctx = {'intro': intro,
                'content': content}
         return JsonResponse(ctx)
