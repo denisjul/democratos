@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'registration',
     'ckeditor',
     'werkzeug',
+    'render_block',
 ]
 
 MIDDLEWARE_CLASSES = [

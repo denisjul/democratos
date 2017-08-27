@@ -21,7 +21,8 @@ from CreateYourLaws.forms import Info_Change_Form, NegopinionForm
 from CreateYourLaws.views_functions import get_path, get_the_instance
 from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
-from templates.template_tools import render_block_to_string
+# from templates.template_tools import render_block_to_string
+from render_block import render_block_to_string
 import operator
 
 
@@ -31,11 +32,13 @@ def home(request):
     qs = LawCode.objects.all()
     lqs = list(qs)
     if request.POST:
-        print(dict(locals()))
-        intro = render_to_string('home_intro.html', locals())
+        # print(dict(locals()))
+        intro = render_block_to_string('home.html',
+                                       "intro",
+                                       locals())
         content = render_block_to_string('home.html',
-                                         block="content",
-                                         context_instance=locals())
+                                         "content",
+                                         locals())
         ctx = {'intro': intro,
                'content': content}
         return JsonResponse(ctx)
@@ -302,8 +305,12 @@ def In_dat_box(request, box_type=None, box_id=None):
         listparents.append((parent.title, parent.id, 1))
         listparents.reverse()
     if request.POST:
-        intro = render_to_string('intro_InDatBox.html', locals())
-        content = render_to_string('content_InDatBox.html', locals())
+        intro = render_block_to_string('InDatBox.html',
+                                       "intro",
+                                       locals())
+        content = render_block_to_string('InDatBox.html',
+                                         "content",
+                                         locals())
         ctx = {'intro': intro,
                'content': content,
                'box_type': str(box_type),
@@ -384,8 +391,14 @@ def get_reflection(request, typeref=None, id_ref=None):
         listnegop = list(ref.negopinions.all())
         listpropositions = list(ref.propositions.all())
     if request.POST:
-        intro = render_to_string('intro_reflec.html', locals())
-        content = render_to_string('content_reflec.html', locals())
+        intro = render_block_to_string('GetReflection.html',
+                                       "intro",
+                                       locals())
+        content = render_block_to_string('GetReflection.html',
+                                         "content",
+                                         locals())
+        # intro = render_to_string('intro_reflec.html', locals())
+        # content = render_to_string('content_reflec.html', locals())
         ctx = {'intro': intro,
                'content': content,
                'typeref': typeref,
@@ -625,6 +638,7 @@ def DeleteReflection(request):
     obj = get_the_instance(typeref, idref)
     obj.delete()
     ctx = {'message': 'Votre commentaire a bien été supprimé'}
+    # maj de la page
     return JsonResponse(ctx)
 
 
