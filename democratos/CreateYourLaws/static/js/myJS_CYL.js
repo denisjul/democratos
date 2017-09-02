@@ -291,7 +291,6 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
 
 // #################  AJAX, Back and Forward ##########################
 
-// revoir pilot et InDatbox pushState
 
 window.histstate = {pop:false, hash: false, lastref:false};
 
@@ -299,7 +298,7 @@ var popstatehaspoped = new Event("popstatehaspoped", {"bubbles":true, "cancelabl
 
 window.addEventListener("popstatehaspoped",function(e){
     popstatehaspoped.stopPropagation();
-    setTimeout(isbackorforward, 100);
+    setTimeout(isbackorforward, 200);
 });
 
 function isbackorforward(){
@@ -321,7 +320,7 @@ function isbackorforward(){
         else{
             window.histstate.pop = false; 
             console.log("on back    ", window.histstate,"   ", location.href)
-            if (location.href.charAt(location.href.length - 1) == "#"){
+            if (location.href.charAt(location.href.length - 1) == "#") {
                 history.back();                
             }
             try{
@@ -382,17 +381,18 @@ function GoAjax(url, slug, push) {
                     case "/CYL/InDatBox":
                         window.history.pushState({url: url,slug: slug}, null, url + "/" + response.box_type + "/" + response.box_id);
                         window.histstate.lastref = false;
-                    default:
-                        if (url.indexOf("reflection") > 0) 
+                        break;
+                    case "/CYL/Reflection":
+                    case "/CYL/reflection":
+                        if (url.indexOf("reflection") > 0){
                             url = url.replace("reflection","Reflection");
                         }
-                        try{
-                            window.history.pushState({url: url,slug: slug}, null, url + "/" + response.typeref + "/" + response.id_ref);
-                            window.histstate.lastref = true;                            
-                        }
-                         catch(e){
-                            console.log("GoAjax error")
-                         }   
+                        window.history.pushState({url: url,slug: slug}, null, url + "/" + response.typeref + "/" + response.id_ref);
+                        window.histstate.lastref = true;  
+                        break;                          
+                    default:
+                        console.log("GoAjax error")
+                    }
                 }
             },
         error: function(rs, e) {
