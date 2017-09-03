@@ -585,47 +585,60 @@ def getchildcomments(request):
 def GetForm(request):
     """ View which display a reflection and its child
     reflections from its ID"""
+    modifForm = False
     name = request.GET.get('name', None)
-    print(name)
-    typeref, typeform, id_ref = name.split(sep=":")
-    id_ref = int(id_ref)
-    if typeref == 'qst':  # Does the reflection extist?
-        ref = Question.objects.get(id=id_ref)
-    elif typeref == 'exp':
-        ref = Explaination.objects.get(id=id_ref)
-    elif typeref == 'opp':
-        ref = Posopinion.objects.get(id=id_ref)
-    elif typeref == 'opn':
-        ref = Negopinion.objects.get(id=id_ref)
-    elif typeref == 'loi':
-            ref = LawArticle.objects.get(id=id_ref)
-    elif typeref == 'prp':
-        ref = Proposition.objects.get(id=idref)
+    typeref, typeform, idref = name.split(sep=":")
     if typeform == 'qst':   # which form to load?
         form = QuestionForm()
     elif typeform == 'exp':
         form = ExplainationForm()
     NewForm = render_to_string('GetForm.html', locals())
     print(NewForm)
-    ctx = {'newform': NewForm, 'typeref': typeref, "idref": str(id_ref)}
+    ctx = {'newform': NewForm, 'typeref': typeref, "idref": idref}
     return JsonResponse(ctx)
 
 
 @login_required
-def ModifyReflection(request):
+def ModifReflection(request):
     """ Enable an Autor to modify his own reflection content once posted"""
     if request.method == 'POST':
+        modifForm = True
+        typeform = request.POST.get('typeform', None)
+        idform = request.POST.get('idref', None)
         typeref = request.POST.get('typeref', None)
         idref = request.POST.get('idref', None)
-        obj = get_the_instance(typeref, idref)
-        modifrefform = ModifForm()  # + PREFILL !!!!!!!!!!!!
-        formhtml = render_to_string('ModifrefForm.html', locals())
+        obj = get_the_instance(typeform, idform)
+        if typeref == 'qst':
+            form = QuestionForm(initial={'title': obj.title,
+                                         'text_q': obj.text_q
+                                         })
+        elif typeref == 'exp':
+            form = ExplainationForm(initial={'title': obj.title,
+                                             'text_exp': obj.text_exp
+                                             })
+        elif typeref == 'opp':
+            form = PosopinionForm(initial={'title': obj.title,
+                                           'text_opp': obj.text_opp
+                                           })
+        elif typeref == 'opn':
+            form = NegopinionForm(initial={'title': obj.title,
+                                           'text_opn': obj.text_opn
+                                           })
+        elif typeref == 'prp':
+            form = PropositionForm(initial={'title': obj.title,
+                                            'text_prop': obj.text_prop
+                                            })
+        else:
+            raise Http404
+        formhtml = render_to_string('GetForm.html', locals())
         ctx = {}  # completer
     else:
-
+        # soit on raise une erreur soit on annule et on back (-> JS?)
+        raise Http404
+        """
         # A COMLETER
-        newrefhtml = render_to_string('NewRef.html', locals())
-        ctx = {}  # completer
+        newrefhtml = render_to_string('NewRef.html', locals()) 
+        ctx = {}  # completer"""
     return JsonResponse(ctx)
 
 

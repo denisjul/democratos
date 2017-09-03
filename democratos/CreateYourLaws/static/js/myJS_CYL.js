@@ -251,7 +251,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         	CKEDITOR.instances[instance].updateElement();
         var datatosend = $(this).serialize()
         datatosend['csrfmiddlewaretoken']=csrftoken
-        alert($(this).parent().parent().attr('id'));
+        // alert($(this).parent().parent().attr('id'));
         var place = '#' + $(this).parent().parent().attr('id')
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
@@ -618,4 +618,22 @@ $(document).ready(function() {
         console.log(name);
         ConfirmDialog("DelOwnRef", "supprimer réflexion", 'Êtes vous sûr de vouloir supprimer cette réflexion?', name);
     });
+    //---------------------  Modif own ref---------------------
+    $('body').on('click', '.ModifRef', function(){
+        /*
+        var data =  $(this).attr('name').split(":");
+        $.ajax({
+            type: "POST",
+            url: '/CYL/ModifReflection',
+            data: {'typeform': data[1] ,'idform': data[2], 'typeref': data[3] ,'idref': data[4] ,csrfmiddlewaretoken: csrftoken},
+            dataType: "json",
+            success: function(rs) {
+                alert(rs.message);
+                GoAjax(history.state.url, history.state.slug, false);
+
+            },
+            error: function(rs, e) {
+                alert(rs.responseText); */
+    });
+
 });

@@ -1,17 +1,12 @@
 {% load staticfiles %}
-{% if typeref == 'exp' or typeref == 'qst' %}
-	<form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{ref.id}}">
-{% else %}
-	<form action="{% url 'PostReflection'%}"  method="post" id="{{typeform}}form">
-{% endif%}
+<form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}">
     {{ form.as_p }} 
     <input type="hidden" name="typeform" value="{{typeform}}f">
     <input type="hidden" name="typeref" value="{{typeref}}">
-    <input type="hidden" name="ref_id" value="{{ref.id}}">
-    {% if typeref == 'exp' or typeref == 'qst' %}
-		<button type="submit" class="but{{typeform}}" name="{{typeform}}form{{ref.id}}"> Envoyer </button>
-	{% else %}
-		<button type="submit" class="but{{typeform}}" name="{{typeform}}form"> Envoyer </button>
-	{% endif%}
+    <input type="hidden" name="ref_id" value="{{idref}}">
+<button type="submit" class="but{{typeform}}" name="{{typeform}}form{{idref}}"> Envoyer </button>
+{% if modifForm %}
+	<button class="but{{typeform}}" name="Cancel{{typeform}}form"> Annuler </button>
+{% endif%}
 </form> 
 <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
