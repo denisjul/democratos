@@ -137,7 +137,7 @@
                                 <tbody>
                                     {% for x in listposop %}
                                         <tr>
-                                            <td class="posopinion"> 
+                                            <td class="posopinion" id ="opptd{{x.id}}"> 
                                                 <div class='clickable GetReflection' name='opn:{{x.id}}'>
                                                 {% if x.title%}
                                                     {{x.title}} <br/>
@@ -184,7 +184,7 @@
                                 <tbody>
                                     {% for x in listnegop %}
                                         <tr>
-                                            <td class="negopinion">
+                                            <td class="negopinion" id ="opntd{{x.id}}">
                                                 <div onclick="location.href='{% url 'reflection' 'opn' x.id %}'" class='clickable'>
                                                 {% if x.title%}
                                                     {{x.title}} <br/>
@@ -239,7 +239,7 @@
                 <tbody>
                     {% for x in listpropositions %}
                         <tr>
-                            <td class="proposition" >
+                            <td class="proposition" id ="prptd{{x.id}}">
                                 {% if User == x.autor %}
                                     <div class="SmallMenu">
                                        <ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:prpf:{{x.id}}:typeref:id_ref">Modifier</ins> 

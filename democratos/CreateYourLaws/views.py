@@ -633,12 +633,9 @@ def ModifReflection(request):
         formhtml = render_to_string('GetForm.html', locals())
         ctx = {}  # completer
     else:
-        # soit on raise une erreur soit on annule et on back (-> JS?)
-        raise Http404
-        """
-        # A COMLETER
-        newrefhtml = render_to_string('NewRef.html', locals()) 
-        ctx = {}  # completer"""
+        # A COMLETER pour remplacer ancienne ref par la nouvelle
+        newrefhtml = render_to_string('NewRef.html', locals())
+        ctx = {}  # completer
     return JsonResponse(ctx)
 
 
