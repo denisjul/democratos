@@ -261,6 +261,12 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 $(place).html(response.reflection);
                 var formtodel = "#" +  response.typeref + 'askform' + response.idref;
                 $('#content').find(formtodel).html(' ');
+                if (response.message != ""){
+                    alert(responde.message);
+                }
+                $('form').each(function(){
+                    SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
+                });
             	/*switch(response.section_type){
                 	case'exp':
                 		$('#content').find('#exptd' + response.tdid).html(response.reflection); // update the DIV
@@ -621,6 +627,8 @@ $(document).ready(function() {
     //---------------------  Modif own ref---------------------
     $('body').on('click', '.ModifRef', function(){
         /*
+        MODIFIER LE TD AYANT L'ID "typereftdidref"
+
         var data =  $(this).attr('name').split(":");
         $.ajax({
             type: "POST",

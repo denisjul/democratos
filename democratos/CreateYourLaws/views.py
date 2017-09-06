@@ -411,7 +411,10 @@ def get_reflection(request, typeref=None, id_ref=None):
 def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     typeform = request.POST.get('typeform', '')
     typeref = request.POST.get('typeref', '')
-    id_ref = int(request.POST.get('ref_id', ''))
+    id_ref = int(request.POST.get('ref_id', None))
+    IsModif = bool(request.POST.get('IsModif', False))
+    if IsModif:
+        idform = int(request.POST.get('idform', None))
     User = request.user
     if typeref == 'prp':
         ref = Proposition.objects.get(id=idref)
@@ -437,14 +440,21 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                 lawart = ref
             else:
                 lawart = ref.law_article
-            prp = Proposition.objects.create(text_prop=prop,
-                                             title=proptitle,
-                                             autor=User,
-                                             law_article=lawart,
-                                             content_object=ref)
+            if IsModif:
+                prp = Proposition.objects.get(id=idform)
+                prp.text_prop = prop
+                prp.title = proptitle
+            else:
+                prp = Proposition.objects.create(text_prop=prop,
+                                                 title=proptitle,
+                                                 autor=User,
+                                                 law_article=lawart,
+                                                 content_object=ref)
             listref = list(ref.propositions.all())
             NewSection = render_to_string('UpSection.html', locals())
-            ctx = {'reflection': NewSection, 'section_type': "prp", 'tdid': ""}
+            ctx = {'reflection': NewSection,
+                   'section_type': "prp",
+                   'tdid': ""}
             prp.save()
 
     # ####################  ExplainationForm ###########################
@@ -453,10 +463,15 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         if expform.is_valid():
             exptitle = expform.cleaned_data['title']
             explain = expform.cleaned_data['text_exp']
-            exp = Explaination.objects.create(title=exptitle,
-                                              text_exp=explain,
-                                              autor=User,
-                                              content_object=ref)
+            if IsModif:
+                exp = Explaination.objects.get(id=idform)
+                exp.text_exp = explain
+                exp.title = exptitle
+            else:
+                exp = Explaination.objects.create(title=exptitle,
+                                                  text_exp=explain,
+                                                  autor=User,
+                                                  content_object=ref)
             listexplainations = list(ref.explainations.all())
             listquestions = list(ref.questions.all())
             listref = listexplainations
@@ -475,32 +490,42 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         if opnform.is_valid():
             optitle = opnform.cleaned_data['title']
             opin = opnform.cleaned_data['text_opn']
-            op = Negopinion.objects.create(text_opn=opin,
-                                           title=optitle,
-                                           autor=User,
-                                           content_object=ref)
+            if IsModif:
+                opn = Negopinion.objects.get(id=idform)
+                opn.text_opn = opin
+                opn.title = optitle
+            else:
+                opn = Negopinion.objects.create(text_opn=opin,
+                                                title=optitle,
+                                                autor=User,
+                                                content_object=ref)
             listref = list(ref.negopinions.all())
             NewSection = render_to_string('UpSection.html', locals())
             ctx = {'reflection': NewSection,
                    'section_type': "opp",
                    'tdid': ""}
-            op.save()
+            opn.save()
 
     elif request.method == 'POST' and typeform == 'oppf':
         oppform = PosopinionForm(request.POST)
         if oppform.is_valid():
             optitle = oppform.cleaned_data['title']
             opin = oppform.cleaned_data['text_opp']
-            op = Posopinion.objects.create(text_opp=opin,
-                                           title=optitle,
-                                           autor=User,
-                                           content_object=ref)
+            if IsModif:
+                opp = Posopinion.objects.get(id=idform)
+                opp.text_opp = opin
+                opp.title = optitle
+            else:
+                opp = Posopinion.objects.create(text_opp=opin,
+                                                title=optitle,
+                                                autor=User,
+                                                content_object=ref)
             listref = list(ref.posopinions.all())
             NewSection = render_to_string('UpSection.html', locals())
             ctx = {'reflection': NewSection,
                    'section_type': "opp",
                    'tdid': ""}
-            op.save()
+            opp.save()
 
     # ####################  QuestionForm ###########################
     elif request.method == 'POST' and typeform == 'qstf':
@@ -508,10 +533,15 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         if qstform.is_valid():
             qtitle = qstform.cleaned_data['title']
             question = qstform.cleaned_data['text_q']
-            q = Question.objects.create(text_q=question,
-                                        title=qtitle,
-                                        autor=User,
-                                        content_object=ref)
+            if IsModif:
+                q = Explaination.objects.get(id=idform)
+                q.text_q = question
+                q.title = qtitle
+            else:
+                q = Question.objects.create(text_q=question,
+                                            title=qtitle,
+                                            autor=User,
+                                            content_object=ref)
             listexplainations = list(ref.explainations.all())
             listquestions = list(ref.questions.all())
             listref = listexplainations
@@ -523,6 +553,10 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                    'section_type': "qst",
                    'tdid': str(id_ref)}
             q.save()
+    if IsModif:
+        ctx["message"] = "Votre réflection a bien été modifié!"
+    else:
+        ctx["message"] = ""
     return JsonResponse(ctx)
 
 
@@ -600,9 +634,11 @@ def GetForm(request):
 
 @login_required
 def ModifReflection(request):
-    """ Enable an Autor to modify his own reflection content once posted"""
-    if request.method == 'POST':
-        modifForm = True
+    """ Load the form for an Autor to
+    modify his own reflection content once posted"""
+    if (request.method == 'POST' and
+            request.POST.get('typerequest', None) == 'form'):
+        IsModif = True
         typeform = request.POST.get('typeform', None)
         idform = request.POST.get('idref', None)
         typeref = request.POST.get('typeref', None)
@@ -631,11 +667,13 @@ def ModifReflection(request):
         else:
             raise Http404
         formhtml = render_to_string('GetForm.html', locals())
-        ctx = {}  # completer
+        ctx = {'ModifForm': formhtml,
+               'typeref': typeref,
+               'idref': idref,
+               'idform': idform,
+               }
     else:
-        # A COMLETER pour remplacer ancienne ref par la nouvelle
-        newrefhtml = render_to_string('NewRef.html', locals())
-        ctx = {}  # completer
+        raise Http404
     return JsonResponse(ctx)
 
 

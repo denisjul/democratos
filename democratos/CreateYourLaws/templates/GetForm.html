@@ -4,8 +4,14 @@
     <input type="hidden" name="typeform" value="{{typeform}}f">
     <input type="hidden" name="typeref" value="{{typeref}}">
     <input type="hidden" name="ref_id" value="{{idref}}">
+	{% if IsModif %}
+		<input type="hidden" name="IsModif" value="True">
+		<input type="hidden" name="idform" value="{{idform}}">
+	{% else %}
+		<input type="hidden" name="IsModif" value="">
+	{% endif%}
 <button type="submit" class="but{{typeform}}" name="{{typeform}}form{{idref}}"> Envoyer </button>
-{% if modifForm %}
+{% if IsModif %}
 	<button class="but{{typeform}}" name="Cancel{{typeform}}form"> Annuler </button>
 {% endif%}
 </form> 
