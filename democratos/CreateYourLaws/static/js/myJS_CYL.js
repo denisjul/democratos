@@ -262,7 +262,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 var formtodel = "#" +  response.typeref + 'askform' + response.idref;
                 $('#content').find(formtodel).html(' ');
                 if (response.message != ""){
-                    alert(responde.message);
+                    alert(response.message);
                 }
                 $('form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
@@ -626,22 +626,28 @@ $(document).ready(function() {
     });
     //---------------------  Modif own ref---------------------
     $('body').on('click', '.ModifRef', function(){
-        /*
-        MODIFIER LE TD AYANT L'ID "typereftdidref"
-
         var data =  $(this).attr('name').split(":");
         $.ajax({
             type: "POST",
             url: '/CYL/ModifReflection',
-            data: {'typeform': data[1] ,'idform': data[2], 'typeref': data[3] ,'idref': data[4] ,csrfmiddlewaretoken: csrftoken},
+            data: {'typerequest': 'form', 'typeform': data[1] ,'idform': data[2], 'typeref': data[3] ,'idref': data[4] ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(rs) {
-                alert(rs.message);
-                GoAjax(history.state.url, history.state.slug, false);
-
+                    var idtomodif = "#" +  rs.typeform + 'td' + rs.idform;
+                    var oldhtml = $('#content').find(idtomodif).html();
+                    $('#content').find(idtomodif).html(rs.ModifForm);
+                    $('#content').find("Cancel" + rs.typeform + rs.idform + "form").each(function(){
+                        $(this).click(function(){
+                            $('#content').find(idtomodif).html(oldhtml)
+                        });
+                    });
+                    $('#content').find("form").each(function(){
+                        SetTheForm($(this).attr('id'));
+                    });
             },
             error: function(rs, e) {
-                alert(rs.responseText); */
+                alert(rs.responseText);
+            }
+        });
     });
-
 });

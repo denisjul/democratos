@@ -326,11 +326,9 @@ def get_reflection(request, typeref=None, id_ref=None):
     reflections from its ID"""
     # Does the reflection extist?
     User = request.user
-    print(type(User))
     if request.POST:
         slug = request.POST.get('slug', None)
         if slug is None:
-            print(request.POST)
             typeref = request.typeref
             id_ref = int(request.id_ref)
         else:
@@ -627,7 +625,6 @@ def GetForm(request):
     elif typeform == 'exp':
         form = ExplainationForm()
     NewForm = render_to_string('GetForm.html', locals())
-    print(NewForm)
     ctx = {'newform': NewForm, 'typeref': typeref, "idref": idref}
     return JsonResponse(ctx)
 
@@ -636,43 +633,47 @@ def GetForm(request):
 def ModifReflection(request):
     """ Load the form for an Autor to
     modify his own reflection content once posted"""
+
     if (request.method == 'POST' and
             request.POST.get('typerequest', None) == 'form'):
         IsModif = True
         typeform = request.POST.get('typeform', None)
-        idform = request.POST.get('idref', None)
+        idform = int(request.POST.get('idform', None))
         typeref = request.POST.get('typeref', None)
-        idref = request.POST.get('idref', None)
+        idref = int(request.POST.get('idref', None))
         obj = get_the_instance(typeform, idform)
-        if typeref == 'qst':
+        if typeform == 'qst':
             form = QuestionForm(initial={'title': obj.title,
                                          'text_q': obj.text_q
                                          })
-        elif typeref == 'exp':
+        elif typeform == 'exp':
             form = ExplainationForm(initial={'title': obj.title,
                                              'text_exp': obj.text_exp
                                              })
-        elif typeref == 'opp':
+        elif typeform == 'opp':
             form = PosopinionForm(initial={'title': obj.title,
                                            'text_opp': obj.text_opp
                                            })
-        elif typeref == 'opn':
+        elif typeform == 'opn':
             form = NegopinionForm(initial={'title': obj.title,
                                            'text_opn': obj.text_opn
                                            })
-        elif typeref == 'prp':
+        elif typeform == 'prp':
             form = PropositionForm(initial={'title': obj.title,
                                             'text_prop': obj.text_prop
                                             })
         else:
+            print("http1")
             raise Http404
         formhtml = render_to_string('GetForm.html', locals())
         ctx = {'ModifForm': formhtml,
+               'typeform': typeform,
                'typeref': typeref,
                'idref': idref,
                'idform': idform,
                }
     else:
+        print("http2")
         raise Http404
     return JsonResponse(ctx)
 
@@ -680,7 +681,6 @@ def ModifReflection(request):
 @login_required
 def DeleteReflection(request):
     """ Enable the Autor or the comunity to delete a comment """
-    print(request)
     typeref = request.POST.get('typeref', None)
     idref = int(request.POST.get('idref', None))
     obj = get_the_instance(typeref, idref)

@@ -244,7 +244,7 @@
                             <td class="proposition" id ="prptd{{x.id}}">
                                 {% if User == x.autor %}
                                     <div class="SmallMenu">
-                                       <ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:prpf:{{x.id}}:typeref:id_ref">Modifier</ins> 
+                                       <ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:prp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
                                     </div>
                                     <br>
                                 {% endif %}
