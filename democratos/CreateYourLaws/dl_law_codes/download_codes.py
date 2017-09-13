@@ -439,7 +439,7 @@ def _Main_():
     LawCode.objects.all().updated = False
     CodeBlock.objects.all().updated = False
     LawArticle.objects.all().updated = False
-    Gov = CYL_user.objects.get(id=1, username="government")
+    Gov, created = CYL_user.objects.get_or_create(id=1, username="government")
     url_fail = []
 
     # FIRST TRY TO UPDATE EVERYTHING
