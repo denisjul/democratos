@@ -14,7 +14,7 @@ def get_path(obj):
     - Opinion
     - Explaination
     - Disclaim
-    Return list of parents until law article & law code """
+    Return list of parents ugit openclassroomntil law article & law code """
 
     parent = obj.content_type.model_class().objects.get(id=obj.object_id)
     if parent.title is not None:
