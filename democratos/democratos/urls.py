@@ -20,5 +20,6 @@ import CreateYourLaws
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^CYL/', include('CreateYourLaws.urls')),
+    # url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^$', CreateYourLaws.views.home),
 ]

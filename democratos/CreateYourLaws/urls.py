@@ -27,6 +27,9 @@ urlpatterns = [
     url(r'^childcomments$',
         views.getchildcomments,
         name='chilcomments'),
+    url(r'^CreateNewLaw$',
+        views.CreateNewLaw,
+        name='CreateNewLaw'),
     url(r'^DeleteReflection$',
         views.DeleteReflection,
         name='DeleteReflection'),
@@ -46,10 +49,12 @@ urlpatterns = [
         user_manage.Create_User.as_view(form_class=Create_CYL_UserForm),
         name='registration_register'),
     url(r'^info/change/done$', views.info_change_done, name="InfoChangeDone"),
-] + static(
+] 
+"""+ static(
     settings.STATIC_URL,
     document_root=settings.STATIC_ROOT
 ) + static(
     settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT
 )
+"""

@@ -10,9 +10,9 @@ function ConfirmDialog(qorigin, title, message, data) {
                         buttons: {
                             Oui: function () {
                                 Confirmresult(qorigin, true, data);
-                                $(this).dialog("close");                                
+                                $(this).dialog("close");                               
                             },
-                            Annuler: function () {                                                                 
+                            Annuler: function () {                                                                
                                 Confirmresult(qorigin, false, data);
                                 $(this).dialog("close");
                             }
@@ -44,6 +44,35 @@ function Confirmresult(qorigin, answer, data) {
             }
         //case
     }
+}
+
+
+function UpAndDown(tomodif,dontomodif,slug,url){
+    $.ajax({
+       type: "POST",
+       url: url,
+       data: {'slug': slug,csrfmiddlewaretoken: csrftoken},
+       dataType: "json",
+       success: function(response) {
+            if (response.message != ""){
+                alert(response.message)
+            };
+            if(response.data != {}){
+                for (var key in response.data) {
+                    var context = $(key)[0].getContext('2d');
+                    context.clearRect(0, 0, context.width, context.height);
+                    $(key).trigger('MakeMyDonuts', response.data[key]);
+                }
+            };
+            // $(tomodif).html(Math.round((parseFloat(response.approb))*100)/100);
+            var context = $(dontomodif)[0].getContext('2d');
+            context.clearRect(0, 0, context.width, context.height);
+            $(dontomodif).trigger('MakeMyDonuts', [response.approb]);
+        },
+        error: function(rs, e) {
+               alert(rs.responseText);
+        }
+    });
 }
 
 // This function gets cookie with a given name
@@ -148,21 +177,21 @@ var DonutChart = function (canvas, radius, lineWidth, arraySlices, label) {
 
 // ######################### functions ############################
 
-function Setbutform(){ 
-	$("#oppform").css('display','none');
+function Setbutform(){
+    $("#oppform").css('display','none');
     $("#opnform").css('display','none');
-	$("#expform").css('display','none');
-	$("#qstform").css('display','none');
-	$("#prpform").css('display','none');
+    $("#expform").css('display','none');
+    $("#qstform").css('display','none');
+    $("#prpform").css('display','none');
 
-	$(".butopp").click(function(event) {
-		if ( $("#oppform").css('display') == 'none' ){
-		    $("#oppform").css('display','block');
-		}
-		else{
-			$("#oppform").css('display','none');
-		}
-	});
+    $(".butopp").click(function(event) {
+        if ( $("#oppform").css('display') == 'none' ){
+            $("#oppform").css('display','block');
+        }
+        else{
+            $("#oppform").css('display','none');
+        }
+    });
     $(".butopn").click(function(event) {
         if ( $("#opnform").css('display') == 'none' ){
             $("#opnform").css('display','block');
@@ -171,84 +200,88 @@ function Setbutform(){
             $("#opnform").css('display','none');
         }
     });
-	$(".butexp").click(function(event) {
-		if ( $("#expform").css('display') == 'none' ){
-		    $("#expform").css('display','block');
-		}
-		else{
-			$("#expform").css('display','none');
-		}
+    $(".butexp").click(function(event) {
+        if ( $("#expform").css('display') == 'none' ){
+            $("#expform").css('display','block');
+        }
+        else{
+            $("#expform").css('display','none');
+        }
 
-	});
-	$(".butqst").click(function(event) {
-		if ( $("#qstform").css('display') == 'none' ){
-		    $("#qstform").css('display','block');
-		}
-		else{
-			$("#qstform").css('display','none');
-		}
-	});
-	$(".butprp").click(function(event) {
-		if ( $("#prpform").css('display') == 'none' ){
-		    $("#prpform").css('display','block');
-		}
-		else{
-			$("#prpform").css('display','none');
-		}
-	});
+    });
+    $(".butqst").click(function(event) {
+        if ( $("#qstform").css('display') == 'none' ){
+            $("#qstform").css('display','block');
+        }
+        else{
+            $("#qstform").css('display','none');
+        }
+    });
+    $(".butprp").click(function(event) {
+        if ( $("#prpform").css('display') == 'none' ){
+            $("#prpform").css('display','block');
+        }
+        else{
+            $("#prpform").css('display','none');
+        }
+    });
 }
 
 function SetDonuts(){
-	$("#content").find('.donut').each(function(){
-    	$(this).on('MakeMyDonuts', function(event, value) {
-    		var nameread = $(this).attr('name').replace(',','.')
-		    var value = (typeof value !== 'undefined') ? value : parseFloat(nameread);
-		    //var value = parseInt($(this).attr('name'));
-		    var donvalue = Math.round(((parseFloat(value))+100)*5)/10;
-		    var canvas = $(this).get(0);
-		    var sideLength = 36;
-		    canvas.width = canvas.height = sideLength;
-		    canvas.width +=  canvas.width*0.33;
-		    var lineWidth = 9;
-		    var radius = (sideLength - lineWidth) / 2;
-		    var slices = [{
-		        percent: 100-donvalue,	
-		        color: "#ff7474"
-		    }, {
-		        percent: donvalue,
-		        color: "#4ce64c"
-		    }];
-		    if (value >= 0){
-			    var label = {
-			        text: donvalue + '%',
-			        color: "#007a00",
-			        font_size: 11,
-		    	};
-		   	}
-			else{
-				var label = {
-				    text: donvalue + '%',
-				    color: "#992600",
-				    font_size: 11,
-				};
-			}
-		    var donutChart = new DonutChart(canvas, radius, lineWidth, slices, label);
-		    donutChart.render(); 
-			});
-    	$(this).trigger('MakeMyDonuts');
-	});
+    $("#content").find('.donut').each(function(){
+        $(this).on('MakeMyDonuts', function(event, value) {
+            var nameread = $(this).attr('name').replace(',','.')
+            var value = (typeof value !== 'undefined') ? value : parseFloat(nameread);
+            //var value = parseInt($(this).attr('name'));
+            var donvalue = Math.round(((parseFloat(value))+100)*5)/10;
+            var canvas = $(this).get(0);
+            var sideLength = 36;
+            canvas.width = canvas.height = sideLength;
+            canvas.width +=  canvas.width*0.33;
+            var lineWidth = 9;
+            var radius = (sideLength - lineWidth) / 2;
+            var slices = [{
+                percent: 100-donvalue,   
+                color: "#ff7474"
+            }, {
+                percent: donvalue,
+                color: "#4ce64c"
+            }];
+            if (value >= 0){
+                var label = {
+                    text: donvalue + '%',
+                    color: "#007a00",
+                    font_size: 11,
+                };
+               }
+            else{
+                var label = {
+                    text: donvalue + '%',
+                    color: "#992600",
+                    font_size: 11,
+                };
+            }
+            var donutChart = new DonutChart(canvas, radius, lineWidth, slices, label);
+            donutChart.render();
+            });
+        $(this).trigger('MakeMyDonuts');
+    });
 }
 
 function loadckeditorJS () {
-	var fileref=document.createElement('script')
+    var fileref=document.createElement('script')
     fileref.setAttribute("type","text/javascript")
     fileref.setAttribute("src", 'ckeditor/ckeditor-init.js')
+    for(name in CKEDITOR.instances)
+    {
+    CKEDITOR.instances[name].destroy()
+    }
 }
 
 function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auquel est attaché le form
     $('#'+FormId).on('submit',function() { // catch the form's submit event
         for ( instance in CKEDITOR.instances ) // recover data in CKeditor fields
-        	CKEDITOR.instances[instance].updateElement();
+            CKEDITOR.instances[instance].updateElement();
         var datatosend = $(this).serialize()
         datatosend['csrfmiddlewaretoken']=csrftoken
         // alert($(this).parent().parent().attr('id'));
@@ -267,23 +300,23 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 $('form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                 });
-            	/*switch(response.section_type){
-                	case'exp':
-                		$('#content').find('#exptd' + response.tdid).html(response.reflection); // update the DIV
+                /*switch(response.section_type){
+                    case'exp':
+                        $('#content').find('#exptd' + response.tdid).html(response.reflection); // update the DIV
                         break;
-               		case'qst':
-                		$('#content').find('#qsttd' + response.tdid).html(response.reflection); // update the DIV
-            			break;
-                   	case'opn': // <----------------------------------------------------A REVOIR
-                		$('.proposition').html(response.reflection); // update the DIV
-            			break;
-            		case 'prp':
-                		$('.proposition').html(response.reflection); // update the DIV
-            			break;
-            		default:
-            			alert('erreur sur la nature de la réflexion retournée');
-            			break;
-            	};*/   
+                       case'qst':
+                        $('#content').find('#qsttd' + response.tdid).html(response.reflection); // update the DIV
+                        break;
+                       case'opn': // <----------------------------------------------------A REVOIR
+                        $('.proposition').html(response.reflection); // update the DIV
+                        break;
+                    case 'prp':
+                        $('.proposition').html(response.reflection); // update the DIV
+                        break;
+                    default:
+                        alert('erreur sur la nature de la réflexion retournée');
+                        break;
+                };*/  
                 Setbutform();
                 SetDonuts();
             },
@@ -320,14 +353,14 @@ function isbackorforward(){
                 }
                 else{
                     window.histstate.lastref = false;
-                }                
+                }               
             }
         }
         else{
-            window.histstate.pop = false; 
+            window.histstate.pop = false;
             console.log("on back    ", window.histstate,"   ", location.href)
             if (location.href.charAt(location.href.length - 1) == "#") {
-                history.back();                
+                history.back();               
             }
             try{
                 GoAjax(history.state.url, history.state.slug, false);
@@ -335,9 +368,9 @@ function isbackorforward(){
             catch(e){
                 GoAjax('/', null, false);
             }
-        } 
+        }
     }
-} 
+}
 
 
 window.addEventListener("hashchange",function(e){
@@ -347,14 +380,14 @@ window.addEventListener("hashchange",function(e){
 
 
 window.addEventListener("popstate",function(e){
-    e.target.histstate.pop = true; 
+    e.target.histstate.pop = true;
     console.log("popstate: ", e.target.histstate.pop);
     document.dispatchEvent(popstatehaspoped)
-}); 
+});
 
 function GoAjax(url, slug, push) {
     console.log(url);
-    if (url.indexOf("Reflection") > 0){ 
+    if (url.indexOf("Reflection") > 0){
         url = url.replace("Reflection","reflection");
     }
     $.ajax({
@@ -366,19 +399,18 @@ function GoAjax(url, slug, push) {
             $("#intro").html(response.intro);
             $("#content").html(response.content);
             $('html,body').scrollTop(0);
-            if (url == "/CYL/InDatBox"){ 
+            if (url == "/CYL/InDatBox"){
                 console.log("InDatbox");
             }
             else{
                 Setbutform();
                 SetDonuts();
                 loadckeditorJS();
-                /*
-                $('textarea').each( function() {
-                    CKEDITOR.replace( $(this).attr('id') );
-                }); */
                 $('form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
+                });
+                $('textarea').each( function() {
+                    CKEDITOR.replace( $(this).attr('id') );
                 });
             }
             // need a pushState if not Back or Forward
@@ -394,8 +426,8 @@ function GoAjax(url, slug, push) {
                             url = url.replace("reflection","Reflection");
                         }
                         window.history.pushState({url: url,slug: slug}, null, url + "/" + response.typeref + "/" + response.id_ref);
-                        window.histstate.lastref = true;  
-                        break;                          
+                        window.histstate.lastref = true; 
+                        break;                         
                     default:
                         console.log("GoAjax error")
                     }
@@ -414,61 +446,63 @@ function GoAjax(url, slug, push) {
 
 $(document).ready(function() {
     console.log("doc ready");
+    // -------------Displaying Forms for q,exp,op etc. -------------
+    Setbutform();
+    // -------------- JStree settings ---------------------
+    $("#jstree_CYL").jstree({
+        'core' : {
+          'data' : {
+            'url' : function (node) {
+                return node.id === '#' ?
+                    '/CYL/nav_init' :   
+                    '/CYL/nav_up/' + node.id;
+            },
+            'data' : function (node) {
+                return JSON.stringify({ 'id' : node.id, 'text': node.text});
+            }
+          }
+        },
+    });
 
-	// preload icons for JStree?????
-
-	// -------------Displaying Forms for q,exp,op etc. -------------
-	Setbutform();
-	// -------------- JStree settings ---------------------
-	$("#jstree_CYL").jstree({ 
-		'core' : {
-		  'data' : {
-		    'url' : function (node) {
-		    	return node.id === '#' ?
-				    '/CYL/nav_init' :    
-					'/CYL/nav_up/' + node.id;
-		    },
-		    'data' : function (node) {
-		    	return JSON.stringify({ 'id' : node.id, 'text': node.text});
-		    }
-		  }
-		},
-	});
-
-	$('#jstree_CYL').on('select_node.jstree', function (e, data) {
-	    window.location = data.node.a_attr.href;
-	});
-	$('#jstree_CYL').on('load_node.jstree', function (e, data) {
-		if (data.node.id != '#'){
-			for (var i= 0; i < data.node.children.length; i++) {
-				var child = data.instance.get_node(data.node.children[i])
-				if (child.a_attr.class === 'GetReflection'){
-					data.instance.set_icon(child, "/static/icons/article.png");
-				}
-				else {
-					data.instance.set_icon(data.node.children[0],true);
-				}
-			}
-		}
-	}); 		
-	// --------------- resizable nav -----------------------
+    $('#jstree_CYL').on('select_node.jstree', function (e, data) {
+        window.location = data.node.a_attr.href;
+    });
+    $('#jstree_CYL').on('load_node.jstree', function (e, data) {
+        if (data.node.id != '#'){
+            for (var i= 0; i < data.node.children.length; i++) {
+                var child = data.instance.get_node(data.node.children[i])
+                switch (child.a_attr.class) {
+                    case 'GetReflection':
+                        data.instance.set_icon(child, "/static/icons/article.png");
+                        break;
+                    case 'CreateNewLaw':
+                        data.instance.set_icon(child, "/static/icons/plus.png");
+                        break;
+                    default:
+                        data.instance.set_icon(data.node.children[0],true);
+                        break;
+                }
+            }
+        }
+    });        
+    // --------------- resizable nav -----------------------
     var container = $("body");
-    var numberOfCol = 2; 
+    var numberOfCol = 2;
     var sibTotalWidth;
     $("nav").resizable({
         handles: 'e',
         start: function(event, ui){
             sibTotalWidth = ui.originalSize.width + ui.originalElement.next().outerWidth();
         },
-        stop: function(event, ui){     
+        stop: function(event, ui){    
             var cellPercentWidth=100 * ui.originalElement.outerWidth()/ container.innerWidth();
-            ui.originalElement.css('width', cellPercentWidth + '%');  
+            ui.originalElement.css('width', cellPercentWidth + '%'); 
             var nextCell = ui.originalElement.next();
             var nextPercentWidth=100 * nextCell.outerWidth()/container.innerWidth();
             nextCell.css('width', nextPercentWidth + '%');
         },
-        resize: function(event, ui){ 
-            ui.originalElement.next().width(sibTotalWidth - ui.size.width); 
+        resize: function(event, ui){
+            ui.originalElement.next().width(sibTotalWidth - ui.size.width);
         }
     });
 
@@ -476,66 +510,19 @@ $(document).ready(function() {
     SetDonuts();
     // --------------- up button -----------------------
     $('body').on('click','.UP',function(){
-    	// var tomodif = '#' + $(this).attr('name').replace(':','');
-     	var dontomodif = '#don' + $(this).attr('name').replace(':','');
-         	 $.ajax({
-               type: "POST",
-               url: '/CYL/UP',
-               data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
-               dataType: "json",
-               success: function(response) {
-                    if (response.message != ""){
-                  		alert(response.message)
-                  	};
-                    if(response.data != {}){
-						for (var key in response.data) {
-							var context = $(key)[0].getContext('2d');
-                    		context.clearRect(0, 0, context.width, context.height);
-							$(key).trigger('MakeMyDonuts', response.data[key]);
-						}
-                    };
-                    // $(tomodif).html(Math.round((parseFloat(response.approb))*100)/100);
-                    var context = $(dontomodif)[0].getContext('2d');
-                    context.clearRect(0, 0, context.width, context.height);
-                    $(dontomodif).trigger('MakeMyDonuts', [response.approb]);
-                },
-                error: function(rs, e) {
-                       alert(rs.responseText);
-                }
-        	}); 
+        var tomodif = '#' + $(this).attr('name').replace(':','');
+        var dontomodif = '#don' + $(this).attr('name').replace(':','');   
+        var slug = $(this).attr('name');     
+        UpAndDown(tomodif,dontomodif,slug,'/CYL/UP');
     });
 
     // --------------- down button -----------------------
     $('body').on('click','.DOWN',function(){
-     	var tomodif = '#' + $(this).attr('name').replace(':','');
-     	var dontomodif = '#don' + $(this).attr('name').replace(':','');
-     	$.ajax({
-            type: "POST",
-            url: '/CYL/DOWN',
-            data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
-            dataType: "json",
-            success: function(response) {
-                if (response.message != ""){
-              		alert(response.message)
-              	};
-                if(response.data != {}){
-                    for (var key in response.data) {
-                        var context = $(key)[0].getContext('2d');
-                        context.clearRect(0, 0, context.width, context.height);
-                        $(key).trigger('MakeMyDonuts', response.data[key]);
-                    }
-                };
-                var context = $(dontomodif)[0].getContext('2d');
-                context.clearRect(0, 0, context.width, context.height);
-                $(dontomodif).trigger('MakeMyDonuts', [response.approb]);
-
-            },
-            error: function(rs, e) {
-                alert(rs.responseText);
-            }
-        }); 
+        var tomodif = '#' + $(this).attr('name').replace(':','');
+        var dontomodif = '#don' + $(this).attr('name').replace(':','');
+        var slug = $(this).attr('name');
+        UpAndDown(tomodif,dontomodif,slug,'/CYL/DOWN');
     });
-    
     // --------------- ask for form -----------------------
     $('body').on('click','.butexp, .butqst',function(){
         if ($(this).attr('name').substring(3,7) != "form"){
@@ -550,57 +537,64 @@ $(document).ready(function() {
                     $('#content').find("form").each(function(){
                         SetTheForm($(this).attr('id'));
                     });
+                    loadckeditorJS();
+                    $('form').each(function(){
+                        $('textarea').each( function() {
+                            CKEDITOR.replace( $(this).attr('id') );
+                        });
+                        SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
+                    });
                 },
                 error: function(rs, e) {
                     alert(rs.responseText);
                 }
-            }); 
+            });
         /*}
         else {
             SetTheForm($(this).attr('name'));*/
         };
 
     });
-    
+   
     // --------------- Checkbox suscribe -----------------------
-	$('.suscribe').click(function() {
-	    var checked = $(this).is(':checked');
-	    var idbox = $(this).attr('id').replace('check','');
-	    var typeref = idbox.substring(0,3);
-	    var ref_id = idbox.slice(3,idbox.length);
-	    $.ajax({
-	        type: "POST",
-	        url: '/CYL/checkbox',
-	        data: { check : checked, typeref : typeref, ref_id : ref_id, csrfmiddlewaretoken: csrftoken},
-	        dataType: "json",
-	        success: function(data) {
-	        	if (checked) {
-	        		alert('Vous êtes abonné');
-	        	}
-	        	else{
-	        		alert('Vous êtes désabonné');
-	        	}
-	        },
-	        error: function() {
-	            alert('it broke');
-	        },
-	    });
-	});
-	
+    $('.suscribe').click(function() {
+        var checked = $(this).is(':checked');
+        var idbox = $(this).attr('id').replace('check','');
+        var typeref = idbox.substring(0,3);
+        var ref_id = idbox.slice(3,idbox.length);
+        $.ajax({
+            type: "POST",
+            url: '/CYL/checkbox',
+            data: { check : checked, typeref : typeref, ref_id : ref_id, csrfmiddlewaretoken: csrftoken},
+            dataType: "json",
+            success: function(data) {
+                if (checked) {
+                    alert('Vous êtes abonné');
+                }
+                else{
+                    alert('Vous êtes désabonné');
+                }
+            },
+            error: function() {
+                alert('it broke');
+            },
+        });
+    });
+   
     // --------------- Box loading AJAX -----------------------
     $("body").on("click",".InDatBox",function(){
         var url = '/CYL/InDatBox';
         var slug = $(this).attr('name');
         GoAjax(url,slug,true);
-	});
+    });
 
-	// --------------- Reflection  loading AJAX -------------------
+    // --------------- Reflection  loading AJAX -------------------
     $("body").on("click",".GetReflection",function(){
         var url = '/CYL/reflection';
         var slug = $(this).attr('name');
         GoAjax(url,slug,true);
-	});
-   	//---------------------  Get Child comments---------------------
+    });
+       //---------------------  Get Child comments---------------------
     $("body").on("click", ".GetDebateChild",function(){
         $.ajax({
             type: "POST",
@@ -608,10 +602,14 @@ $(document).ready(function() {
             data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(response) {
+                for(name in CKEDITOR.instances)
+                {
+                    CKEDITOR.instances[name].destroy()
+                }
                 var idtomodif = "#child" +  response.typeref + response.idref;
                 $('#content').find(idtomodif).replaceWith(response.newcomments);
                 SetDonuts();
-                ConfirmDialog('Êtes vous sûr de vouloir supprimer cette réflexion?');
+                //ConfirmDialog('Êtes vous sûr de vouloir supprimer cette réflexion?');
             },
             error: function(rs, e) {
                 alert(rs.responseText);

@@ -68,6 +68,16 @@ def nav_up(request, idbox):
                              "GetReflection",
                              'loi:' + str(el.id),
                              False))
+        children.append(('NewLaw'+str(id_box),
+                     'Créer une loi à cet emplacement',
+                     'CreateNewLaw',
+                     'idbox:'+ str(id_box),
+                     False))
+        children.append(('NewBox'+str(id_box),
+                     'Créer un un sous-groupement de loi à cet emplacement',
+                     'CreateNewBox',
+                     'idbox:'+ str(id_box),
+                     False))
     if idbox[0] == 'A':
         listBlock = list(
             CodeBlock.objects.filter(rank=1, law_code=id_box).order_by('id'))
@@ -81,6 +91,16 @@ def nav_up(request, idbox):
                              "InDatBox",
                              '2:' + str(el.id),
                              True))
+        children.append(('NewBox'+str(id_box),
+                     'Créer un un sous-groupement de loi à cet emplacement',
+                     'CreateNewBox',
+                     'idbox:'+ str(id_box),
+                     False))
+        children.append(('NewLaw'+str(id_box),
+                     'Créer une loi à cet emplacement',
+                     'CreateNewLaw',
+                     'idbox:'+ str(id_box),
+                     False))
     for elem in children:
         # 'B' in the 'id' param inform that this is a Code BLock
         JSON_obj.append({'id': elem[0],
@@ -114,6 +134,7 @@ def UP(request):
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
+        print("slug:",slug)
         typ, Id = slug.split(sep=":")
         obj = get_the_instance(typ, Id)
         ct = ContentType.objects.get_for_model(obj)
@@ -395,6 +416,7 @@ def get_reflection(request, typeref=None, id_ref=None):
         content = render_block_to_string('GetReflection.html',
                                          "content",
                                          locals())
+        print(content)
         # intro = render_to_string('intro_reflec.html', locals())
         # content = render_to_string('content_reflec.html', locals())
         ctx = {'intro': intro,
@@ -615,8 +637,8 @@ def getchildcomments(request):
 
 @login_required
 def GetForm(request):
-    """ View which display a reflection and its child
-    reflections from its ID"""
+    """ Get the question or explaination form in a reflection
+    page """
     modifForm = False
     name = request.GET.get('name', None)
     typeref, typeform, idref = name.split(sep=":")
@@ -691,9 +713,25 @@ def DeleteReflection(request):
 
 
 @login_required
-def create_new_article():
-    """ View to create a new article """
-    pass
+def CreateNewLaw(request, box_type=None, box_id=None):
+    """ View to create a new law article """
+    if request.POST:
+        intro = render_block_to_string('CreateNewLaw.html',
+                                       "intro",
+                                       locals())
+        content = render_block_to_string('CreateNewLaw.html',
+                                         "content",
+                                         locals())
+        print(content)
+        # intro = render_to_string('intro_reflec.html', locals())
+        # content = render_to_string('content_reflec.html', locals())
+        ctx = {'intro': intro,
+               'content': content,
+               'typeref': typeref,
+               'id_ref': str(id_ref)}
+        return JsonResponse(ctx)
+    else:
+        return render(request, 'CreateNewLaw.html', locals())
 
 
 @login_required

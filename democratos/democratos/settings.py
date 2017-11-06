@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'captcha',
     'registration',
     'ckeditor',
-    'werkzeug',
+    #'werkzeug',
     'render_block',
 ]
 
@@ -72,6 +72,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'debug': DEBUG
         },
     },
 ]
@@ -154,10 +155,12 @@ REGISTRATION_FORM = 'CreateYourLaws.forms.Create_CYL_UserForm'
 # and are trying to access pages requiring authentication
 
 # Settings for ckeditors
+
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_PATH, "media")
 STATIC_ROOT = os.path.join(PROJECT_PATH, "static")
+
 
 CKEDITOR_CONFIGS = {
     'default': {
@@ -236,5 +239,6 @@ CKEDITOR_CONFIGS = {
             ]),
     }
 }
-
+"""
 CKEDITOR_UPLOAD_PATH = "uploads/"
+"""

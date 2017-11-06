@@ -1,10 +1,8 @@
 {% extends "base_CYL.html" %}
-{% load staticfiles %}
 {% load special_filters %}
-
+{% load staticfiles %}
 
 {% block intro %}
-
 <h1> Où suis-je? </h1>
 <p> 
     {% if typeref == 'loi' %}    <!--         The path to the Article           -->
@@ -31,11 +29,10 @@
 
 
 {% block content %}
-
 {% autoescape off %}
-<!--############################################################################################
-##################################      The Reflection       ###################################
-#############################################################################################-->
+<!--##########################################################################################
+##################################      The Reflection       #################################
+###########################################################################################-->
 
     {% if typeref == 'loi' %}  
             <!--         The Law article           -->
@@ -382,6 +379,10 @@
 </section>
 
 {% endautoescape %}
+<!--
+<script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script> -->
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
 <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+
 {% endblock %}
 
