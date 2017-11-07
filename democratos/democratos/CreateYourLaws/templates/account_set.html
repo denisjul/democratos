@@ -1,0 +1,63 @@
+{% extends "base_login.html" %}
+
+{% load staticfiles %}
+
+{% block title %} Gestion du Profil {% endblock %}
+
+{% block script %} 
+	<script type="text/javascript" src="{% static 'js/profile_manage.js' %}"></script>
+	<style type="text/css" media="screen">
+		nav{display: inline-block;}	
+	</style>
+	{% block script2 %} {% endblock %}
+{% endblock %}
+
+{% block nav %}
+    <div id="profile_menu" style="padding:1px;">
+    	<ul style="list-style:none;">
+    		<li id="Profile_set" class="list_nav"> Vos informations </li>
+    		<br>
+    		<li id="Change_pwd" class="list_nav"> Changer votre mot de passe </li>
+    		<br>
+    		<li id="del_account" class="list_nav"> Supprimer votre compte </li>
+    		<br>
+    		<li id="suscr_set" class="list_nav"> Gérer vos abonnements </li>
+    	</ul>
+    </div>
+{% endblock %}
+
+ {% block Main %}
+ 	<var id="set_var" style="display:none">{{set_var}}</var>
+
+	 <section id="Profile_section">
+	 	<div id="up_profile">
+	 		<h1>Vous souhaitez modifier vos informations personnelles:</h1>
+	 		<form action="{% url 'profile' %}" method="post">
+	 			{% csrf_token %}
+                {% include "base_form.html" with form=infochangeform %}
+                <button type="submit" class="butprofile" name="infochangebut">Mettre à jour vos <br>informations personnelles</button>
+            </form>
+	 	</div>
+	 	<div id="change_pwd">
+	 		<h1>Vous souhaitez modifier votre mot de passe:</h1>
+	 		<form action="{% url 'profile' %}" method="post">
+	 			{% csrf_token %}
+                {% include "base_form.html" with form=pwdchangeform %}
+                <button type="submit" class="butprofile" name="pwdchangebut">Changer votre mot de passe</button>
+            </form>
+	 	</div>
+	 	<div id="del_profile">
+	 		<h1> Vous désirez supprimer votre compte? </h1>
+	 		<p> Cela entraînera la suppression de toutes vos données personnelles sur notre base de donnée.</p>
+	 		<p> Cependant, cela ne supprimera pas vos commentaires, questions, propositions,etc. qui font eux parti du débat. <i>Notez que vos données resterons conservées si vous avez recemment été signalé pour un comportement abusif</i></p>
+	 		<form action="{% url 'profile' %}" method="post">
+	 			{% csrf_token %}
+                {% include "base_form.html" with form=del_form %}
+                <button type="submit" class="butprofile" name="delaccountbut">Supprimer votre!</button>
+            </form>
+	 	</div>
+	 	<div id="suscription_profile">
+	 		<p> Page pour gérer les suscription aux réflections </p>
+	 	</div>
+	 </section>
+ {% endblock %}

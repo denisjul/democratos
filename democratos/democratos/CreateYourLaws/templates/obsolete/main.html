@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load special_filters %}
+
+{% block title %}
+    {% if typereq == 'loi' %}
+        {{Article.law_code.title}}: {{Article.title}}
+    {% elif typereq == 'qst' %}
+        {% if q.title %} {{q.title}} {% else %} {{q.text}} {% endif %}
+    {% elif typereq == 'exp' %}
+        {% if exp.title %} {{exp.title}} {% else %} {{exp.text}} {% endif %}
+    {% elif typereq == 'dis' %}
+        {% if dis.title %} {{dis.title}} {% else %} {{dis.text}} {% endif %}    
+    <!--  
+
+    {% elif typereq == 'opn' %}
+        {{q.title}}
+    {% elif typereq == 'prp' %}
+        {{q.title}}
+    -->
+    {% endif %}
+{% endblock %}
+
+
+{% block header %} HEADER! {% endblock %}
+
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/jstree.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui.min.css' %}"></link>
+    <script type="text/javascript" src="{% static 'js/myJS_CYL.js' %}"></script>
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+    <style type="text/css" media="screen">
+        nav{display: block;}    
+    </style>
+{% endblock %}
+
+{% block nav %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jstree-style.css' %}" />
+    <div id="jstree_CYL"></div>
+{% endblock %}
+
+{% block intro %}
+    <h1> Où suis-je? </h1>
+    <p> 
+        {% if typereq == 'loi' %}    <!--         The path to the Article           -->
+            {% for x in listparents %}
+                <a href="{% url 'InDatBox' x|lookup:2 x|lookup:1 %}"><strong>  {{x|lookup:0|truncatewords:4}}  </strong></a>  >>     
+            {% endfor %}
+            {{Article.title}}
+
+        {% elif typereq == 'qst' %}   <!--         The path to the Question          -->
+            <a href="{% url 'InDatBox' 1 law_code.id %}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></a>  >>  ...  >>
+            {% for x in list_parents %}
+                <a href="{% url x|lookup:0 x|lookup:1 %}"><strong>  {{x|lookup:2|truncatewords:4}}  </strong></a>  >>     
+            {% endfor %}
+            {% if q.title %}    
+                {{q.title|truncatewords:8}}
+            {% else %}
+                {{q.text|truncatewords:8}}
+            {% endif %}
+
+        {% elif typereq == 'exp' %}    <!--         The path to the Explaination          -->  
+            <a href="{% url 'InDatBox' 1 law_code.id %}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></a>  >>  ...  >>
+            {% for x in list_parents %}
+                <a href="{% url x|lookup:0 x|lookup:1 %}"><strong>  {{x|lookup:2|truncatewords:4}}  </strong></a>  >>     
+            {% endfor %}
+            {% if exp.title %}  
+                {{exp.title|truncatewords:8}}
+            {% else %}
+                {{exp.text|truncatewords:8}}
+            {% endif %}
+        {% elif typereq == 'dis' %}    <!--         The path to the Discliam         -->  
+            <a href="{% url 'InDatBox' 1 law_code.id %}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></a>  >>  ...  >>
+            {% for x in list_parents %}
+                <a href="{% url x|lookup:0 x|lookup:1 %}"><strong>  {{x|lookup:2|truncatewords:4}}  </strong></a>  >>     
+            {% endfor %}
+            {% if dis.title %}  
+                {{dis.title|truncatewords:8}}
+            {% else %}
+                {{dis.text|truncatewords:8}}
+            {% endif %}
+        {% endif %}
+    </p>
+
+    {% comment %}
+
+        {% elif typereq == 'opn' %}
+            {{q.title}}
+        {% elif typereq == 'prp' %}
+            {{q.title}}
+
+    {% endcomment %}
+
+{% endblock %}
+
+
+{% block content %}
+{% autoescape off %}
+
+<!--############################################################################################
+##################################      The Reflection       ###################################
+#############################################################################################-->
+
+            <!--         The Law article           -->
+
+    {% if typereq == 'loi' %}  
+        <section class="law_text">
+            <h1>{{Article.law_code.title}}</h1> 
+                <h2>{{Article.title}}</h2>
+                    {% for a in rangelqs %}
+                        {% for x in lqs %}
+                            {% if x.position == a %}
+                                <p>{{x.text}}</p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+        </section>
+
+
+            <!--         The Question          -->
+
+    {% elif typereq == 'qst' %} 
+        <section class="question">
+            <h1> Question à propos de: 
+            {% if q.content_object.title %}  
+                {{q.content_object.title}} 
+            {% else %}
+                {% if q.content_object.text_op %} 
+                    {{q.content_object.text_op}} 
+                {% elif q.content_object.text_dis %} 
+                    {{q.content_object.text_dis}}
+                {% elif q.content_object.text_exp %} 
+                    {{q.content_object.text_exp}}
+                {% elif q.content_object.text_prop %} 
+                    {{q.content_object.text_prop}} 
+                {% elif q.content_object.text_q %} 
+                    {{q.content_object.text_q}}
+                {% endif %}
+            {% endif %}</h1>    
+            {% if q.title %}    
+                <h2>{{q.title}}</h2>
+                <p>{{q.text}}</p>
+            {% else %}
+                <h2>{{q.text}}</h2>
+            {% endif %}
+        </section>
+
+            <!--         The Explaination          -->
+
+    {% elif typereq == 'exp' %}
+        <section class="explaination">
+            <h1> Commentaire/explication à propos de: 
+            {% if exp.content_object.title %}  
+                {{exp.content_object.title}} 
+            {% else %} 
+                {% if exp.content_object.text_op %} 
+                    {{exp.content_object.text_op}} 
+                {% elif exp.content_object.text_dis %} 
+                    {{exp.content_object.text_dis}}
+                {% elif exp.content_object.text_exp %} 
+                    {{exp.content_object.text_exp}}
+                {% elif exp.content_object.text_prop %} 
+                    {{exp.content_object.text_prop}} 
+                {% elif exp.content_object.text_q %} 
+                    {{exp.content_object.text_q}}
+                {% endif %}
+            {% endif %}</h1>   
+            {% if exp.title %}  
+                <h2>{{exp.title}}</h2>
+                <p>{{exp.text}}</p>
+            {% else %}
+                <h2>{{exp.text}}</h2>
+            {% endif %}
+        </section>
+
+            <!--         The Disclaim          -->
+
+    {% elif typereq == 'dis' %}
+        <section class="disclaim">
+            <h1> démentis/contradiction sur: 
+            {% if dis.content_object.title %}  
+                {{dis.content_object.title}} 
+            {% else %} 
+                {% if dis.content_object.text_op %} 
+                    {{dis.content_object.text_op}} 
+                {% elif dis.content_object.text_dis %} 
+                    {{dis.content_object.text_dis}}
+                {% elif dis.content_object.text_exp %} 
+                    {{dis.content_object.text_exp}}
+                {% elif dis.content_object.text_prop %} 
+                    {{dis.content_object.text_prop}} 
+                {% elif dis.content_object.text_q %} 
+                    {{dis.content_object.text_q}}
+                {% endif %}
+            {% endif %}</h1>  
+            {% if dis.title %}  
+                <h2>{{dis.title}}</h2>
+                <p>{{dis.text}}</p>
+            {% else %}
+                <h2>{{dis.text}}</h2>
+            {% endif %}
+        </section>
+
+    {% comment %}
+
+    {% elif typereq == 'opn' %}
+        {{q.title}}
+    {% elif typereq == 'prp' %}
+        {{q.title}}
+
+    {% endcomment %}
+
+    {% endif %}
+
+
+<!--############################################################################################
+##################################      The opinions       #####################################
+#############################################################################################-->
+    {% if typereq == 'loi' or typereq == 'prp' %}
+        <section class="opinion">
+            <div class="posopinon">
+                <h2>Points positifs</h2>
+                <p>
+                    {% if listposop|length == 0 %}  <!-- remplacer par FOR...EMPTY: https://docs.djangoproject.com/fr/1.10/ref/templates/builtins/#for-empty -->
+                        Pas de point positif relevé pour le moment
+                    {% else %}
+                        <table>
+                            <tbody>
+                                {% for x in listposop %}
+                                    <tr>
+                                        <td onclick="location.href='{% url 'opinion' x.id %}'"> 
+                                            {% if x.title%}
+                                                {{x.title}} <br/>
+                                                {{x.text_op|truncatewords:250}} <br/>
+                                            {% else %}
+                                                {{x.text_op}} <br/>
+                                            {% endif %}
+                                            nb question {{x.nb_q}}         |
+                                            nb explaination {{x.nb_exp}}        |
+                                            {{x.approval_ratio|floatformat:2}} % d'approbation</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>    
+                    {% endif %}
+                </p>    
+            </div>
+
+            <div class="negopinon">
+                <h2>Points négatifs</h2>
+                <p>
+                    {% if listnegop|length == 0 %}
+                        Pas de point négatif relevé pour le moment
+                    {% else %}
+                        <table>
+                            <tbody>
+                                {% for x in listnegop %}
+                                    <tr>
+                                        <td>
+                                            <div onclick="location.href='{% url 'opinion' x.id %}'">
+                                            {% if x.title%}
+                                                {{x.title}} <br/>
+                                                {{x.text_op|truncatewords:250}} <br/>
+                                            {% else %}
+                                                {{x.text_op}} <br/>
+                                            {% endif %}
+                                            </div>
+                                            nb question {{x.nb_q}}         |
+                                            nb explaination {{x.nb_exp}}        |
+                                            <input type="button" class="UP" name="opinion:{{x.id}}" value="UP"/>
+                                            <input type="button" class="DOWN" name="opinion:{{x.id}}" value="DOWN"/>
+                                            {{x.approval_ratio|floatformat:2}} % d'approbation
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>    
+                    {% endif %}
+                </p>    
+            </div>
+
+            <button class="butopinion" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
+
+            {% if typereq == 'loi' %}
+                <form action="{% url 'article' Article.id %}" method="post" class="opform">
+                    {% csrf_token %}
+                    {{ opform.as_p }}
+                    <button type="submit" class="butopinion" name="btnopform">Poster le point de vue</button>
+                </form>
+            {% elif typereq == 'prp' %}
+                <form action="{% url 'proposition' prop.id %}" method="post" class="opform">
+                    {% csrf_token %}
+                    {{ opform.as_p }}
+                    <button type="submit" class="butopinion" name="btnopform">Poster le point de vue</button>
+                </form>
+            {% endif %}
+        </section>
+    {% endif %}
+
+<!--############################################################################################
+##################################      The disclaims       #####################################
+#############################################################################################-->
+    {% if typereq == 'exp' or typereq == 'opn' or typereq == 'dis' %}
+        <section class="disclaim">
+            <h2> contestation / démentis </h2>
+            <table>
+                <tbody>
+                    {% for x in listdisclaims %}
+                        <tr>
+                            <td>
+                                <div onclick="location.href='{% url 'disclaim' x.id %}'">
+                                {% if x.title %}
+                                    <strong>{{x.title}}</strong> <br/>
+                                    {{x.text_dis|truncatewords:25}} 
+                                {% else %}
+                                    <strong>{{x.text_dis}}</strong> <br/>
+                                {% endif %}
+                                </div>
+                                nb question {{x.nb_q}}         |
+                                nb explaination {{x.nb_exp}}        |
+                                <input type="button" class="UP" name="disclaim:{{x.id}}" value="UP"/>
+                                <input type="button" class="DOWN" name="disclaim:{{x.id}}" value="DOWN"/>
+                                {{x.approval_ratio|floatformat:2}} % d'approbation
+                            </td>                   
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>    
+
+            <button class="butdis" type="button">Faire un démentis <br>  sur cette loi</button>
+
+            {% if typereq == 'exp' %}
+                <form action="{% url 'explaination' exp.id %}" method="post" class="disform">
+                    {% csrf_token %}
+                    {{ expform.as_p }}
+                    <button type="submit" class="butdis" name="btndisform">Poster le démentis</button>
+                </form>
+            {% elif typereq == 'opn' %}
+                <form action="{% url 'opinion' opn.id %}" method="post" class="disform">
+                    {% csrf_token %}
+                    {{ expform.as_p }}
+                    <button type="submit" class="butdis" name="btndisform">Poster le démentis</button>
+                </form>
+            {% elif typereq == 'dis' %}
+                <form action="{% url 'disclaim' dis.id %}" method="post" class="disform">
+                    {% csrf_token %}
+                    {{ expform.as_p }}
+                    <button type="submit" class="butdis" name="btndisform">Poster le démentis</button>
+                </form>
+
+            {% endif %}
+        </section>
+    {% endif %}
+
+<!--############################################################################################
+###############################      The neutral comments       ################################
+#############################################################################################-->
+    
+    <section class="explaination">
+        <h2>Commentaires / Explications</h2>
+        <table>
+            <tbody>
+                {% for x in listexplainations %}
+                    <tr>
+                        <td>
+                            <div onclick="location.href='{% url 'explaination' x.id %}'">
+                            {% if x.title %}
+                                <strong>{{x.title}}</strong> <br/>
+                                {{x.text_exp|truncatewords:25}} 
+                            {% else %}
+                                <strong>{{x.text_exp}}</strong> <br/>
+                            {% endif %}
+                            </div>
+                            nb question {{x.nb_q}}         |
+                            nb explaination {{x.nb_exp}}        |
+                            <input type="button" class="UP" name="explaination:{{x.id}}" value="UP"/>
+                            <input type="button" class="DOWN" name="explaination:{{x.id}}" value="DOWN"/>
+                            {{x.approval_ratio|floatformat:2}} % d'approbation
+                        </td>                   
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>    
+
+        <button class="butcom" type="button">Faire un commentaire neutre <br>  sur cette loi</button>
+
+        {% if typereq == 'loi' %}
+            <form action="{% url 'article' Article.id %}" method="post" class="expform">
+                {% csrf_token %}
+                {{ expform.as_p }}
+                <button type="submit" class="butcom" name="btnexpform">Poster le commentaire</button>
+            </form>
+        {% elif typereq == 'qst' %}
+            <form action="{% url 'question' q.id %}" method="post" class="expform">
+                {% csrf_token %}
+                {{ expform.as_p }}
+                <button type="submit" class="butcom" name="btnexpform">Poster le commentaire</button>
+            </form>
+        {% elif typereq == 'exp' %}
+            <form action="{% url 'explaination' exp.id %}" method="post" class="expform">
+                {% csrf_token %}
+                {{ expform.as_p }}
+                <button type="submit" class="butcom" name="btnexpform">Poster le commentaire</button>
+            </form>
+        {% elif typereq == 'dis' %}
+            <form action="{% url 'disclaim' dis.id %}" method="post" class="expform">
+                {% csrf_token %}
+                {{ expform.as_p }}
+                <button type="submit" class="butcom" name="btnexpform">Poster le commentaire</button>
+            </form>
+
+        {% comment %}
+
+        {% elif typereq == 'opn' %}
+            {{q.title}}
+        {% elif typereq == 'prp' %}
+            {{q.title}}
+
+        {% endcomment %}
+
+        {% endif %}
+    </section>
+
+
+<!--############################################################################################
+#################################      The questions       #####################################
+#############################################################################################-->
+
+    <section class="question">
+        <h2>Questions</h2>
+            <table>
+                <tbody>
+                    {% for x in listquestions %}
+                        <tr>
+                            <td>
+                                <div onclick="location.href='{% url 'question' x.id %}'">
+                                    {% if x.title %}
+                                        <strong>{{x.title}}</strong> <br/>
+                                        {{x.text_q|truncatewords:80}} <br/>
+                                    {% else %}
+                                        <strong>{{x.text_q}}</strong> <br/>
+                                    {% endif %}
+                                </div>
+                                nb question {{x.nb_q}}         |
+                                nb explaination {{x.nb_exp}}        |
+                                <input type="button" class="UP" name="question:{{x.id}}" value="UP"/>
+                                <input type="button" class="DOWN" name="question:{{x.id}}" value="DOWN"/>
+                                {{x.approval_ratio|floatformat:2}} % d'approbation
+                            </td>                   
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>    
+
+            <button class="butq" type="button">Poser une question <br>  à propos de cette loi</button>
+
+
+            {% if typereq == 'loi' %}
+                <form action="{% url 'article' Article.id %}" method="post" class="qform">
+                    {% csrf_token %}
+                    {{ qform.as_p }}
+                    <button type="submit" class="butq" name="btnqform">Poster la question</button>
+                </form> 
+            {% elif typereq == 'qst' %}
+                <form action="{% url 'question' q.id %}" method="post" class="qform">
+                    {% csrf_token %}
+                    {{ qform.as_p }}
+                    <button type="submit" class="butq" name="btnqform">Poster la question</button>
+                </form>
+            {% elif typereq == 'exp' %}
+                <form action="{% url 'explaination' exp.id %}" method="post" class="qform">
+                    {% csrf_token %}
+                    {{ qform.as_p }}
+                    <button type="submit" class="butq" name="btnqform">Poster la question</button>
+                </form>
+            {% elif typereq == 'dis' %}
+                <form action="{% url 'disclaim' dis.id %}" method="post" class="qform">
+                    {% csrf_token %}
+                    {{ qform.as_p }}
+                    <button type="submit" class="butq" name="btnqform">Poster la question</button>
+                </form>
+
+            {% comment %}
+
+            {% elif typereq == 'opn' %}
+                {{q.title}}
+            {% elif typereq == 'prp' %}
+                {{q.title}}
+
+            {% endcomment %}
+
+            {% endif %}
+    </section>
+
+    
+
+<!--############################################################################################
+################################      The propositions       ###################################
+#############################################################################################-->
+    {% if typereq == 'loi' or typereq == 'prp' %}
+    <hr>
+
+        <section class="proposition">
+                <h2>Autres propositions de lois pour cette réflection</h2>
+                <p>
+                    <ul>
+                    {% for x in listpropositions %}
+                        <li>{{x.law_article}}</li>
+                    {% endfor %}
+                    </ul>
+                </p>    
+            <form action="{% url 'article' Article.id %}" method="post" class="propform">
+                {% csrf_token %}
+                {{ propform.media }}
+                {{ propform.as_p }}
+                <button type="submit" class="butprop" name="propform">Poster votre proposition </button>
+            </form> 
+        </section>
+    {% endif %} 
+    {% endautoescape %}
+{% endblock %}

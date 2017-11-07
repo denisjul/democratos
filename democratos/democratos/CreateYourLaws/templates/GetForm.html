@@ -1,0 +1,20 @@
+{% load staticfiles %}
+<form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}">
+    {{ form.as_p }} 
+    <input type="hidden" name="typeform" value="{{typeform}}f">
+    <input type="hidden" name="typeref" value="{{typeref}}">
+    <input type="hidden" name="ref_id" value="{{idref}}">
+	{% if IsModif %}
+		<input type="hidden" name="IsModif" value="True">
+		<input type="hidden" name="idform" value="{{idform}}">
+	{% else %}
+		<input type="hidden" name="IsModif" value="">
+	{% endif%}
+<button type="submit" class="but{{typeform}}" name="{{typeform}}form{{idref}}"> Envoyer </button>
+{% if IsModif %}
+	<button class="but{{typeform}}" name="Cancel{{typeform}}{{idform}}form"> Annuler </button>
+{% endif%}
+</form> 
+<script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
