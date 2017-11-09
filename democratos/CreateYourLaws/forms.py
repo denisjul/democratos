@@ -181,6 +181,7 @@ class DisclaimForm(forms.ModelForm):
         widgets = {
             'text_dis': CKEditorWidget()
         }
+        
 """
 
 
