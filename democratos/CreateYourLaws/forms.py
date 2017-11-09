@@ -211,9 +211,26 @@ class NegopinionForm(forms.ModelForm):
 class PropositionForm(forms.ModelForm):
     class Meta:
         model = Proposition
-        fields = ('title', 'text_prop')
+        fields = ('title', 'text_prop','details')
         labels = {'title': ('Nommez votre proposition de loi'),
-                  'text_prop': ("votre proposition de loi")}
+                  'text_prop': ("votre proposition de loi"),
+                  'details': ("Note/détails :"),
+                  }
         widgets = {
-            'text_prop': CKEditorWidget(config_name='redac_law')
+            'text_prop': CKEditorWidget(config_name='redac_law'),
+            'details': CKEditorWidget(config_name='redac_law'),
+        }
+
+
+class CreateNewLawForm(forms.ModelForm):
+    class Meta:
+        model = Proposition
+        fields = ('title', 'text_law','details')
+        labels = {'title': ('Ennoncez votre loi'),
+                  'text_law': ("votre proposition de loi"),
+                  'details': ("Note/détails :"),
+                  }
+        widgets = {
+            'text_law': CKEditorWidget(config_name='redac_law'),
+            'details': CKEditorWidget(config_name='redac_law'),
         }
