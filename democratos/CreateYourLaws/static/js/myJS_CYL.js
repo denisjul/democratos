@@ -276,6 +276,7 @@ function loadckeditorJS () {
     {
     CKEDITOR.instances[name].destroy()
     }
+    console.log('out loadckeditorJS');
 }
 
 function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auquel est attaché le form
@@ -326,6 +327,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         });
         return false;
     });
+    console.log('out SetTheform');
 }
 
 // #################  AJAX, Back and Forward ##########################
@@ -370,6 +372,7 @@ function isbackorforward(){
             }
         }
     }
+    console.log('out isbackorforward')
 }
 
 
@@ -386,7 +389,7 @@ window.addEventListener("popstate",function(e){
 });
 
 function GoAjax(url, slug, push) {
-    console.log(url);
+    console.log('in Goajax:'+ url);
     if (url.indexOf("Reflection") > 0){
         url = url.replace("Reflection","reflection");
     }
@@ -398,20 +401,21 @@ function GoAjax(url, slug, push) {
         success: function(response) {
             $("#intro").html(response.intro);
             $("#content").html(response.content);
+            eval($("#content").find("script").text());
             $('html,body').scrollTop(0);
             if (url == "/CYL/InDatBox"){
                 console.log("InDatbox");
             }
             else{
-                Setbutform();
-                SetDonuts();
-                loadckeditorJS();
                 $('form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                 });
                 $('textarea').each( function() {
                     CKEDITOR.replace( $(this).attr('id') );
                 });
+                Setbutform();
+                SetDonuts();
+                loadckeditorJS();
             }
             // need a pushState if not Back or Forward
             if (push){
@@ -432,10 +436,11 @@ function GoAjax(url, slug, push) {
                         console.log("GoAjax error")
                     }
                 }
+            console.log('out GoAjax')
             },
         error: function(rs, e) {
         alert(rs.responseText);
-        }
+        }   
     });
 }
 
@@ -631,17 +636,18 @@ $(document).ready(function() {
             data: {'typerequest': 'form', 'typeform': data[1] ,'idform': data[2], 'typeref': data[3] ,'idref': data[4] ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(rs) {
-                    var idtomodif = "#" +  rs.typeform + 'td' + rs.idform;
-                    var oldhtml = $('#content').find(idtomodif).html();
-                    $('#content').find(idtomodif).html(rs.ModifForm);
-                    $('#content').find("Cancel" + rs.typeform + rs.idform + "form").each(function(){
-                        $(this).click(function(){
-                            $('#content').find(idtomodif).html(oldhtml)
-                        });
+                loadckeditorJS;
+                var idtomodif = "#" +  rs.typeform + 'td' + rs.idform;
+                var oldhtml = $('#content').find(idtomodif).html();
+                $('#content').find(idtomodif).html(rs.ModifForm);
+                $('#content').find("Cancel" + rs.typeform + rs.idform + "form").each(function(){
+                    $(this).click(function(){
+                        $('#content').find(idtomodif).html(oldhtml)
                     });
-                    $('#content').find("form").each(function(){
-                        SetTheForm($(this).attr('id'));
-                    });
+                });
+                $('#content').find("form").each(function(){
+                    SetTheForm($(this).attr('id'));
+                });
             },
             error: function(rs, e) {
                 alert(rs.responseText);
@@ -649,3 +655,4 @@ $(document).ready(function() {
         });
     });
 });
+

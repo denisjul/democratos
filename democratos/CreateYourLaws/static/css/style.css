@@ -159,7 +159,7 @@ button{
 	border-radius: 8px;
 	border-spacing: 10px;
 	margin: 1%;
-	padding: 10px;
+	padding: 0.2%;
 }
 
 .Bigposopinion
@@ -172,7 +172,7 @@ button{
 	display: inline-block;
 	width: 44.5%;
 	margin: 1%;
-	padding: 1%;
+	padding: 0.2%;
 	clear: both;
 }
 
@@ -201,7 +201,7 @@ button{
 	vertical-align: top;
 	width: 44.5%;
 	margin: 1%;
-	padding: 1%;
+	padding: 0.2%;
 }
 
 .negopinion
@@ -229,7 +229,7 @@ button{
 	border-radius: 8px;
 	border-spacing: 10px;
 	margin: 1%;
-	padding: 10px;
+	padding: 0.2%;
 }
 
 .proposition
@@ -241,7 +241,7 @@ button{
 	border-radius: 8px;
 	border-spacing: 10px;
 	margin: 1%;
-	padding: 10px;
+	padding: 0.2%;
 }
 
 section form{
@@ -270,7 +270,7 @@ section form{
 	border-style: solid;
 	border-radius: 8px;
 	margin: 1%;
-	padding: 2%;
+	padding: 0.2%;
 }
 
 
@@ -283,7 +283,7 @@ section form{
 	border-radius: 4px;
 	border-spacing: 10px;
 	margin: 1%;
-	padding: 10px;
+	padding: 0.2%;
 	width: 500px;
 }
 
@@ -296,7 +296,7 @@ section form{
 	border-radius: 4px;
 	border-spacing: 10px;
 	margin: 1%;
-	padding: 10px;
+	padding: 0.2%;
 	width: 500px;
 }
 
