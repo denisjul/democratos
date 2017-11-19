@@ -7,7 +7,7 @@ from datetime import date, timedelta
 from django.forms.extras.widgets import SelectDateWidget
 from django.contrib.auth.forms import UserCreationForm
 from registration.forms import RegistrationFormUniqueEmail
-from CreateYourLaws.models import LawArticle, Explaination, Proposition
+from CreateYourLaws.models import LawArticle, Explaination, Proposition, LawProp
 from CreateYourLaws.models import Posopinion, Negopinion, Question, CYL_user
 # Disclaim
 from ckeditor.widgets import CKEditorWidget
@@ -181,6 +181,7 @@ class DisclaimForm(forms.ModelForm):
         widgets = {
             'text_dis': CKEditorWidget()
         }
+        
 """
 
 
@@ -211,9 +212,26 @@ class NegopinionForm(forms.ModelForm):
 class PropositionForm(forms.ModelForm):
     class Meta:
         model = Proposition
-        fields = ('title', 'text_prop')
+        fields = ('title', 'text_prop','details')
         labels = {'title': ('Nommez votre proposition de loi'),
-                  'text_prop': ("votre proposition de loi")}
+                  'text_prop': ("votre proposition de loi"),
+                  'details': ("Note/détails :"),
+                  }
         widgets = {
-            'text_prop': CKEditorWidget(config_name='redac_law')
+            'text_prop': CKEditorWidget(config_name='redac_law'),
+            'details': CKEditorWidget(config_name='redac_law'),
+        }
+
+
+class CreateNewLawForm(forms.ModelForm):
+    class Meta:
+        model = LawProp
+        fields = ('title', 'text_law','details')
+        labels = {'title': ('Ennoncez votre loi'),
+                  'text_law': ("votre proposition de loi"),
+                  'details': ("Note/détails :"),
+                  }
+        widgets = {
+            'text_law': CKEditorWidget(config_name='redac_law'),
+            'details': CKEditorWidget(config_name='redac_law'),
         }

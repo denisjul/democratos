@@ -1,0 +1,204 @@
+{% extends "base_CYL.html" %}
+{% load staticfiles %}
+{% load special_filters %}
+
+{% block title %}
+    {% if list_ref_type == 'qst' %}
+        liste des questions sur 
+    {% elif list_ref_type == 'exp' %}
+        liste des comentaires sur 
+    {% elif list_ref_type == 'dis' %}
+        liste des contestation sur 
+    {% elif list_ref_type == 'opn' %}
+        {% if parent.positive %}
+            liste des opinions positive sur 
+        {% else %}}
+            liste des opinions positive sur
+        {% endif %}
+    {% elif list_ref_type == 'prp' %}
+        liste des contre-propositions sur 
+    {% endif %}
+    {% if parent_type == 'loi' %}
+        {{parent.title}}
+    {% else %}
+        {% if parent.title %} {{parent.title}} {% else %} {{parent.text}} {% endif %}
+        <!--  Revoir pour afficher ref.text correctement    -->
+    {% endif %}
+{% endblock %}
+
+{% block script2 %}
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+{% endblock %}
+
+
+{% comment %}
+{% block intro %} <!--         A revoir          -->
+    <h1> Où suis-je? </h1>
+    <p> 
+        {% if typeref == 'loi' %}    <!--         The path to the Article           -->
+            {% for x in listparents %}
+                <a href="{% url 'InDatBox' x|lookup:2 x|lookup:1 %}"><strong>  {{x|lookup:0|truncatewords:4}}  </strong></a>  >>     
+            {% endfor %}
+            {{Article.title}}
+
+        {% else %}   <!--         The path to the reflection       -->
+            <a href="{% url 'InDatBox' 1 law_code.id %}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></a>  >>  ...  >>
+            {% for x in list_parents %}
+                <a href="{% url 'reflection' x|lookup:0 x|lookup:1 %}"><strong>  {{x|lookup:2|truncatewords:4}}  </strong></a>  >>     
+            {% endfor %}
+            {% if ref.title %}    
+                {{ref.title|truncatewords:8}}
+            {% else %}
+                {{ref.text|truncatewords:8}}
+            {% endif %}
+        {% endif %}
+    </p>
+{% endblock %}  {% endcomment %}
+
+
+{% block content %}
+{% autoescape off %}
+
+<!--############################################################################################
+############################      The Parent Reflection       ##################################
+#############################################################################################-->
+
+    {% if parent_type == 'loi' %}  
+            <!--         The Law article           -->
+        <section class="law_text">
+            <h1>{{parent.law_code.title}}</h1> 
+                <h2>{{parent.title}}</h2>
+                    {{parent.text_law}} 
+
+
+    {% else %}
+            <!--         The Others         -->
+        {% if parent_type == 'qst' %} 
+            <section class="question">
+                <h1> Question à propos de: 
+        {% elif parent_type == 'exp' %}
+            <section class="explaination">
+                <h1> Commentaire/explication à propos de:
+        {% elif parent_type == 'dis' %}
+            <section class="disclaim">
+                <h1> démentis/contradiction sur:  
+        {% elif tparent_type == 'opn' %}
+            {% if parent.positive %}
+                <section class="posopinon">
+                    <h1> point fort sur: 
+            {% else %}
+                <section class="negopinon">
+                    <h1> point faible sur: 
+            {% endif %}
+        {% elif parent_type == 'prp' %}
+            <section class="proposition">
+                <h1> Contre proposition à: 
+        {% endif %} 
+                {% if parent.content_object.title %}  
+                    {{parent.content_object.title}} 
+                {% else %}
+                    {% if parent.content_object.text_op %} 
+                        {{parent.content_object.text_op}} 
+                    {% elif parent.content_object.text_dis %} 
+                        {{parent.content_object.text_dis}}
+                    {% elif parent.content_object.text_exp %} 
+                        {{parent.content_object.text_exp}}
+                    {% elif parent.content_object.text_prop %} 
+                        {{parent.content_object.text_prop}} 
+                    {% elif parent.content_object.text_q %} 
+                        {{parent.content_object.text_q}}
+                    {% endif %}
+                {% endif %}</h1>    
+                {% if parent.title %}    
+                    <h2>{{parent.title}}</h2>
+                    {% if parent_type == 'qst' %}
+                        <p>{{parent.text_q}}</p>
+                    {% elif parent_type == 'exp' %}
+                        <p>{{parent.text_exp}}</p>
+                    {% elif parent_type == 'dis' %}
+                        <p>{{parent.text_dis}}</p>
+                    {% elif parent_type == 'opn' %}
+                        <p>{{parent.text_op}}</p>
+                    {% elif parent_type == 'prp' %}
+                        <p>{{parent.text_prop}}</p>
+                    {% endif %}
+                {% else %}
+                    {% if parent_type == 'qst' %}
+                        <h2>{{parent.text_q}}</h2>
+                    {% elif parent_type == 'exp' %}
+                        <h2>{{parent.text_exp}}</h2>
+                    {% elif parent_type == 'dis' %}
+                        <h2>{{parent.text_dis}}</h2>
+                    {% elif parent_type == 'opn' %}
+                        <h2>{{parent.text_op}}</h2>
+                    {% elif parent_type == 'prp' %}
+                        <h2>{{parent.text_prop}}</h2>
+                    {% endif %}
+                {% endif %}
+    {% endif %}
+                <br><br>nb question {{parent.nb_q}}         |
+                nb explaination {{parent.nb_exp}}        |
+                <input type="button" class="UP" name="{{parent_type}}:{{parent.id}}" value="UP"/>
+                <input type="button" class="DOWN" name="{{parent_type}}:{{parent.id}}" value="DOWN"/>
+                <canvas name="{{parent.approval_ratio}}" class="donut"></canvas>
+                <var id="{{parent_type}}{{parent.id}}">{{parent.approval_ratio|floatformat:2}}</var> % d'approbation
+            </section>
+
+
+<!--############################################################################################
+##################################      The Children       #####################################
+#############################################################################################-->
+    {% if list_ref_type == 'qst' %}
+        <section class="question">
+            <h2>Liste complète des questions</h2>
+    {% elif list_ref_type == 'prp' %}
+        <section class="proposition">
+            <h2>Liste complète des propositions</h2>
+    {% elif list_ref_type == 'dis' %}
+        <section class="disclaim">
+            <h2>Liste complète des contradictions</h2>
+    {% elif list_ref_type == 'exp' %}
+        <section class="explaination">
+            <h2>Liste complète des commentaires</h2>
+    {% elif list_ref_type == 'opv' %}
+        <section class="posopinion">
+            <style type="text/css" media="screen">
+                .posopinion{width: 80%;}    
+            </style>
+            <h2>Liste complète des points positifs</h2>
+    {% elif list_ref_type == 'opx' %}
+        <section class="negopinion">
+            <style type="text/css" media="screen">
+                .negopinion{width: 80%;}    
+            </style>
+            <h2>Liste complète des points négatifs</h2> 
+    {% endif %}                
+        <p>
+            <table>
+                <tbody>
+                    {% for x in list_to_display %}
+                        <tr>
+                            <td> 
+                                <div onclick="location.href='{% url 'reflection' 'exp' x.id %}'">
+                                {% if x.title%}
+                                    {{x.title}} <br/>
+                                    {{x.text_exp|truncatewords:250}} <br/>
+                                {% else %}
+                                    {{x.text_exp}} <br/>
+                                {% endif %}
+                                </div>
+                                nb question {{x.nb_q}}         |
+                                nb explaination {{x.nb_exp}}        |
+                                <input type="button" class="UP" name="opn:{{x.id}}" value="UP"/>
+                                <input type="button" class="DOWN" name="opn:{{x.id}}" value="DOWN"/>
+                                <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </p>      
+        </section>
+ 
+     {% endautoescape %}
+{% endblock %}
