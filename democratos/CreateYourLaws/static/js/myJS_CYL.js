@@ -407,6 +407,7 @@ function GoAjax(url, slug, push) {
                 console.log("InDatbox");
             }
             else{
+                console.log(url)
                 $('form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                 });
@@ -416,6 +417,7 @@ function GoAjax(url, slug, push) {
                 Setbutform();
                 SetDonuts();
                 loadckeditorJS();
+                
             }
             // need a pushState if not Back or Forward
             if (push){
@@ -539,16 +541,28 @@ $(document).ready(function() {
                 success: function(response) {
                     var idtomodif = "#" +  response.typeref + 'askform' + response.idref;
                     $('#content').find(idtomodif).html(response.newform);
+                    /*
+#####################################################################################################
                     $('#content').find("form").each(function(){
-                        SetTheForm($(this).attr('id'));
+                   loadckeditorJS();     SetTheForm($(this).attr('id'));
+                    });*/
+                    eval($("#content").find("script").text());
+                    $('form').each(function(){
+                        SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                     });
+                    $('textarea').each( function() {
+                        CKEDITOR.replace( $(this).attr('id') );
+                    });
+                    Setbutform();
                     loadckeditorJS();
+                    /*
                     $('form').each(function(){
                         $('textarea').each( function() {
                             CKEDITOR.replace( $(this).attr('id') );
                         });
+#####################################################################################################
                         SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
-                    });
+                    });*/
                 },
                 error: function(rs, e) {
                     alert(rs.responseText);
@@ -607,6 +621,7 @@ $(document).ready(function() {
             data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(response) {
+                eval($("#content").find("script").text());
                 for(name in CKEDITOR.instances)
                 {
                     CKEDITOR.instances[name].destroy()
@@ -614,6 +629,7 @@ $(document).ready(function() {
                 var idtomodif = "#child" +  response.typeref + response.idref;
                 $('#content').find(idtomodif).replaceWith(response.newcomments);
                 SetDonuts();
+                loadckeditorJS();
                 //ConfirmDialog('Êtes vous sûr de vouloir supprimer cette réflexion?');
             },
             error: function(rs, e) {

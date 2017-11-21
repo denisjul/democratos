@@ -573,6 +573,8 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                    'section_type': "qst",
                    'tdid': str(id_ref)}
             q.save()
+        else:
+            print("FORM NON VALIDE. ERREURE À REVOIR")
     if IsModif:
         ctx["message"] = "Votre réflection a bien été modifié!"
     else:
