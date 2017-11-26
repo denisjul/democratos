@@ -346,6 +346,7 @@ def get_reflection(request, typeref=None, id_ref=None):
     """ View which display a reflection and its child
     reflections from its ID"""
     # Does the reflection extist?
+    print("GetReflection")
     User = request.user
     if request.POST:
         slug = request.POST.get('slug', None)
@@ -355,6 +356,7 @@ def get_reflection(request, typeref=None, id_ref=None):
         else:
             typeref, id_ref = slug.split(sep=":")
             id_ref = int(id_ref)
+    print("typeref",typeref)
     try:
         if typeref == 'loi':
             ref = LawArticle.objects.get(id=id_ref)
@@ -370,6 +372,7 @@ def get_reflection(request, typeref=None, id_ref=None):
             ref = Negopinion.objects.get(id=id_ref)
         elif typeref == 'prp':
             ref = Proposition.objects.get(id=id_ref)
+        print("ref: ", ref)
     except Exception:
         raise Http404
     # where is it from? path to the reflection
@@ -395,6 +398,7 @@ def get_reflection(request, typeref=None, id_ref=None):
     oppform = PosopinionForm()
     opnform = NegopinionForm()
     prpform = PropositionForm()
+    print("forms loaded")
     # load all the disclaims, other proposions, opinions, comments and
     # questions about the reflection
     listexplainations = list(ref.explainations.all())
@@ -403,28 +407,30 @@ def get_reflection(request, typeref=None, id_ref=None):
     listcom.extend(listquestions)
     listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
     listcom.reverse()
-    if typeref == 'exp' or typeref == 'opn' or typeref == 'dis':
-        listdisclaims = list(ref.disclaims.all())
     if typeref == 'loi' or typeref == 'prp':
         listposop = list(ref.posopinions.all())
         listnegop = list(ref.negopinions.all())
         listpropositions = list(ref.propositions.all())
+    print('Lists child reflection loaded')
     if request.POST:
         intro = render_block_to_string('GetReflection.html',
                                        "intro",
                                        locals())
+        print('intro loaded')
         content = render_block_to_string('GetReflection.html',
                                          "content",
                                          locals())
         print(content)
         # intro = render_to_string('intro_reflec.html', locals())
-        # content = render_to_string('content_reflec.html', locals())
+        # content = render_to_string('content_reflec.html', locals()
         ctx = {'intro': intro,
                'content': content,
                'typeref': typeref,
                'id_ref': str(id_ref)}
+        print("sucess Ajax load")
         return JsonResponse(ctx)
     else:
+        print("sucess stdt load")
         return render(request, 'GetReflection.html', locals())
 
 

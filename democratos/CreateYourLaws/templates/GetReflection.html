@@ -133,9 +133,9 @@
                             <table>
                                 <tbody>
                                     {% for x in listposop %}
-                                        <tr>
+                                        <tr><div id="posopdiv">
                                             <td class="posopinion" id ="opptd{{x.id}}"> 
-                                                <div class='clickable GetReflection' name='opn:{{x.id}}'>
+                                                <div class='clickable GetReflection' name='opp:{{x.id}}'>
                                                 {% if x.title%}
                                                     {{x.title}} <br/>
                                                     {{x.text_op|truncatewords:250}} <br/>
@@ -155,7 +155,8 @@
                                                 <canvas id="donopn{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
                                                 </div>
                                                 {% comment %}
-                                                <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation</td> {% endcomment %}
+                                                <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation {% endcomment %}
+                                            </td>
                                         </tr>
                                     {% empty %}
                                         Aucun point positif n'a été relevé pour le moment sur cette réflection. Soyez le premier à en donner un!
@@ -178,12 +179,13 @@
 
                     <article class="Bignegopinion">
                         <h2>Points négatifs</h2>
+                        <div id="negopdiv">
                             <table>
                                 <tbody>
                                     {% for x in listnegop %}
                                         <tr>
                                             <td class="negopinion" id ="opntd{{x.id}}">
-                                                <div onclick="location.href='{% url 'reflection' 'opn' x.id %}'" class='clickable'>
+                                                <div class='clickable GetReflection' name='opn:{{x.id}}'>
                                                 {% if x.title%}
                                                     {{x.title}} <br/>
                                                     {{x.text_op|truncatewords:250}} <br/>
