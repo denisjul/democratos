@@ -34,8 +34,12 @@ function Confirmresult(qorigin, answer, data) {
                     dataType: "json",
                     success: function(rs) {
                         alert(rs.message);
-                        GoAjax(history.state.url, history.state.slug, false);
-
+                        if (history.state==null) {
+                            location.reload();
+                        }
+                        else{
+                           GoAjax(history.state.url, history.state.slug, false);
+                        }
                     },
                     error: function(rs, e) {
                         alert(rs.responseText);
@@ -285,8 +289,10 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
             CKEDITOR.instances[instance].updateElement();
         var datatosend = $(this).serialize()
         datatosend['csrfmiddlewaretoken']=csrftoken
-        // alert($(this).parent().parent().attr('id'));
         var place = '#' + $(this).parent().parent().attr('id')
+        console.log(place, typeof(place))
+        datatosend += '&place=' + place
+        console.log(datatosend);
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -301,6 +307,18 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 $('form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                 });
+                $('textarea').each( function() {
+                    try {
+                        // statements
+                        CKEDITOR.replace( $(this).attr('id') );
+                    } catch(e) {
+                        // statements
+                        console.log(e);
+                    }
+                });
+                Setbutform();
+                SetDonuts();
+                // loadckeditorJS();
                 /*switch(response.section_type){
                     case'exp':
                         $('#content').find('#exptd' + response.tdid).html(response.reflection); // update the DIV
@@ -455,6 +473,11 @@ $(document).ready(function() {
     console.log("doc ready");
     // -------------Displaying Forms for q,exp,op etc. -------------
     Setbutform();
+    if (location.href.slice(0,37) == "http://127.0.0.1:8000/CYL/Reflection/"){
+        $('form').each(function(){
+            SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
+        });
+    }
     // -------------- JStree settings ---------------------
     $("#jstree_CYL").jstree({
         'core' : {

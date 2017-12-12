@@ -21,6 +21,7 @@ from CreateYourLaws.forms import Info_Change_Form, NegopinionForm
 from CreateYourLaws.views_functions import get_path, get_the_instance
 from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
+from CreateYourLaws.dl_law_codes.functions import get_something
 # from templates.template_tools import render_block_to_string
 from render_block import render_block_to_string
 import operator
@@ -437,6 +438,8 @@ def get_reflection(request, typeref=None, id_ref=None):
 def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     typeform = request.POST.get('typeform', '')
     typeref = request.POST.get('typeref', '')
+    place = request.POST.get('place','')
+    print("place: " ,place)
     id_ref = int(request.POST.get('ref_id', None))
     IsModif = bool(request.POST.get('IsModif', False))
     if IsModif:
@@ -476,61 +479,21 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                  autor=User,
                                                  law_article=lawart,
                                                  content_object=ref)
-            listref = list(ref.propositions.all())
-            NewSection = render_to_string('UpSection.html', locals())
+            listpropositions = list(ref.propositions.all())
+            NewSection = render_block_to_string('GetReflection.html',
+                                                'content',
+                                                locals())
+            NewSection = get_something(NewSection, 
+                                       '<section class="Bigproposition" id="propsection">',
+                                       '</section>',
+                                       0)
             ctx = {'reflection': NewSection,
                    'section_type': "prp",
                    'tdid': ""}
             prp.save()
 
-    # ####################  ExplainationForm ###########################
-    elif request.method == 'POST' and typeform == 'expf':
-        expform = ExplainationForm(request.POST)
-        if expform.is_valid():
-            exptitle = expform.cleaned_data['title']
-            explain = expform.cleaned_data['text_exp']
-            if IsModif:
-                exp = Explaination.objects.get(id=idform)
-                exp.text_exp = explain
-                exp.title = exptitle
-            else:
-                exp = Explaination.objects.create(title=exptitle,
-                                                  text_exp=explain,
-                                                  autor=User,
-                                                  content_object=ref)
-            listexplainations = list(ref.explainations.all())
-            listquestions = list(ref.questions.all())
-            listref = listexplainations
-            listref.extend(listquestions)
-            listref = sorted(listref,
-                             key=operator.attrgetter('approval_factor'))
-            NewSection = render_to_string('UpSection.html', locals())
-            ctx = {'reflection': NewSection,
-                   'section_type': "exp",
-                   'tdid': str(id_ref)}
-            exp.save()
     # ####################  OpinionForm #########################
     #      <---- Revoir si séparer Posop et Negop
-    elif request.method == 'POST' and typeform == 'opnf':
-        opnform = NegopinionForm(request.POST)
-        if opnform.is_valid():
-            optitle = opnform.cleaned_data['title']
-            opin = opnform.cleaned_data['text_opn']
-            if IsModif:
-                opn = Negopinion.objects.get(id=idform)
-                opn.text_opn = opin
-                opn.title = optitle
-            else:
-                opn = Negopinion.objects.create(text_opn=opin,
-                                                title=optitle,
-                                                autor=User,
-                                                content_object=ref)
-            listref = list(ref.negopinions.all())
-            NewSection = render_to_string('UpSection.html', locals())
-            ctx = {'reflection': NewSection,
-                   'section_type': "opp",
-                   'tdid': ""}
-            opn.save()
 
     elif request.method == 'POST' and typeform == 'oppf':
         oppform = PosopinionForm(request.POST)
@@ -546,41 +509,98 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                 title=optitle,
                                                 autor=User,
                                                 content_object=ref)
-            listref = list(ref.posopinions.all())
-            NewSection = render_to_string('UpSection.html', locals())
+            listposop = list(ref.posopinions.all())
+            NewSection = render_block_to_string('GetReflection.html',
+                                                'content',
+                                                locals())
+            start = '<article class="Bigposopinion" id="posopsection">'
+            NewSection = get_something(NewSection, 
+                                       start,
+                                       '</article>',
+                                       0)
             ctx = {'reflection': NewSection,
                    'section_type': "opp",
                    'tdid': ""}
             opp.save()
 
-    # ####################  QuestionForm ###########################
-    elif request.method == 'POST' and typeform == 'qstf':
-        qstform = QuestionForm(request.POST)
-        if qstform.is_valid():
-            qtitle = qstform.cleaned_data['title']
-            question = qstform.cleaned_data['text_q']
+    elif request.method == 'POST' and typeform == 'opnf':
+        opnform = NegopinionForm(request.POST)
+        if opnform.is_valid():
+            optitle = opnform.cleaned_data['title']
+            opin = opnform.cleaned_data['text_opn']
             if IsModif:
-                q = Explaination.objects.get(id=idform)
-                q.text_q = question
-                q.title = qtitle
+                opn = Negopinion.objects.get(id=idform)
+                opn.text_opn = opin
+                opn.title = optitle
             else:
-                q = Question.objects.create(text_q=question,
-                                            title=qtitle,
-                                            autor=User,
-                                            content_object=ref)
-            listexplainations = list(ref.explainations.all())
-            listquestions = list(ref.questions.all())
-            listref = listexplainations
-            listref.extend(listquestions)
-            listref = sorted(listref,
-                             key=operator.attrgetter('approval_factor'))
-            NewSection = render_to_string('UpSection.html', locals())
+                opn = Negopinion.objects.create(text_opn=opin,
+                                                title=optitle,
+                                                autor=User,
+                                                content_object=ref)
+            listnegop = list(ref.negopinions.all())
+            NewSection = render_block_to_string('GetReflection.html',
+                                                'content',
+                                                locals())
+            start = '<article class="Bignegopinion" id="negopsection">'
+            NewSection = get_something(NewSection, 
+                                       start,
+                                       '</article>',
+                                       0)
             ctx = {'reflection': NewSection,
-                   'section_type': "qst",
-                   'tdid': str(id_ref)}
-            q.save()
-        else:
-            print("FORM NON VALIDE. ERREURE À REVOIR")
+                   'section_type': "opn",
+                   'tdid': ""}
+            opn.save()
+
+    # ####################  QuestionForm ###########################
+    elif request.method == 'POST' and typeform == 'qstf' and typeform == 'expf':
+        if typeform == 'expf':
+            expform = ExplainationForm(request.POST)
+            if expform.is_valid():
+                exptitle = expform.cleaned_data['title']
+                explain = expform.cleaned_data['text_exp']
+                if IsModif:
+                    exp = Explaination.objects.get(id=idform)
+                    exp.text_exp = explain
+                    exp.title = exptitle
+                else:
+                    exp = Explaination.objects.create(title=exptitle,
+                                                      text_exp=explain,
+                                                      autor=User,
+                                                      content_object=ref)
+                exp.save()
+        elif typeform == 'qstf':        
+            qstform = QuestionForm(request.POST)
+            if qstform.is_valid():
+                qtitle = qstform.cleaned_data['title']
+                question = qstform.cleaned_data['text_q']
+                if IsModif:
+                    q = Explaination.objects.get(id=idform)
+                    q.text_q = question
+                    q.title = qtitle
+                else:
+                    q = Question.objects.create(text_q=question,
+                                                title=qtitle,
+                                                autor=User,
+                                                content_object=ref)
+                q.save()
+        listexplainations = list(ref.explainations.all())
+        listquestions = list(ref.questions.all())
+        listcom = listexplainations
+        listcom.extend(listquestions)
+        listcom = sorted(listcom,
+                         key=operator.attrgetter('approval_factor'))
+        NewSection = render_block_to_string('GetReflection.html',
+                                            'content',
+                                            locals())
+        NewSection = get_something(NewSection, 
+                                   '<section id="'+typeref+'newdebate'+id_ref+'">',
+                                   '</article>',
+                                   0)
+        ctx = {'reflection': NewSection,
+               'section_type': "qst",
+               'tdid': str(id_ref)}
+    else:
+        print("FORM NON VALIDE. ERREURE À REVOIR") 
     if IsModif:
         ctx["message"] = "Votre réflection a bien été modifié!"
     else:
@@ -713,10 +733,10 @@ def DeleteReflection(request):
     """ Enable the Autor or the comunity to delete a comment """
     typeref = request.POST.get('typeref', None)
     idref = int(request.POST.get('idref', None))
+    # print(typeref, idref)
     obj = get_the_instance(typeref, idref)
     obj.delete()
     ctx = {'message': 'Votre commentaire a bien été supprimé'}
-    # maj de la page
     return JsonResponse(ctx)
 
 

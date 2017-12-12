@@ -127,7 +127,7 @@
                     <br>
                     <br>
                     <hr>
-                    <article class="Bigposopinion">
+                    <article class="Bigposopinion" id="posopsection">
                         <h2>Points positifs</h2>
                         <div id="posopdiv">
                             <table>
@@ -135,6 +135,12 @@
                                     {% for x in listposop %}
                                         <tr><div id="posopdiv">
                                             <td class="posopinion" id ="opptd{{x.id}}"> 
+                                                {% if User == x.autor %}
+                                                    <div class="SmallMenu">
+                                                        <ins class="DelOwnRef clickable " name="del:opp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:opp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
+                                                    </div>
+                                                    <br>
+                                                {% endif %}
                                                 <div class='clickable GetReflection' name='opp:{{x.id}}'>
                                                 {% if x.title%}
                                                     {{x.title}} <br/>
@@ -163,6 +169,7 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
                         <div id='pos{{x.id}}comments'>
                             <button class="butopp" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
                             <form action="{% url 'PostReflection'%}" method="post" id="oppform" name="loi:opp:{{ref.id}}">
@@ -177,7 +184,7 @@
                         </div>    
                     </article>
 
-                    <article class="Bignegopinion">
+                    <article class="Bignegopinion" id="negopsection">
                         <h2>Points négatifs</h2>
                         <div id="negopdiv">
                             <table>
@@ -185,6 +192,12 @@
                                     {% for x in listnegop %}
                                         <tr>
                                             <td class="negopinion" id ="opntd{{x.id}}">
+                                                {% if User == x.autor %}
+                                                    <div class="SmallMenu">
+                                                        <ins class="DelOwnRef clickable " name="del:opn:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:opn:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
+                                                    </div>
+                                                    <br>
+                                                {% endif %}
                                                 <div class='clickable GetReflection' name='opn:{{x.id}}'>
                                                 {% if x.title%}
                                                     {{x.title}} <br/>
@@ -213,6 +226,7 @@
                                     {% endfor %}
                                 </tbody>
                             </table> 
+                        </div>
                         <div id='neg{{x.id}}comments'>
                             <button class="butopn" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
                             <form action="{% url 'PostReflection'%}" method="post"  id="opnform" name="loi:opn:{{ref.id}}">
@@ -233,8 +247,7 @@
 #############################################################################################-->
     {% if typeref == 'loi' or typeref == 'prp' %}
     <hr>
-
-        <section class="Bigproposition" id="propsection">
+        <section class="Bigproposition" id="propsection">  {% comment %}PostReflection must be update if this line is modified {% endcomment %}
             <h2>Autres propositions de lois pour cette réflection</h2>
             <table>
                 <tbody>
@@ -302,6 +315,12 @@
             <tr>
                 {% if x|isinst:'CreateYourLaws.models.Explaination' %}    
                     <td class='explaination' id="exptd{{x.id}}"> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
+                        {% if User == x.autor %}
+                            <div class="SmallMenu">
+                                <ins class="DelOwnRef clickable " name="del:exp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:exp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
+                            </div>
+                            <br>
+                        {% endif %}
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
                             {{x.text_exp|truncatewords:80}} <br/>
@@ -310,6 +329,12 @@
                         {% endif %}
                 {% else %}
                     <td class='question' id="qsttd{{x.id}}">  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
+                        {% if User == x.autor %}
+                            <div class="SmallMenu">
+                                <ins class="DelOwnRef clickable " name="del:qst:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:qst:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
+                            </div>
+                            <br>
+                        {% endif %}
                         {% if x.title %}
                             <strong>{{x.title}}</strong> <br/>
                             {{x.text_q|truncatewords:80}} <br/>

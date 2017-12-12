@@ -88,7 +88,7 @@ def get_the_instance(obj, Id):
         return CreateYourLaws.models.Explaination.objects.get(id=Id)
     elif obj == 'dis':
         return CreateYourLaws.models.Disclaim.objects.get(id=Id)
-    elif obj == 'opn':
+    elif obj == 'opp':
         return CreateYourLaws.models.Posopinion.objects.get(id=Id)
     elif obj == 'opn':
         return CreateYourLaws.models.Negopinion.objects.get(id=Id)
