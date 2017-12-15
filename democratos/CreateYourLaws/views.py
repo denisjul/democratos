@@ -239,7 +239,6 @@ def Create_User(request):
 
 
 def Checkbox(request):  # A revoir
-    print('FONCTION CALLED')
     if request.method == 'POST':
         typeref = request.POST.get('typeref', None)
         ref_id = request.POST.get('ref_id', None)
@@ -439,7 +438,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     typeform = request.POST.get('typeform', '')
     typeref = request.POST.get('typeref', '')
     place = request.POST.get('place','')
-    print("place: " ,place)
+    # print("place: " ,place)
     id_ref = int(request.POST.get('ref_id', None))
     IsModif = bool(request.POST.get('IsModif', False))
     if IsModif:
@@ -483,7 +482,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             NewSection = render_block_to_string('GetReflection.html',
                                                 'content',
                                                 locals())
-            NewSection = get_something(NewSection, 
+            NewSection, trash = get_something(NewSection, 
                                        '<section class="Bigproposition" id="propsection">',
                                        '</section>',
                                        0)
@@ -514,7 +513,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                 'content',
                                                 locals())
             start = '<article class="Bigposopinion" id="posopsection">'
-            NewSection = get_something(NewSection, 
+            NewSection, trash  = get_something(NewSection, 
                                        start,
                                        '</article>',
                                        0)
@@ -542,7 +541,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                 'content',
                                                 locals())
             start = '<article class="Bignegopinion" id="negopsection">'
-            NewSection = get_something(NewSection, 
+            NewSection, trash = get_something(NewSection, 
                                        start,
                                        '</article>',
                                        0)
@@ -592,7 +591,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         NewSection = render_block_to_string('GetReflection.html',
                                             'content',
                                             locals())
-        NewSection = get_something(NewSection, 
+        NewSection, trash  = get_something(NewSection, 
                                    '<section id="'+typeref+'newdebate'+id_ref+'">',
                                    '</article>',
                                    0)

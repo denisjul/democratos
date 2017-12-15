@@ -247,61 +247,61 @@
 #############################################################################################-->
     {% if typeref == 'loi' or typeref == 'prp' %}
     <hr>
-        <section class="Bigproposition" id="propsection">  {% comment %}PostReflection must be update if this line is modified {% endcomment %}
-            <h2>Autres propositions de lois pour cette réflection</h2>
-            <table>
-                <tbody>
-                    {% for x in listpropositions %}
-                        <tr>
-                            <td class="proposition" id ="prptd{{x.id}}">
-                                {% if User == x.autor %}
-                                    <div class="SmallMenu">
-                                       <ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:prp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
-                                    </div>
-                                    <br>
-                                {% endif %}
-                                <div class="IDB GetReflection" name="prp:{{x.id}}">
+    <section class="Bigproposition" id="propsection">  {% comment %}PostReflection must be update if this line is modified {% endcomment %}
+        <h2>Autres propositions de lois pour cette réflection</h2>
+        <table>
+            <tbody>
+                {% for x in listpropositions %}
+                    <tr>
+                        <td class="proposition" id ="prptd{{x.id}}">
+                            {% if User == x.autor %}
+                                <div class="SmallMenu">
+                                   <ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:prp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
+                                </div>
+                                <br>
+                            {% endif %}
+                            <div class="IDB GetReflection" name="prp:{{x.id}}">
 
-                                    {% if x.title %}
-                                        <strong>{{x.title}}</strong> <br/>
-                                        {{x.text_prop|truncatewords:80}} <br/>
-                                    {% else %}
-                                        <strong>{{x.text_prop}}</strong> <br/>
-                                    {% endif %}
-                                </div>
-                                <hr>
-                                <div class="count">
-                                <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
-                                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
-                                <img src="{% static 'icons/opv2.png' %}" alt="opp" class="icn"> {{x.nb_posop}}
-                                <img src="{% static 'icons/opx2.png' %}" alt="opn" class="icn"> {{x.nb_negop}}
-                                </div>
-                                <div class="vote">
-                                <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="prp:{{x.id}}" value="UP"/>
-                                <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="prp:{{x.id}}" value="DOWN"/>
-                                    note:
-                                <canvas id="donprp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                                </div>
-                            </td>                   
-                        </tr>
-                    {% empty %}
-                    Aucune contre-proposition n'a été faite pour le moment sur cette réflection.<br>
-                    Soyez le premier à en faire un!
-                    {% endfor %}
-                </tbody>
-            </table> 
+                                {% if x.title %}
+                                    <strong>{{x.title}}</strong> <br/>
+                                    {{x.text_prop|truncatewords:80}} <br/>
+                                {% else %}
+                                    <strong>{{x.text_prop}}</strong> <br/>
+                                {% endif %}
+                            </div>
+                            <hr>
+                            <div class="count">
+                            <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
+                            <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
+                            <img src="{% static 'icons/opv2.png' %}" alt="opp" class="icn"> {{x.nb_posop}}
+                            <img src="{% static 'icons/opx2.png' %}" alt="opn" class="icn"> {{x.nb_negop}}
+                            </div>
+                            <div class="vote">
+                            <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="prp:{{x.id}}" value="UP"/>
+                            <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="prp:{{x.id}}" value="DOWN"/>
+                                note:
+                            <canvas id="donprp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                            </div>
+                        </td>                   
+                    </tr>
+                {% empty %}
+                Aucune contre-proposition n'a été faite pour le moment sur cette réflection.<br>
+                Soyez le premier à en faire un!
+                {% endfor %}
+            </tbody>
+        </table> 
         <div id='prp{{x.id}}comments'>
             <button class="butprp" type="button">Faire une autre proposition <br>  que cette loi</button>
-                <form action="{% url 'PostReflection'%}"  method="post" id="prpform">
-                    {{ prpform.as_p }} 
-                    <input type="hidden" name="typeform" value="prpf">
-                    <input type="hidden" name="typeref" value="{{typeref}}">
-                    <input type="hidden" name="ref_id" value="{{ref.id}}">
-                    <input type="hidden" name="IsModif" value="">
-                    <button type="submit" class="butprp" name="prpform">Poster votre proposition </button>
-                </form> 
+            <form action="{% url 'PostReflection'%}"  method="post" id="prpform">
+                {{ prpform.as_p }} 
+                <input type="hidden" name="typeform" value="prpf">
+                <input type="hidden" name="typeref" value="{{typeref}}">
+                <input type="hidden" name="ref_id" value="{{ref.id}}">
+                <input type="hidden" name="IsModif" value="">
+                <button type="submit" class="butprp" name="prpform">Poster votre proposition </button>
+            </form> 
         </div>
-        </section>
+    </section>
            
     {% endif %}
 
@@ -410,6 +410,8 @@
 <script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script> -->
 <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
 <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/adapters/jquery.js" %}"></script>
 
 {% endblock %}
+
 
