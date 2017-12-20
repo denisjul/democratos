@@ -5,21 +5,21 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 Examples:
 Function views
     1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+    2. Add a URL to urlpatterns:  url('$', views.home, name='home')
 Class-based views
     1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+    2. Add a URL to urlpatterns:  url('$', Home.as_view(), name='home')
 Including another URLconf
-    1. Import the include() function: from django.conf.urls import url, include
-    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
+    1. Import the re_path() function: from django.conf.urls import url, re_path
+    2. Add a URL to urlpatterns:  url('blog/', re_path('blog.urls'))
 """
-from django.conf.urls import include, url
+from django.urls import include, path
 from django.contrib import admin
 import CreateYourLaws
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^CYL/', include('CreateYourLaws.urls')),
-    # url(r'^ckeditor/', include('ckeditor.urls')),
-    url(r'^$', CreateYourLaws.views.home),
+    path('admin/', admin.site.urls),
+    path('CYL/', include('CreateYourLaws.urls')),
+    # url('ckeditor/', re_path('ckeditor.urls')),
+    path('', CreateYourLaws.views.home),
 ]

@@ -26,7 +26,8 @@ class Note(models.Model):
     user = models.ForeignKey(CYL_user, on_delete=models.CASCADE)
     approve = models.NullBooleanField()
     content_type = models.ForeignKey(ContentType,
-                                     null=True)
+                                     null=True,
+                                     on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
@@ -58,7 +59,9 @@ class Reflection(models.Model):
     update = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=150, blank=True, null=True)
     notes = GenericRelation(Note)
-    content_type = models.ForeignKey(ContentType, null=True)
+    content_type = models.ForeignKey(ContentType,
+                                     null=True,
+                                     on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 
@@ -116,9 +119,10 @@ class Negopinion(Reflection):
 
 
 class Proposition(Reflection):
-    text_prop = RichTextField()
+    text_prp = RichTextField()
     details = RichTextField()
-    law_article = models.ForeignKey('LawArticle', on_delete=models.CASCADE)
+    law_article = models.ForeignKey('LawArticle',
+                                    on_delete=models.CASCADE)
     questions = GenericRelation(Question)
     explainations = GenericRelation(Explaination)
     posopinions = GenericRelation(Posopinion)

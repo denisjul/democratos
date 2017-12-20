@@ -1,4 +1,3 @@
-
 //setup JQuery's AJAX methods to setup CSRF token in the request before sending it off.
 
 
@@ -245,28 +244,23 @@ function SetDonuts(){
     });
 }
 
-function AddScript (scriptpath){
-    fileref =document.createElement('script');
-    fileref.setAttribute("type","text/javascript");
-    fileref.setAttribute("src", scriptpath);
-}
 
-function loadckeditorJS () {
-    AddScript('ckeditor/ckeditor-init.js');
-    AddScript('ckeditor/ckeditor/ckeditor.js');
-    AddScript('ckeditor/ckeditor/adapters/juery.js');
-    console.log('out loadckeditorJS');
-}
-
-function loadckeditorJSAndDelete () {
-    loadckeditorJS();
-    for(name in CKEDITOR.instances)
-    {
-    CKEDITOR.instances[name].destroy();
+function destroyckeditor(){
+    for (instance in CKEDITOR.instances){
+        if (instance) {
+            CKEDITOR.instances[instance].destroy();
+        }
     }
-    console.log('out loadckeditorJSAndDelete');
-}
-
+};
+/*
+function (){
+    console.log("after update");
+    $('.ckeditor-reinit').each(function(){
+        $(this).removeClass('ckeditor-reinit');
+        CKEDITOR.replace($(this).attr('id'));
+    });
+});
+*/
 
 function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auquel est attaché le form
     $('#'+FormId).on('submit',function() { // catch the form's submit event
@@ -277,8 +271,8 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         typeform = typeform.substring(4, 6)
         datatosend['csrfmiddlewaretoken']=csrftoken
         var place = '#' + $(this).parent().parent().attr('id')
-        // console.log(place, typeof(place))
         datatosend += '&place=' + place
+        // destroyckeditor();
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -290,24 +284,31 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 if (response.message != ""){
                     alert(response.message);
                 }
+                /*
+                $('form').each(function(){
+                    SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
+                });
+                $('textarea').each( function() {
+                    CKEDITOR.replace( $(this).attr('id') );
+                    console.log($(this).attr('id'));
+                });
+                // destroyckeditor();
+                */
+                eval($("#content").find("script").text())
                 $(place+'>div>form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                     $(this).find('textarea').each( function() {
                         try {
-                            // statements
                             CKEDITOR.replace( $(this).attr('id') );
                         } catch(e) {
-                            // statements
                             console.log(e);
                         }
-                        loadckeditorJS();
+                        /*
                         try {
-                            // statements
                             CKEDITOR.instances[$(this).attr('id') ].destroy()
                             } catch(e) {
-                            // statements
                             console.log(e);
-                        }
+                        }*/
                     });
                 });
                 Setabutform(typeform);
@@ -399,17 +400,11 @@ function GoAjax(url, slug, push) {
                 console.log("InDatbox");
             }
             else{
-                //console.log(url)
                 $('form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                 });
-                //loadckeditorJS();
-                $('textarea').each( function() {
-                    CKEDITOR.replace( $(this).attr('id') );
-                });
                 Setallbutform();
                 SetDonuts();
-                loadckeditorJSAndDelete();
             }
             // need a pushState if not Back or Forward
             if (push){
@@ -541,7 +536,7 @@ $(document).ready(function() {
                     /*
 #####################################################################################################
                     $('#content').find("form").each(function(){
-                   loadckeditorJSAndDelete();     SetTheForm($(this).attr('id'));
+                   // destroyckeditor();     SetTheForm($(this).attr('id'));
                     });*/
                     eval($("#content").find("script").text());
                     $('form').each(function(){
@@ -551,7 +546,7 @@ $(document).ready(function() {
                         CKEDITOR.replace( $(this).attr('id') );
                     });
                     Setallbutform();
-                    loadckeditorJSAndDelete();
+                    // destroyckeditor();
                     /*
                     $('form').each(function(){
                         $('textarea').each( function() {
@@ -626,7 +621,7 @@ $(document).ready(function() {
                 var idtomodif = "#child" +  response.typeref + response.idref;
                 $('#content').find(idtomodif).replaceWith(response.newcomments);
                 SetDonuts();
-                loadckeditorJSAndDelete();
+                // destroyckeditor();
                 //ConfirmDialog('Êtes vous sûr de vouloir supprimer cette réflexion?');
             },
             error: function(rs, e) {
@@ -649,7 +644,7 @@ $(document).ready(function() {
             data: {'typerequest': 'form', 'typeform': data[1] ,'idform': data[2], 'typeref': data[3] ,'idref': data[4] ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(rs) {
-                loadckeditorJSAndDelete();
+                // destroyckeditor();
                 var idtomodif = "#" +  rs.typeform + 'td' + rs.idform;
                 var oldhtml = $('#content').find(idtomodif).html();
                 $('#content').find(idtomodif).html(rs.ModifForm);
@@ -668,3 +663,4 @@ $(document).ready(function() {
         });
     });
 });
+

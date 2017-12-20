@@ -463,22 +463,23 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         prpform = PropositionForm(request.POST)
         if prpform.is_valid():
             proptitle = prpform.cleaned_data['title']
-            prop = prpform.cleaned_data['text_prop']
+            prop = prpform.cleaned_data['text_prp']
             if isinstance(ref, LawArticle):
                 lawart = ref
             else:
                 lawart = ref.law_article
             if IsModif:
                 prp = Proposition.objects.get(id=idform)
-                prp.text_prop = prop
+                prp.text_prp = prop
                 prp.title = proptitle
             else:
-                prp = Proposition.objects.create(text_prop=prop,
+                prp = Proposition.objects.create(text_prp=prop,
                                                  title=proptitle,
                                                  autor=User,
                                                  law_article=lawart,
                                                  content_object=ref)
             listpropositions = list(ref.propositions.all())
+            prpform = PropositionForm()
             NewSection = render_block_to_string('GetReflection.html',
                                                 'content',
                                                 locals())
@@ -509,6 +510,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                 autor=User,
                                                 content_object=ref)
             listposop = list(ref.posopinions.all())
+            oppform = PosopinionForm()
             NewSection = render_block_to_string('GetReflection.html',
                                                 'content',
                                                 locals())
@@ -523,7 +525,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             opp.save()
 
     elif request.method == 'POST' and typeform == 'opnf':
-        opnform = NegopinionForm(request.POST)
+        opnform = NegopinionForm()
         if opnform.is_valid():
             optitle = opnform.cleaned_data['title']
             opin = opnform.cleaned_data['text_opn']
@@ -588,6 +590,8 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         listcom.extend(listquestions)
         listcom = sorted(listcom,
                          key=operator.attrgetter('approval_factor'))
+        expform = ExplainationForm()
+        qstform = QuestionForm()
         NewSection = render_block_to_string('GetReflection.html',
                                             'content',
                                             locals())
@@ -709,7 +713,7 @@ def ModifReflection(request):
                                            })
         elif typeform == 'prp':
             form = PropositionForm(initial={'title': obj.title,
-                                            'text_prop': obj.text_prop
+                                            'text_prp': obj.text_prp
                                             })
         else:
             print("http1")

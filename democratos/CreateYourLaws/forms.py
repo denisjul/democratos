@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django import forms
 from captcha.fields import CaptchaField
 from datetime import date, timedelta
-from django.forms.extras.widgets import SelectDateWidget
+from django.forms import SelectDateWidget
 from django.contrib.auth.forms import UserCreationForm
 from registration.forms import RegistrationFormUniqueEmail
 from CreateYourLaws.models import LawArticle, Explaination, Proposition, LawProp
@@ -212,13 +212,13 @@ class NegopinionForm(forms.ModelForm):
 class PropositionForm(forms.ModelForm):
     class Meta:
         model = Proposition
-        fields = ('title', 'text_prop','details')
+        fields = ('title', 'text_prp','details')
         labels = {'title': ('Nommez votre proposition de loi'),
-                  'text_prop': ("votre proposition de loi"),
+                  'text_prp': ("votre proposition de loi"),
                   'details': ("Note/détails :"),
                   }
         widgets = {
-            'text_prop': CKEditorWidget(config_name='redac_law'),
+            'text_prp': CKEditorWidget(config_name='redac_law'),
             'details': CKEditorWidget(config_name='redac_law'),
         }
 
