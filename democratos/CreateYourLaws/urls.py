@@ -9,7 +9,7 @@ from CreateYourLaws.forms import Create_CYL_UserForm
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('nav_up/(<str:idbox>',
+    path('nav_up/<str:idbox>',
         views.nav_up,
         name="nav_up"),
     path('nav_init', views.nav_init, name="nav_init"),
