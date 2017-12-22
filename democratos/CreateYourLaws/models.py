@@ -120,7 +120,7 @@ class Negopinion(Reflection):
 
 class Proposition(Reflection):
     text_prp = RichTextField()
-    details = RichTextField()
+    details_prp = RichTextField()
     law_article = models.ForeignKey('LawArticle',
                                     on_delete=models.CASCADE)
     questions = GenericRelation(Question)
@@ -160,8 +160,9 @@ class LawArticle(Reflection):
     nb_negop = models.IntegerField(default=0)
     nb_prop = models.IntegerField(default=0)
 
+
 class LawProp (LawArticle):
-    details = RichTextField()
+    details_lwp = RichTextField()
 
 
 class LawCode(models.Model):

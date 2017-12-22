@@ -268,11 +268,10 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
             CKEDITOR.instances[instance].updateElement();
         var datatosend = $(this).serialize()
         var typeform = $(this).attr('name')
-        typeform = typeform.substring(4, 6)
+        typeform = typeform.substring(4, 7)
         datatosend['csrfmiddlewaretoken']=csrftoken
         var place = '#' + $(this).parent().parent().attr('id')
         datatosend += '&place=' + place
-        // destroyckeditor();
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -284,35 +283,38 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 if (response.message != ""){
                     alert(response.message);
                 }
-                /*
                 $('form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                 });
                 $('textarea').each( function() {
-                    CKEDITOR.replace( $(this).attr('id') );
-                    console.log($(this).attr('id'));
+                    if (CKEDITOR.instances[$(this).attr('id')] === 'undefined'){
+                        CKEDITOR.instances[$(this).attr('id')].destroy()
+                        CKEDITOR.replace( $(this).attr('id') );
+                        console.log($(this).attr('id'));
+                    }
                 });
                 // destroyckeditor();
-                */
-                eval($("#content").find("script").text())
+                /*
+                eval($("body").find("script").text())
                 $(place+'>div>form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
+                    console.log('Here3')
                     $(this).find('textarea').each( function() {
                         try {
                             CKEDITOR.replace( $(this).attr('id') );
                         } catch(e) {
                             console.log(e);
                         }
-                        /*
                         try {
                             CKEDITOR.instances[$(this).attr('id') ].destroy()
                             } catch(e) {
                             console.log(e);
-                        }*/
+                        }
                     });
-                });
+                });*/
                 Setabutform(typeform);
                 SetDonuts();
+                console.log('endsucess setform')
             },
             error: function(rs, e) {
                alert(rs.responseText);

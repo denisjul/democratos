@@ -70,15 +70,15 @@ def nav_up(request, idbox):
                              'loi:' + str(el.id),
                              False))
         children.append(('NewLaw'+str(id_box),
-                     'Créer une loi à cet emplacement',
-                     'CreateNewLaw',
-                     'idbox:'+ str(id_box),
-                     False))
+                         'Créer une loi à cet emplacement',
+                         'CreateNewLaw',
+                         'idbox:'+ str(id_box),
+                         False))
         children.append(('NewBox'+str(id_box),
-                     'Créer un un sous-groupement de loi à cet emplacement',
-                     'CreateNewBox',
-                     'idbox:'+ str(id_box),
-                     False))
+                         'Créer un un sous-groupement de loi à cet emplacement',
+                         'CreateNewBox',
+                         'idbox:'+ str(id_box),
+                         False))
     if idbox[0] == 'A':
         listBlock = list(
             CodeBlock.objects.filter(rank=1, law_code=id_box).order_by('id'))
@@ -93,15 +93,16 @@ def nav_up(request, idbox):
                              '2:' + str(el.id),
                              True))
         children.append(('NewBox'+str(id_box),
-                     'Créer un un sous-groupement de loi à cet emplacement',
-                     'CreateNewBox',
-                     'idbox:'+ str(id_box),
-                     False))
+                         'Créer un un sous-groupement de loi à' +
+                         ' cet emplacement',
+                         'CreateNewBox',
+                         'idbox:' + str(id_box),
+                         False))
         children.append(('NewLaw'+str(id_box),
-                     'Créer une loi à cet emplacement',
-                     'CreateNewLaw',
-                     'idbox:'+ str(id_box),
-                     False))
+                         'Créer une loi à cet emplacement',
+                         'CreateNewLaw',
+                         'idbox:' + str(id_box),
+                         False))
     for elem in children:
         # 'B' in the 'id' param inform that this is a Code BLock
         JSON_obj.append({'id': elem[0],
@@ -135,7 +136,7 @@ def UP(request):
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
-        print("slug:",slug)
+        # print("slug:", slug)
         typ, Id = slug.split(sep=":")
         obj = get_the_instance(typ, Id)
         ct = ContentType.objects.get_for_model(obj)
@@ -356,7 +357,7 @@ def get_reflection(request, typeref=None, id_ref=None):
         else:
             typeref, id_ref = slug.split(sep=":")
             id_ref = int(id_ref)
-    print("typeref",typeref)
+    print("typeref", typeref)
     try:
         if typeref == 'loi':
             ref = LawArticle.objects.get(id=id_ref)
@@ -437,8 +438,13 @@ def get_reflection(request, typeref=None, id_ref=None):
 def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     typeform = request.POST.get('typeform', '')
     typeref = request.POST.get('typeref', '')
-    place = request.POST.get('place','')
-    # print("place: " ,place)
+    place = request.POST.get('place', '')
+    print("place: ",
+          place,
+          "typeform: ",
+          typeform,
+          "typeref: ",
+          typeref)
     id_ref = int(request.POST.get('ref_id', None))
     IsModif = bool(request.POST.get('IsModif', False))
     if IsModif:
@@ -458,6 +464,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             ref = LawArticle.objects.get(id=id_ref)
     else:
         print("Erreur sur le typeref")
+    id_ref = str(id_ref)
     # ####################  PropositionForm ###########################
     if typeform == 'prpf'and request.method == 'POST':
         prpform = PropositionForm(request.POST)
@@ -483,10 +490,12 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             NewSection = render_block_to_string('GetReflection.html',
                                                 'content',
                                                 locals())
-            NewSection, trash = get_something(NewSection, 
-                                       '<section class="Bigproposition" id="propsection">',
-                                       '</section>',
-                                       0)
+            NewSection, trash = get_something(NewSection,
+                                              '<section class="' +
+                                              'Bigproposition"' +
+                                              ' id="propsection">',
+                                              '</section>',
+                                              0)
             ctx = {'reflection': NewSection,
                    'section_type': "prp",
                    'tdid': ""}
@@ -515,17 +524,17 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                 'content',
                                                 locals())
             start = '<article class="Bigposopinion" id="posopsection">'
-            NewSection, trash  = get_something(NewSection, 
-                                       start,
-                                       '</article>',
-                                       0)
+            NewSection, trash = get_something(NewSection,
+                                              start,
+                                              '</article>',
+                                              0)
             ctx = {'reflection': NewSection,
                    'section_type': "opp",
                    'tdid': ""}
             opp.save()
 
     elif request.method == 'POST' and typeform == 'opnf':
-        opnform = NegopinionForm()
+        opnform = NegopinionForm(request.POST)
         if opnform.is_valid():
             optitle = opnform.cleaned_data['title']
             opin = opnform.cleaned_data['text_opn']
@@ -543,17 +552,18 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                 'content',
                                                 locals())
             start = '<article class="Bignegopinion" id="negopsection">'
-            NewSection, trash = get_something(NewSection, 
-                                       start,
-                                       '</article>',
-                                       0)
+            NewSection, trash = get_something(NewSection,
+                                              start,
+                                              '</article>',
+                                              0)
             ctx = {'reflection': NewSection,
                    'section_type': "opn",
                    'tdid': ""}
             opn.save()
 
     # ####################  QuestionForm ###########################
-    elif request.method == 'POST' and typeform == 'qstf' and typeform == 'expf':
+    elif request.method == 'POST' and (typeform == 'qstf' or
+                                       typeform == 'expf'):
         if typeform == 'expf':
             expform = ExplainationForm(request.POST)
             if expform.is_valid():
@@ -569,7 +579,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                       autor=User,
                                                       content_object=ref)
                 exp.save()
-        elif typeform == 'qstf':        
+        elif typeform == 'qstf':
             qstform = QuestionForm(request.POST)
             if qstform.is_valid():
                 qtitle = qstform.cleaned_data['title']
@@ -595,15 +605,16 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         NewSection = render_block_to_string('GetReflection.html',
                                             'content',
                                             locals())
-        NewSection, trash  = get_something(NewSection, 
-                                   '<section id="'+typeref+'newdebate'+id_ref+'">',
-                                   '</article>',
-                                   0)
+        NewSection, trash = get_something(NewSection,
+                                          '<section id="' +
+                                          typeref+'debate'+id_ref+'">',
+                                          '</section>',
+                                          0)
         ctx = {'reflection': NewSection,
-               'section_type': "qst",
+               'section_type': typeform[0:2],
                'tdid': str(id_ref)}
     else:
-        print("FORM NON VALIDE. ERREURE À REVOIR") 
+        print("FORM NON VALIDE. ERREURE À REVOIR")
     if IsModif:
         ctx["message"] = "Votre réflection a bien été modifié!"
     else:
@@ -639,6 +650,7 @@ def getchildcomments(request):
     typeref = slug[5:8]
     id_ref = slug[8:len(slug)]
     id_ref = int(id_ref)
+    User = request.user
     message = ""
     try:
         if typeref == 'qst':   # Does the reflection extist?
@@ -650,9 +662,17 @@ def getchildcomments(request):
         listcom = listexplainations
         listcom.extend(listquestions)
         listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
-        childcomments = render_to_string('childcomments.html', locals())
+        NewSection = render_block_to_string('GetReflection.html',
+                                            'content',
+                                            locals())
+        NewSection, trash = get_something(NewSection,
+                                          '<section id="' +
+                                          typeref +
+                                          'debate'+str(id_ref)+'">',
+                                          '</section>',
+                                          0)
         ctx = {'message': message,
-               'newcomments': childcomments,
+               'newcomments': NewSection,
                'typeref': typeref,
                "idref": str(id_ref)
                }

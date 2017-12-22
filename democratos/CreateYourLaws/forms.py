@@ -7,7 +7,8 @@ from datetime import date, timedelta
 from django.forms import SelectDateWidget
 from django.contrib.auth.forms import UserCreationForm
 from registration.forms import RegistrationFormUniqueEmail
-from CreateYourLaws.models import LawArticle, Explaination, Proposition, LawProp
+from CreateYourLaws.models import LawArticle, Explaination
+from CreateYourLaws.models import Proposition, LawProp
 from CreateYourLaws.models import Posopinion, Negopinion, Question, CYL_user
 # Disclaim
 from ckeditor.widgets import CKEditorWidget
@@ -181,7 +182,6 @@ class DisclaimForm(forms.ModelForm):
         widgets = {
             'text_dis': CKEditorWidget()
         }
-        
 """
 
 
@@ -212,26 +212,26 @@ class NegopinionForm(forms.ModelForm):
 class PropositionForm(forms.ModelForm):
     class Meta:
         model = Proposition
-        fields = ('title', 'text_prp','details')
+        fields = ('title', 'text_prp', 'details_prp')
         labels = {'title': ('Nommez votre proposition de loi'),
                   'text_prp': ("votre proposition de loi"),
-                  'details': ("Note/détails :"),
+                  'details_prp': ("Note/détails :"),
                   }
         widgets = {
             'text_prp': CKEditorWidget(config_name='redac_law'),
-            'details': CKEditorWidget(config_name='redac_law'),
+            'details_prp': CKEditorWidget(config_name='redac_law'),
         }
 
 
 class CreateNewLawForm(forms.ModelForm):
     class Meta:
         model = LawProp
-        fields = ('title', 'text_law','details')
+        fields = ('title', 'text_law', 'details_lwp')
         labels = {'title': ('Ennoncez votre loi'),
                   'text_law': ("votre proposition de loi"),
-                  'details': ("Note/détails :"),
+                  'details_lwp': ("Note/détails :"),
                   }
         widgets = {
             'text_law': CKEditorWidget(config_name='redac_law'),
-            'details': CKEditorWidget(config_name='redac_law'),
+            'details_lwp': CKEditorWidget(config_name='redac_law'),
         }

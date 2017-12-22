@@ -137,7 +137,14 @@
                                             <td class="posopinion" id ="opptd{{x.id}}"> 
                                                 {% if User == x.autor %}
                                                     <div class="SmallMenu">
-                                                        <ins class="DelOwnRef clickable " name="del:opp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:opp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
+                                                    <ul>
+                                                        <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                                            <ul>
+                                                                <li><ins class="DelOwnRef clickable " name="del:opp:{{x.id}}">supprimer</ins></li> 
+                                                                <li><ins class="ModifRef clickable " name="modif:opp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul> 
                                                     </div>
                                                     <br>
                                                 {% endif %}
@@ -172,7 +179,7 @@
                         </div>
                         <div id='pos{{x.id}}comments'>
                             <button class="butopp" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
-                            <form action="{% url 'PostReflection'%}" method="post" id="oppform" name="loi:opp:{{ref.id}}">
+                            <form action="{% url 'PostReflection'%}" method="post" id="oppform" name="loi:oppf:{{ref.id}}">
                                 {{ oppform.as_p }}
                                 <input type="hidden" name="typeform" value="oppf">
                                 <input type="hidden" name="typeref" value="{{typeref}}">
@@ -194,7 +201,14 @@
                                             <td class="negopinion" id ="opntd{{x.id}}">
                                                 {% if User == x.autor %}
                                                     <div class="SmallMenu">
-                                                        <ins class="DelOwnRef clickable " name="del:opn:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:opn:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
+                                                    <ul>
+                                                        <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                                            <ul>
+                                                                <li><ins class="DelOwnRef clickable " name="del:opn:{{x.id}}">supprimer</ins></li> 
+                                                                <li><ins class="ModifRef clickable " name="modif:opn:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul> 
                                                     </div>
                                                     <br>
                                                 {% endif %}
@@ -229,7 +243,7 @@
                         </div>
                         <div id='neg{{x.id}}comments'>
                             <button class="butopn" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
-                            <form action="{% url 'PostReflection'%}" method="post"  id="opnform" name="loi:opn:{{ref.id}}">
+                            <form action="{% url 'PostReflection'%}" method="post"  id="opnform" name="loi:opnf:{{ref.id}}">
                                 {{ opnform.as_p }}
                                 <input type="hidden" name="typeform" value="opnf">
                                 <input type="hidden" name="typeref" value="{{typeref}}">
@@ -256,7 +270,14 @@
                         <td class="proposition" id ="prptd{{x.id}}">
                             {% if User == x.autor %}
                                 <div class="SmallMenu">
-                                   <ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:prp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
+                                <ul>
+                                <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                       <ul>
+                                        <li><ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins></li> 
+                                           <li><ins class="ModifRef clickable " name="modif:prp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
+                                      </u
+                                </ul>
+                                </ul>l> 
                                 </div>
                                 <br>
                             {% endif %}
@@ -292,7 +313,7 @@
         </table> 
         <div id='prp{{x.id}}comments'>
             <button class="butprp" type="button">Faire une autre proposition <br>  que cette loi</button>
-            <form action="{% url 'PostReflection'%}"  method="post" id="prpform">
+            <form action="{% url 'PostReflection'%}"  method="post" id="prpform" name="loi:prpf:{{ref.id}}">
                 {{ prpform.as_p }} 
                 <input type="hidden" name="typeform" value="prpf">
                 <input type="hidden" name="typeref" value="{{typeref}}">
@@ -309,7 +330,7 @@
 ######################################     the Debate      #####################################
 #############################################################################################-->
 
-<section id="{{typeref}}newdebate{{id_ref}}">
+<section id="{{typeref}}debate{{id_ref}}">
     <table>    
              {% for x in listcom %}
             <tr>
@@ -317,7 +338,14 @@
                     <td class='explaination' id="exptd{{x.id}}"> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
                         {% if User == x.autor %}
                             <div class="SmallMenu">
-                                <ins class="DelOwnRef clickable " name="del:exp:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:exp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
+                            <ul>
+                                <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                    <ul>
+                                        <li><ins class="DelOwnRef clickable " name="del:exp:{{x.id}}">supprimer</ins></li> 
+                                        <li><ins class="ModifRef clickable " name="modif:exp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
+                                    </ul>
+                                </li>
+                            </ul> 
                             </div>
                             <br>
                         {% endif %}
@@ -331,7 +359,14 @@
                     <td class='question' id="qsttd{{x.id}}">  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
                         {% if User == x.autor %}
                             <div class="SmallMenu">
-                                <ins class="DelOwnRef clickable " name="del:qst:{{x.id}}">supprimer</ins> / <ins class="ModifRef clickable " name="modif:qst:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins> 
+                            <ul>
+                                <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                    <ul>
+                                        <li><ins class="DelOwnRef clickable " name="del:qst:{{x.id}}">supprimer</ins></li> 
+                                        <li><ins class="ModifRef clickable " name="modif:qst:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
+                                    </ul>
+                                </li>
+                            </ul> 
                             </div>
                             <br>
                         {% endif %}

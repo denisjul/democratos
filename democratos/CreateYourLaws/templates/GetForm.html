@@ -1,5 +1,5 @@
 {% load staticfiles %}
-<form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}">
+<form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}" name="{{typeref}}:{{typeform}}:{{ref.id}}">
     {{ form.as_p }} 
     <input type="hidden" name="typeform" value="{{typeform}}f">
     <input type="hidden" name="typeref" value="{{typeref}}">
