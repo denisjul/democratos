@@ -131,50 +131,48 @@
                         <h2>Points positifs</h2>
                         <div id="posopdiv">
                             <table>
-                                <tbody>
-                                    {% for x in listposop %}
-                                        <tr><div id="posopdiv">
-                                            <td class="posopinion" id ="opptd{{x.id}}"> 
-                                                {% if User == x.autor %}
-                                                    <div class="SmallMenu">
-                                                    <ul>
-                                                        <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
-                                                            <ul>
-                                                                <li><ins class="DelOwnRef clickable " name="del:opp:{{x.id}}">supprimer</ins></li> 
-                                                                <li><ins class="ModifRef clickable " name="modif:opp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul> 
-                                                    </div>
-                                                    <br>
-                                                {% endif %}
-                                                <div class='clickable GetReflection' name='opp:{{x.id}}'>
-                                                {% if x.title%}
-                                                    {{x.title}} <br/>
-                                                    {{x.text_op|truncatewords:250}} <br/>
-                                                {% else %}
-                                                    {{x.text_op}} <br/>
-                                                {% endif %}
+                                {% for x in listposop %}
+                                    <tr>
+                                        <td class="posopinion" id ="opptd{{x.id}}"> 
+                                            {% if User == x.autor %}
+                                                <div class="SmallMenu">
+                                                <ul>
+                                                    <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                                        <ul>
+                                                            <li><ins class="DelOwnRef clickable " name="del:opp:{{x.id}}">supprimer</ins></li> 
+                                                            <li><ins class="ModifRef clickable " name="modif:opp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul> 
                                                 </div>
-                                                <hr>
-                                                <div class="count">
-                                                <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
-                                                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}
-                                                </div>
-                                                <div class="vote">
-                                                <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="opn:{{x.id}}" value="UP"/>
-                                                <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="opn:{{x.id}}" value="DOWN"/>
-                                                    note:
-                                                <canvas id="donopn{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
-                                                </div>
-                                                {% comment %}
-                                                <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation {% endcomment %}
-                                            </td>
-                                        </tr>
-                                    {% empty %}
-                                        Aucun point positif n'a été relevé pour le moment sur cette réflection. Soyez le premier à en donner un!
-                                    {% endfor %}
-                                </tbody>
+                                                <br>
+                                            {% endif %}
+                                            <div class='clickable GetReflection' name='opp:{{x.id}}'>
+                                            {% if x.title%}
+                                                <b>{{x.title}}</b> <br/>
+                                                {{x.text_opp|truncatewords:250}} <br/>
+                                            {% else %}
+                                                {{x.text_opp}} <br/>
+                                            {% endif %}
+                                            </div>
+                                            <hr>
+                                            <div class="count">
+                                            <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
+                                            <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}}
+                                            </div>
+                                            <div class="vote">
+                                            <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="opn:{{x.id}}" value="UP"/>
+                                            <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="opn:{{x.id}}" value="DOWN"/>
+                                                note:
+                                            <canvas id="donopn{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+                                            </div>
+                                            {% comment %}
+                                            <var id="opn{{x.id}}">{{x.approval_ratio|floatformat:2}}</var> % d'approbation {% endcomment %}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    Aucun point positif n'a été relevé pour le moment sur cette réflection. Soyez le premier à en donner un!
+                                {% endfor %}
                             </table>
                         </div>
                         <div id='pos{{x.id}}comments'>
@@ -214,10 +212,10 @@
                                                 {% endif %}
                                                 <div class='clickable GetReflection' name='opn:{{x.id}}'>
                                                 {% if x.title%}
-                                                    {{x.title}} <br/>
-                                                    {{x.text_op|truncatewords:250}} <br/>
+                                                    <b>{{x.title}}</b> <br/>
+                                                    {{x.text_opn|truncatewords:250}} <br/>
                                                 {% else %}
-                                                    {{x.text_op}} <br/>
+                                                    {{x.text_opn}} <br/>
                                                 {% endif %}
                                                 </div>
                                                 <hr>
@@ -284,10 +282,10 @@
                             <div class="IDB GetReflection" name="prp:{{x.id}}">
 
                                 {% if x.title %}
-                                    <strong>{{x.title}}</strong> <br/>
-                                    {{x.text_prop|truncatewords:80}} <br/>
+                                    <strong><b>{{x.title}}</b></strong> <br/>
+                                    {{x.text_prp|truncatewords:80}} <br/>
                                 {% else %}
-                                    <strong>{{x.text_prop}}</strong> <br/>
+                                    <strong>{{x.text_prp}}</strong> <br/>
                                 {% endif %}
                             </div>
                             <hr>
@@ -350,7 +348,7 @@
                             <br>
                         {% endif %}
                         {% if x.title %}
-                            <strong>{{x.title}}</strong> <br/>
+                            <strong><b>{{x.title}}</b></strong> <br/>
                             {{x.text_exp|truncatewords:80}} <br/>
                         {% else %}
                             <strong>{{x.text_exp}}</strong> <br/>
@@ -371,7 +369,7 @@
                             <br>
                         {% endif %}
                         {% if x.title %}
-                            <strong>{{x.title}}</strong> <br/>
+                            <strong><b>{{x.title}}</b></strong> <br/>
                             {{x.text_q|truncatewords:80}} <br/>
                         {% else %}
                             <strong>{{x.text_q}}</strong> <br/>

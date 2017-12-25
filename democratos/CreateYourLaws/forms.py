@@ -83,14 +83,6 @@ class Create_CYL_UserForm(RegistrationFormUniqueEmail):
         # we're done now if not valid
         if not valid:
             return valid
-        # verify the user's age
-        """
-        delta = date.today() - self.cleaned_data['date_of_birth']
-        if delta.seconds < 567648000:  # (18 * 365 * 24 * 60 * 60)
-            self.add_error("date_of_birth",
-                           'Vous êtes trop jeune pour participer.')
-            return False"""
-        # all good
         return True
 
 
