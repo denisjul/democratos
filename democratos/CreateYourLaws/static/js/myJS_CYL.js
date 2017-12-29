@@ -277,6 +277,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'), // the file to call
             success: function(response) { // on success..
+                $(place).html('');
                 $(place).html(response.reflection);
                 var formtodel = "#" +  response.typeref + 'askform' + response.idref;
                 $('#content').find(formtodel).html(' ');
@@ -621,6 +622,11 @@ $(document).ready(function() {
                     CKEDITOR.instances[name].destroy()
                 }
                 var idtomodif = "#child" +  response.typeref + response.idref;
+                $('#content').find(idtomodif).parents("td").each(function(){
+                    console.log($(this).attr('id'));
+                    var datwidth = $(this).width();
+                    $(this).css('width',(datwidth+30).toString()+'px');
+                });
                 $('#content').find(idtomodif).replaceWith(response.newcomments);
                 SetDonuts();
                 // destroyckeditor();
