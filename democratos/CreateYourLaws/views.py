@@ -485,6 +485,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                  autor=User,
                                                  law_article=lawart,
                                                  content_object=ref)
+            prp.save()
             listpropositions = list(ref.propositions.all())
             prpform = PropositionForm()
             NewSection = render_block_to_string('GetReflection.html',
@@ -499,7 +500,6 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             ctx = {'reflection': NewSection,
                    'section_type': "prp",
                    'tdid': ""}
-            prp.save()
 
     # ####################  OpinionForm #########################
     #      <---- Revoir si séparer Posop et Negop
@@ -518,6 +518,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                 title=optitle,
                                                 autor=User,
                                                 content_object=ref)
+            opp.save()
             listposop = list(ref.posopinions.all())
             oppform = PosopinionForm()
             NewSection = render_block_to_string('GetReflection.html',
@@ -531,7 +532,6 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             ctx = {'reflection': NewSection,
                    'section_type': "opp",
                    'tdid': ""}
-            opp.save()
 
     elif request.method == 'POST' and typeform == 'opnf':
         opnform = NegopinionForm(request.POST)
@@ -547,6 +547,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                 title=optitle,
                                                 autor=User,
                                                 content_object=ref)
+            opn.save()
             listnegop = list(ref.negopinions.all())
             NewSection = render_block_to_string('GetReflection.html',
                                                 'content',
@@ -559,7 +560,6 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             ctx = {'reflection': NewSection,
                    'section_type': "opn",
                    'tdid': ""}
-            opn.save()
 
     # ####################  QuestionForm ###########################
     elif request.method == 'POST' and (typeform == 'qstf' or

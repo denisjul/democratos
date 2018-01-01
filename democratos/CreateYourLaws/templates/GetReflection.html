@@ -39,7 +39,7 @@
         <section class="law_text">
             <h1>{{ref.law_code.title}}</h1> 
                 <h2>{{ref.title}}</h2>
-                    {{ref.text_law}}
+                <p>{{ref.text_law}}</p>
 
 
 
@@ -69,49 +69,46 @@
             <section class="proposition">
                 <h1> Contre proposition à: 
         {% endif %} 
-                {% if ref.content_object.title %}  
-                    {{ref.content_object.title}} 
-                {% else %}
-                    {% if ref.content_object.text_op %} 
-                        {{ref.content_object.text_op}} 
-                    {% elif ref.content_object.text_dis %} 
-                        {{ref.content_object.text_dis}}
-                    {% elif ref.content_object.text_exp %} 
-                        {{ref.content_object.text_exp}}
-                    {% elif ref.content_object.text_prop %} 
-                        {{ref.content_object.text_prop}} 
-                    {% elif ref.content_object.text_q %} 
-                        {{ref.content_object.text_q}}
-                    {% endif %}
-                {% endif %}</h1>    
-                {% if ref.title %}    
-                    <h2>{{ref.title}}</h2>
-                    {% if typeref == 'qst' %}
-                        <p>{{ref.text_q}}</p>
-                    {% elif typeref == 'exp' %}
-                        <p>{{ref.text_exp}}</p>
-                    {% elif typeref == 'dis' %}
-                        <p>{{ref.text_dis}}</p>
-                    {% elif typeref == 'opn' %}
-                        <p>{{ref.text_op}}</p>
-                    {% elif typeref == 'prp' %}
-                        <p>{{ref.text_prop}}</p>
-                    {% endif %}
-                {% else %}
-                    {% if typeref == 'qst' %}
-                        <h2>{{ref.text_q}}</h2>
-                    {% elif typeref == 'exp' %}
-                        <h2>{{ref.text_exp}}</h2>
-                    {% elif typeref == 'dis' %}
-                        <h2>{{ref.text_dis}}</h2>
-                    {% elif typeref == 'opn' %}
-                        <h2>{{ref.text_op}}</h2>
-                    {% elif typeref == 'prp' %}
-                        <h2>{{ref.text_prop}}</h2>
-                    {% endif %}
-                {% endif %}
+        {% if ref.content_object.title %}  
+            {{ref.content_object.title}} 
+        {% else %}
+            {% if ref.content_object.text_op %} 
+                <p>{{ref.content_object.text_op}}</p>
+            {% elif ref.content_object.text_exp %} 
+                <p>{{ref.content_object.text_exp}}</p>
+            {% elif ref.content_object.text_prop %} 
+                <p>{{ref.content_object.text_prop}}</p>
+            {% elif ref.content_object.text_q %} 
+                <p>{{ref.content_object.text_q}}</p>
+            {% endif %}
+        {% endif %}</h1>    
+        {% if ref.title %}    
+            <h2>{{ref.title}}</h2>
+            {% if typeref == 'qst' %}
+                <p>{{ref.text_q}}</p>
+            {% elif typeref == 'exp' %}
+                <p>{{ref.text_exp}}</p>
+            {% elif typeref == 'dis' %}
+                <p>{{ref.text_dis}}</p>
+            {% elif typeref == 'opn' %}
+                <p>{{ref.text_op}}</p>
+            {% elif typeref == 'prp' %}
+                <p>{{ref.text_prop}}</p>
+            {% endif %}
+        {% else %}
+            {% if typeref == 'qst' %}
+                <h2>{{ref.text_q}}</h2>
+            {% elif typeref == 'exp' %}
+                <h2>{{ref.text_exp}}</h2>
+            {% elif typeref == 'dis' %}
+                <h2>{{ref.text_dis}}</h2>
+            {% elif typeref == 'opn' %}
+                <h2>{{ref.text_op}}</h2>
+            {% elif typeref == 'prp' %}
+                <h2>{{ref.text_prop}}</h2>
+            {% endif %}
+        {% endif %}
     {% endif %}
-                <br><br>
                 <p class="count"> <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{ref.nb_q}}
                 <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{ref.nb_exp}} 
                 </p>
@@ -132,7 +129,7 @@
                         <table>
                             {% for x in listposop %}
                                 <tr>
-                                    <td class="posopinion" id ="opptd{{x.id}}"> 
+                                    <td id="opptd{{x.id}}" class="posopinion"> 
                                         {% if User == x.autor %}
                                             <div class="SmallMenu">
                                             <ul>
@@ -144,14 +141,13 @@
                                                 </li>
                                             </ul> 
                                             </div>
-                                            <br>
                                         {% endif %}
                                         <div class='clickable GetReflection' name='opp:{{x.id}}'>
                                         {% if x.title%}
                                             <b>{{x.title}}</b> <br/>
-                                            {{x.text_opp|truncatewords:250}} <br/>
+                                            {{x.text_opp|truncatewords:250}}
                                         {% else %}
-                                            {{x.text_opp}} <br/>
+                                            {{x.text_opp}}
                                         {% endif %}
                                         </div>
                                         <hr>
@@ -194,7 +190,7 @@
                                 <tbody>
                                     {% for x in listnegop %}
                                         <tr>
-                                            <td class="negopinion" id ="opntd{{x.id}}">
+                                            <td id="opntd{{x.id}}" class="negopinion">
                                                 {% if User == x.autor %}
                                                     <div class="SmallMenu">
                                                     <ul>
@@ -206,14 +202,13 @@
                                                         </li>
                                                     </ul> 
                                                     </div>
-                                                    <br>
                                                 {% endif %}
                                                 <div class='clickable GetReflection' name='opn:{{x.id}}'>
                                                 {% if x.title%}
-                                                    <b>{{x.title}}</b> <br/>
-                                                    {{x.text_opn|truncatewords:250}} <br/>
+                                                    <b>{{x.title}}</b>
+                                                    {{x.text_opn|truncatewords:250}}
                                                 {% else %}
-                                                    {{x.text_opn}} <br/>
+                                                    {{x.text_opn}}
                                                 {% endif %}
                                                 </div>
                                                 <hr>
@@ -263,7 +258,7 @@
             <tbody>
                 {% for x in listpropositions %}
                     <tr>
-                        <td class="proposition" id ="prptd{{x.id}}">
+                        <td id="prptd{{x.id}}" class="proposition">
                             {% if User == x.autor %}
                                 <div class="SmallMenu">
                                 <ul>
@@ -331,7 +326,7 @@
         {% for x in listcom %}
         <tr>
             {% if x|isinst:'CreateYourLaws.models.Explaination' %}    
-                <td class='explaination' id="exptd{{x.id}}"> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
+                <td id="exptd{{x.id}}" class="explaination"> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
                     {% if User == x.autor %}
                         <div class="SmallMenu">
                         <ul>
@@ -346,13 +341,13 @@
                         <br>
                     {% endif %}
                     {% if x.title %}
-                        <strong><b>{{x.title}}</b></strong> <br/>
-                        {{x.text_exp|truncatewords:80}} <br/>
+                        <strong><b>{{x.title}}</b></strong>
+                        {{x.text_exp|truncatewords:80}}
                     {% else %}
-                        <strong>{{x.text_exp}}</strong> <br/>
+                        <strong>{{x.text_exp}}</strong>
                     {% endif %}
             {% else %}
-                <td class='question' id="qsttd{{x.id}}">  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
+                <td id="qsttd{{x.id}}" class="question">  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
                     {% if User == x.autor %}
                         <div class="SmallMenu">
                         <ul>
@@ -367,10 +362,10 @@
                         <br>
                     {% endif %}
                     {% if x.title %}
-                        <strong><b>{{x.title}}</b></strong> <br/>
-                        {{x.text_q|truncatewords:80}} <br/>
+                        <strong><b>{{x.title}}</b></strong>
+                        {{x.text_q|truncatewords:80}}
                     {% else %}
-                        <strong>{{x.text_q}}</strong> <br/>
+                        <strong>{{x.text_q}}</strong> 
                     {% endif %}
             {% endif %}  
             <hr>                  
@@ -393,7 +388,6 @@
             </div>
             <br>
             <br>
-            <br>
             <hr>
             {% if x|isinst:'CreateYourLaws.models.Explaination' %}
                 <p id="devexp{{x.id}}" style='text-align: center;'>
@@ -407,7 +401,6 @@
                         <div class="GetDebateChild" name="childqst{{x.id}}" id="childqst{{x.id}}"> Voir les réactions à ce commentaire </div>
                     {% endif %}
                 {% else %}
-                    <br>
                     {% if x|isinst:'CreateYourLaws.models.Explaination' %}
                     <div id='exp{{x.id}}comments'>
                         Poser une question ou commentez cette réaction! <br>
@@ -424,13 +417,12 @@
                     </div>
                     {% endif %}
                 {% endif %}
-
                 </p>
             </td>                   
         </tr>
         {% endfor %}            
     </table> 
-    <h2>une réaction? Commentez ou posez votre question</h2>
+    <h3>une réaction? Commentez ou posez votre question</h3>
     <button class="butexp" name="{{typeref}}:exp:{{id_ref}}" type="button"> Commenter </button>
     <button class="butqst" name="{{typeref}}:qst:{{id_ref}}" type="button">Poser votre question </button>
     <p id="{{typeref}}askform{{id_ref}}"></p>

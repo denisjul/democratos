@@ -211,7 +211,7 @@ function SetDonuts(){
             //var value = parseInt($(this).attr('name'));
             var donvalue = Math.round(((parseFloat(value))+100)*5)/10;
             var canvas = $(this).get(0);
-            var sideLength = 36;
+            var sideLength = 30;
             canvas.width = canvas.height = sideLength;
             canvas.width +=  canvas.width*0.33;
             var lineWidth = 9;
@@ -284,9 +284,11 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 if (response.message != ""){
                     alert(response.message);
                 }
+                eval($(document).find("script").text());
                 $('form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                 });
+                /*
                 $('textarea').each( function() {
                     if (CKEDITOR.instances[$(this).attr('id')] === 'undefined'){
                         CKEDITOR.instances[$(this).attr('id')].destroy()
@@ -638,12 +640,19 @@ $(document).ready(function() {
         });
     });
     //---------------------  Delete own ref---------------------
+    /* 
+    Del the selected td
+    */
     $('body').on('click', '.DelOwnRef', function(){
         var name = $(this).attr('name').split(":");
         console.log(name);
         ConfirmDialog("DelOwnRef", "supprimer réflexion", 'Êtes vous sûr de vouloir supprimer cette réflexion?', name);
     });
     //---------------------  Modif own ref---------------------
+    /* 
+    Pop a form pre-filled with the current content in order to 
+    modify a td and replace it directly via ajax in the current page
+    */
     $('body').on('click', '.ModifRef', function(){
         var data =  $(this).attr('name').split(":");
         $.ajax({
@@ -652,7 +661,7 @@ $(document).ready(function() {
             data: {'typerequest': 'form', 'typeform': data[1] ,'idform': data[2], 'typeref': data[3] ,'idref': data[4] ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(rs) {
-                // destroyckeditor();
+                eval($(document).find("script").text());
                 var idtomodif = "#" +  rs.typeform + 'td' + rs.idform;
                 var oldhtml = $('#content').find(idtomodif).html();
                 $('#content').find(idtomodif).html(rs.ModifForm);
