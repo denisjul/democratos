@@ -182,7 +182,7 @@ var DonutChart = function (canvas, radius, lineWidth, arraySlices, label) {
 // ######################### functions ############################
 
 function Setabutform(buttype){
-    console.log('Setabutform in')
+    //console.log('Setabutform in')
     $("#" + buttype + "form").css('display','none');
     $(".but" + buttype).click(function(event) {
         if ( $("#" + buttype + "form").css('display') == 'none' ){
@@ -244,20 +244,23 @@ function SetDonuts(){
     });
 }
 
-
-function destroyckeditor(){
-    for (instance in CKEDITOR.instances){
-        if (instance) {
-            CKEDITOR.instances[instance].destroy();
-        }
-    }
+function SetNewForm(place){
+    // Set and Enable all form at the indicated place (place as str)
+    $(place).find('form').each(function(){
+        SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
+        //console.log('Here')
+        $(this).find('textarea').each(function() {
+            InitNewCkeditor($(this));
+        });
+    });
 };
 
 function InitNewCkeditor(textarea){
+    // enable a Ckeditor instance from a textarea object
     var t = document.getElementById(textarea.attr("id"));
-    console.log(t, typeof(t));
+    //console.log(t, typeof(t));
     if (t.getAttribute('data-processed') == '0' && t.id.indexOf('__prefix__') == -1) {
-        console.log('hey');
+        //console.log('hey');
         t.setAttribute('data-processed', '1');
         var ext = JSON.parse(t.getAttribute('data-external-plugin-resources'));
         for (var j=0; j<ext.length; ++j) {
@@ -289,45 +292,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 if (response.message != ""){
                     alert(response.message);
                 }
-                eval($(document).find("script").text());
-                /*$('form').each(function(){
-                    SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
-                });
-                $('textarea').each( function() {
-                    if (CKEDITOR.instances[$(this).attr('id')] === 'undefined'){
-                        CKEDITOR.instances[$(this).attr('id')].destroy()
-                        CKEDITOR.replace( $(this).attr('id') );
-                        console.log($(this).attr('id'));
-                    }
-                });*/
-                // destroyckeditor();
-                /*
-                eval($("body").find("script").text())*/
-                $(place+'>div>form').each(function(){
-                    SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
-                    console.log('Here3')
-                    /*
-                    $(this).find('textarea').each(function() {
-                        $(this).ckeditor();
-                    });
-                    */
-                    $(this).find('textarea').each(function() {
-                        InitNewCkeditor($(this));
-                        /*
-                        console.log(CKEDITOR.instances[$(this).attr('id')]);
-                        console.log($(this).attr('id'));
-                        try {
-                            CKEDITOR.instances[$(this).attr('id')].destroy();
-                            } catch(e) {
-                            console.log(e);
-                        }
-                        try {
-                            CKEDITOR.replace($(this).attr('id') );
-                        } catch(e) {
-                            console.log(e);
-                        }*/
-                    });
-                });
+                SetNewForm(place);
                 Setabutform(typeform);
                 SetDonuts();
                 console.log('endsucess setform')
@@ -551,36 +516,14 @@ $(document).ready(function() {
                 success: function(response) {
                     var idtomodif = "#" +  response.typeref + 'askform' + response.idref;
                     $('#content').find(idtomodif).html(response.newform);
-                    /*
-#####################################################################################################
-                    $('#content').find("form").each(function(){
-                   // destroyckeditor();     SetTheForm($(this).attr('id'));
-                    });*/
-                    eval($("#content").find("script").text());
-                    $('form').each(function(){
-                        SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
-                    });
-                    $('textarea').each( function() {
-                        CKEDITOR.replace( $(this).attr('id') );
-                    });
-                    Setallbutform();
-                    // destroyckeditor();
-                    /*
-                    $('form').each(function(){
-                        $('textarea').each( function() {
-                            CKEDITOR.replace( $(this).attr('id') );
-                        });
-#####################################################################################################
-                        SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
-                    });*/
+                    SetNewForm(idtomodif);
+                    //Setabutform("exp");    <-- A revoir (p-e numéroter les boutons)
+                    //Setabutform("qst");
                 },
                 error: function(rs, e) {
                     alert(rs.responseText);
                 }
             });
-        /*}
-        else {
-            SetTheForm($(this).attr('name'));*/
         };
 
     });
@@ -631,11 +574,6 @@ $(document).ready(function() {
             data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(response) {
-                eval($("#content").find("script").text());
-                for(name in CKEDITOR.instances)
-                {
-                    CKEDITOR.instances[name].destroy()
-                }
                 var idtomodif = "#child" +  response.typeref + response.idref;
                 $('#content').find(idtomodif).parents("td").each(function(){
                     console.log($(this).attr('id'));
@@ -644,8 +582,6 @@ $(document).ready(function() {
                 });
                 $('#content').find(idtomodif).replaceWith(response.newcomments);
                 SetDonuts();
-                // destroyckeditor();
-                //ConfirmDialog('Êtes vous sûr de vouloir supprimer cette réflexion?');
             },
             error: function(rs, e) {
                 alert(rs.responseText);
