@@ -252,15 +252,20 @@ function destroyckeditor(){
         }
     }
 };
-/*
-function (){
-    console.log("after update");
-    $('.ckeditor-reinit').each(function(){
-        $(this).removeClass('ckeditor-reinit');
-        CKEDITOR.replace($(this).attr('id'));
-    });
-});
-*/
+
+function InitNewCkeditor(textarea){
+    var t = document.getElementById(textarea.attr("id"));
+    console.log(t, typeof(t));
+    if (t.getAttribute('data-processed') == '0' && t.id.indexOf('__prefix__') == -1) {
+        console.log('hey');
+        t.setAttribute('data-processed', '1');
+        var ext = JSON.parse(t.getAttribute('data-external-plugin-resources'));
+        for (var j=0; j<ext.length; ++j) {
+            CKEDITOR.plugins.addExternal(ext[j][0], ext[j][1], ext[j][2]);
+        }
+        CKEDITOR.replace(t.id, JSON.parse(t.getAttribute('data-config')));
+    }
+};
 
 function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auquel est attaché le form
     $('#'+FormId).on('submit',function() { // catch the form's submit event
@@ -285,36 +290,44 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                     alert(response.message);
                 }
                 eval($(document).find("script").text());
-                $('form').each(function(){
+                /*$('form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                 });
-                /*
                 $('textarea').each( function() {
                     if (CKEDITOR.instances[$(this).attr('id')] === 'undefined'){
                         CKEDITOR.instances[$(this).attr('id')].destroy()
                         CKEDITOR.replace( $(this).attr('id') );
                         console.log($(this).attr('id'));
                     }
-                });
+                });*/
                 // destroyckeditor();
                 /*
-                eval($("body").find("script").text())
+                eval($("body").find("script").text())*/
                 $(place+'>div>form').each(function(){
                     SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
                     console.log('Here3')
-                    $(this).find('textarea').each( function() {
+                    /*
+                    $(this).find('textarea').each(function() {
+                        $(this).ckeditor();
+                    });
+                    */
+                    $(this).find('textarea').each(function() {
+                        InitNewCkeditor($(this));
+                        /*
+                        console.log(CKEDITOR.instances[$(this).attr('id')]);
+                        console.log($(this).attr('id'));
                         try {
-                            CKEDITOR.replace( $(this).attr('id') );
-                        } catch(e) {
-                            console.log(e);
-                        }
-                        try {
-                            CKEDITOR.instances[$(this).attr('id') ].destroy()
+                            CKEDITOR.instances[$(this).attr('id')].destroy();
                             } catch(e) {
                             console.log(e);
                         }
+                        try {
+                            CKEDITOR.replace($(this).attr('id') );
+                        } catch(e) {
+                            console.log(e);
+                        }*/
                     });
-                });*/
+                });
                 Setabutform(typeform);
                 SetDonuts();
                 console.log('endsucess setform')
