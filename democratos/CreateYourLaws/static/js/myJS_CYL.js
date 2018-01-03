@@ -275,22 +275,40 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         for ( instance in CKEDITOR.instances ) // recover data in CKeditor fields
             CKEDITOR.instances[instance].updateElement();
         var datatosend = $(this).serialize()
-        var typeform = $(this).attr('name')
-        typeform = typeform.substring(4, 7)
-        datatosend['csrfmiddlewaretoken']=csrftoken
-        var place = '#' + $(this).parent().parent().attr('id')
+        console.log(this.IsModif.value);
+        var typeform = $(this).attr('name');
+        typeform = typeform.substring(4, 7);
+        datatosend['csrfmiddlewaretoken']=csrftoken;
+        if(this.IsModif.value){
+            if(this.typefrom.value === "oppf"){
+                var place = '#posopsection';
+            }
+            else if(this.typefrom.value === "opnf"){
+                var place = '#negopsection';
+            }
+            else if(this.typefrom.value === "prpf"){
+                var place = '#propsection';
+            }
+            else{
+                var place = "";
+            }
+        }
+        else{
+            var place = '#' + $(this).parent().parent().attr('id');
+        }
         datatosend += '&place=' + place
+        console.log(place)
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'), // the file to call
-            success: function(response) { // on success..
+            success: function(rs) { // on success..
                 $(place).html('');
-                $(place).html(response.reflection);
-                var formtodel = "#" +  response.typeref + 'askform' + response.idref;
-                $('#content').find(formtodel).html(' ');
-                if (response.message != ""){
-                    alert(response.message);
+                $(place).html(rs.NewSection);
+                var formtodel = "#" +  rs.typeref + 'askform' + rs.idref;
+                $('#content').find(formtodel).html('');
+                if (rs.message != ""){
+                    alert(rs.message);
                 }
                 SetNewForm(place);
                 Setabutform(typeform);
@@ -614,14 +632,12 @@ $(document).ready(function() {
                 var idtomodif = "#" +  rs.typeform + 'td' + rs.idform;
                 var oldhtml = $('#content').find(idtomodif).html();
                 $('#content').find(idtomodif).html(rs.ModifForm);
-                $('#content').find("Cancel" + rs.typeform + rs.idform + "form").each(function(){
+                $('#content').find("#Cancel" + rs.typeform + rs.idform + "form").each(function(){
                     $(this).click(function(){
-                        $('#content').find(idtomodif).html(oldhtml)
+                        $('#content').find(idtomodif).html(oldhtml);
                     });
                 });
-                $('#content').find("form").each(function(){
-                    SetTheForm($(this).attr('id'));
-                });
+                SetNewForm(idtomodif);
             },
             error: function(rs, e) {
                 alert(rs.responseText);

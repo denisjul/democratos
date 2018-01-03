@@ -497,7 +497,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                               ' id="propsection">',
                                               '</section>',
                                               0)
-            ctx = {'reflection': NewSection,
+            ctx = {'NewSection': NewSection,
                    'section_type': "prp",
                    'tdid': ""}
 
@@ -529,7 +529,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                               start,
                                               '</article>',
                                               0)
-            ctx = {'reflection': NewSection,
+            ctx = {'NewSection': NewSection,
                    'section_type': "opp",
                    'tdid': ""}
 
@@ -557,7 +557,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                               start,
                                               '</article>',
                                               0)
-            ctx = {'reflection': NewSection,
+            ctx = {'NewSection': NewSection,
                    'section_type': "opn",
                    'tdid': ""}
 
@@ -610,7 +610,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                           typeref+'debate'+id_ref+'">',
                                           '</section>',
                                           0)
-        ctx = {'reflection': NewSection,
+        ctx = {'NewSection': NewSection,
                'section_type': typeform[0:2],
                'tdid': str(id_ref)}
     else:
