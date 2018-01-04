@@ -124,7 +124,7 @@
                     <br>
                     <br>
                     <hr>
-                    <article class="Bigposopinion" id="posopsection">
+                    <article class="Bigposopinion UpSection" id="posopsection">
                         <h2>Points positifs</h2>
                         <table>
                             {% for x in listposop %}
@@ -183,7 +183,7 @@
                         </div>    
                     </article>
 
-                    <article class="Bignegopinion" id="negopsection">
+                    <article class="Bignegopinion UpSection" id="negopsection">
                         <h2>Points négatifs</h2>
                         <div id="negopdiv">
                             <table>
@@ -252,7 +252,7 @@
 #############################################################################################-->
     {% if typeref == 'loi' or typeref == 'prp' %}
     <hr>
-    <section class="Bigproposition" id="propsection">  {% comment %}PostReflection must be update if this line is modified {% endcomment %}
+    <section class="Bigproposition UpSection" id="propsection">  {% comment %}PostReflection must be update if this line is modified {% endcomment %}
         <h2>Autres propositions de lois pour cette réflection</h2>
         <table>
             <tbody>
@@ -321,7 +321,7 @@
 ######################################     the Debate      #####################################
 #############################################################################################-->
 
-<section id="{{typeref}}debate{{id_ref}}">
+<section id="{{typeref}}debate{{id_ref}}" class="UpSection">
     <table>    
         {% for x in listcom %}
         <tr>

@@ -280,24 +280,13 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         typeform = typeform.substring(4, 7);
         datatosend['csrfmiddlewaretoken']=csrftoken;
         if(this.IsModif.value){
-            if(this.typefrom.value === "oppf"){
-                var place = '#posopsection';
-            }
-            else if(this.typefrom.value === "opnf"){
-                var place = '#negopsection';
-            }
-            else if(this.typefrom.value === "prpf"){
-                var place = '#propsection';
-            }
-            else{
-                var place = "";
-            }
+            var place = "#" + this.closest(".UpSection").id;
         }
         else{
             var place = '#' + $(this).parent().parent().attr('id');
         }
         datatosend += '&place=' + place
-        console.log(place)
+        // console.log(place)
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -307,12 +296,12 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 $(place).html(rs.NewSection);
                 var formtodel = "#" +  rs.typeref + 'askform' + rs.idref;
                 $('#content').find(formtodel).html('');
-                if (rs.message != ""){
-                    alert(rs.message);
-                }
                 SetNewForm(place);
                 Setabutform(typeform);
                 SetDonuts();
+                if (rs.message != ""){
+                    alert(rs.message);
+                }
                 console.log('endsucess setform')
             },
             error: function(rs, e) {

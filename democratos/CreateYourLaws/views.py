@@ -492,9 +492,9 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                                 'content',
                                                 locals())
             NewSection, trash = get_something(NewSection,
-                                              '<section class="' +
-                                              'Bigproposition"' +
-                                              ' id="propsection">',
+                                              '<section ' +
+                                              'class="Bigproposition' +
+                                              ' UpSection" id="propsection">',
                                               '</section>',
                                               0)
             ctx = {'NewSection': NewSection,
@@ -524,7 +524,8 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             NewSection = render_block_to_string('GetReflection.html',
                                                 'content',
                                                 locals())
-            start = '<article class="Bigposopinion" id="posopsection">'
+            start = '<article class="Bigposopinion UpSection"' +\
+                    ' id="posopsection">'
             NewSection, trash = get_something(NewSection,
                                               start,
                                               '</article>',
@@ -552,7 +553,8 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             NewSection = render_block_to_string('GetReflection.html',
                                                 'content',
                                                 locals())
-            start = '<article class="Bignegopinion" id="negopsection">'
+            start = '<article class="Bignegopinion UpSection"' +\
+                    ' id="negopsection">'
             NewSection, trash = get_something(NewSection,
                                               start,
                                               '</article>',
@@ -607,7 +609,8 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                             locals())
         NewSection, trash = get_something(NewSection,
                                           '<section id="' +
-                                          typeref+'debate'+id_ref+'">',
+                                          typeref + 'debate' + id_ref +
+                                          '" class="UpSection">',
                                           '</section>',
                                           0)
         ctx = {'NewSection': NewSection,
@@ -668,7 +671,8 @@ def getchildcomments(request):
         NewSection, trash = get_something(NewSection,
                                           '<section id="' +
                                           typeref +
-                                          'debate'+str(id_ref)+'">',
+                                          'debate'+str(id_ref) +
+                                          '" class="UpSection">',
                                           '</section>',
                                           0)
         ctx = {'message': message,
