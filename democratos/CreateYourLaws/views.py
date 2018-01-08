@@ -450,20 +450,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     if IsModif:
         idform = int(request.POST.get('idform', None))
     User = request.user
-    if typeref == 'prp':
-        ref = Proposition.objects.get(id=idref)
-    elif typeref == 'qst':
-        ref = Question.objects.get(id=id_ref)
-    elif typeref == 'exp':
-        ref = Explaination.objects.get(id=id_ref)
-    elif typeref == 'opn':
-        ref = Posopinion.objects.get(id=id_ref)
-    elif typeref == 'opp':
-        ref = Negopinion.objects.get(id=id_ref)
-    elif typeref == 'loi':
-            ref = LawArticle.objects.get(id=id_ref)
-    else:
-        print("Erreur sur le typeref")
+    ref = get_the_instance(typeref, id_ref)
     id_ref = str(id_ref)
     # ####################  PropositionForm ###########################
     if typeform == 'prpf'and request.method == 'POST':
@@ -648,12 +635,13 @@ def list_of_reflections(request, parent_type, parent_id, list_ref_type):
 @login_required
 def getchildcomments(request):
     """ View which display a reflection and its child
-    reflections from its ID"""
+    reflections from its ID and typeref"""
     slug = request.POST.get('slug', None)
     typeref = slug[5:8]
     id_ref = slug[8:len(slug)]
     id_ref = int(id_ref)
     User = request.user
+    print("children from", typeref, id_ref)
     message = ""
     try:
         if typeref == 'qst':   # Does the reflection extist?
@@ -671,10 +659,15 @@ def getchildcomments(request):
         NewSection, trash = get_something(NewSection,
                                           '<section id="' +
                                           typeref +
-                                          'debate'+str(id_ref) +
+                                          'debate' + str(id_ref) +
                                           '" class="UpSection">',
                                           '</section>',
                                           0)
+        NewSection = '<div id="' + typeref +\
+                     'debate' + str(id_ref) +\
+                     '" class="UpSection">' +\
+                     NewSection +\
+                     '</div>'
         ctx = {'message': message,
                'newcomments': NewSection,
                'typeref': typeref,

@@ -180,6 +180,14 @@ var DonutChart = function (canvas, radius, lineWidth, arraySlices, label) {
 };
 
 // ######################### functions ############################
+function UpSizeDebate(idtomodif){
+    $('#content').find(idtomodif).parents("td").each(function(){
+        //console.log($(this).attr('id'));
+        var datwidth = $(this).width();
+        $(this).css('width',(datwidth+30).toString()+'px');
+    });
+}
+
 
 function Setabutform(buttype){
     //console.log('Setabutform in')
@@ -286,7 +294,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
             var place = '#' + $(this).parent().parent().attr('id');
         }
         datatosend += '&place=' + place
-        // console.log(place)
+        console.log(place)
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -296,6 +304,10 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 $(place).html(rs.NewSection);
                 var formtodel = "#" +  rs.typeref + 'askform' + rs.idref;
                 $('#content').find(formtodel).html('');
+                //console.log(typeform);
+                if (typeform === "exp" || typeform ==="qst"){
+                    UpSizeDebate(place);
+                }
                 SetNewForm(place);
                 Setabutform(typeform);
                 SetDonuts();
@@ -581,12 +593,11 @@ $(document).ready(function() {
             data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(response) {
+                if (response.message != ""){
+                    alert(response.message);
+                }
                 var idtomodif = "#child" +  response.typeref + response.idref;
-                $('#content').find(idtomodif).parents("td").each(function(){
-                    console.log($(this).attr('id'));
-                    var datwidth = $(this).width();
-                    $(this).css('width',(datwidth+30).toString()+'px');
-                });
+                UpSizeDebate(idtomodif);
                 $('#content').find(idtomodif).replaceWith(response.newcomments);
                 SetDonuts();
             },

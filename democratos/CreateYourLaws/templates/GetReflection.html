@@ -403,16 +403,14 @@
                 {% else %}
                     {% if x|isinst:'CreateYourLaws.models.Explaination' %}
                     <div id='exp{{x.id}}comments'>
-                        Poser une question ou commentez cette réaction! <br>
                         <button class="butexp" type="button" name="exp:exp:{{x.id}}"> Commenter </button>
                         <button class="butqst" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
                         <p id="expaskform{{x.id}}"></p>
                     </div>
                     {% else %}
                     <div id='qst{{x.id}}comments'>
-                        Poser une question ou commentez cette réaction! <br>
                         <button class="butexp" type="button" name="qst:exp:{{x.id}}"> Commenter </button>
-                        <button class="butqst" type="button" name="qst:qst:{{x.id}}">Poser votre question </button>
+                        <button class="butqst" type="button" name="qst:qst:{{x.id}}">Poser une question </button>
                         <p id="qstaskform{{x.id}}"></p>
                     </div>
                     {% endif %}
@@ -422,9 +420,11 @@
         </tr>
         {% endfor %}            
     </table> 
-    <h3>une réaction? Commentez ou posez votre question</h3>
+    {% if typeref == 'loi' or typeref == 'prp' %}
+        <h3>une réaction?</h3>
+    {% endif %}
     <button class="butexp" name="{{typeref}}:exp:{{id_ref}}" type="button"> Commenter </button>
-    <button class="butqst" name="{{typeref}}:qst:{{id_ref}}" type="button">Poser votre question </button>
+    <button class="butqst" name="{{typeref}}:qst:{{id_ref}}" type="button">Poser une question </button>
     <p id="{{typeref}}askform{{id_ref}}"></p>
 </section>
 
