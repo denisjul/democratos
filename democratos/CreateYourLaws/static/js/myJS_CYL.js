@@ -284,6 +284,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
             CKEDITOR.instances[instance].updateElement();
         var datatosend = $(this).serialize()
         console.log(this.IsModif.value);
+        var IsModif = this.IsModif.value;
         var typeform = $(this).attr('name');
         typeform = typeform.substring(4, 7);
         datatosend['csrfmiddlewaretoken']=csrftoken;
@@ -305,7 +306,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 var formtodel = "#" +  rs.typeref + 'askform' + rs.idref;
                 $('#content').find(formtodel).html('');
                 //console.log(typeform);
-                if (typeform === "exp" || typeform ==="qst"){
+                if ((typeform === "exp" || typeform ==="qst") && IsModif === ""){
                     UpSizeDebate(place);
                 }
                 SetNewForm(place);

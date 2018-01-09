@@ -574,9 +574,10 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                 qtitle = qstform.cleaned_data['title']
                 question = qstform.cleaned_data['text_q']
                 if IsModif:
-                    q = Explaination.objects.get(id=idform)
+                    q = Question.objects.get(id=idform)
                     q.text_q = question
                     q.title = qtitle
+                    print("yo", type(q))
                 else:
                     q = Question.objects.create(text_q=question,
                                                 title=qtitle,

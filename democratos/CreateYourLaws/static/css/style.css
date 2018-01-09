@@ -110,15 +110,24 @@ table{
 	width: 100%;
 }
 
+.tocenter{
+	/*
+	float: center;
+	text-align: center;
+	display: block;
+	position: relative;
+	margin-left: auto ;
+  	margin-right: auto ;*/
+}
+
 button{
-	padding: 1.5%;
+	padding: 1%;
 	margin: 0.5%;
 	border-radius: 30px;
 	color: black;
 	cursor: pointer;
 	text-align: center;
 }
-
 
 .butexp {
 	background-color: #f2cf7b;
@@ -274,10 +283,11 @@ section form{
 	border-width: 2px;
 	border-color: #f0aa01;
 	border-style: solid;
-	border-radius: 4px;
+	border-radius: 20px;
 	border-spacing: 10px;
-	margin: 1%;
-	padding: 10px;
+	margin: 0.2%;
+	padding: 2%;
+	padding-bottom: 0.2%;
 	width: 500px;
 }
 
@@ -287,10 +297,11 @@ section form{
 	border-width: 2px;
 	border-color: #5f2f89;
 	border-style: solid;
-	border-radius: 4px;
+	border-radius: 20px;
 	border-spacing: 10px;
-	margin: 1%;
-	padding: 10px;
+	margin: 0.2%;
+	padding: 2%;
+	padding-bottom: 0.2%;
 	width: 500px;
 }
 
