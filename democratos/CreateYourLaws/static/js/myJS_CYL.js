@@ -181,10 +181,30 @@ var DonutChart = function (canvas, radius, lineWidth, arraySlices, label) {
 
 // ######################### functions ############################
 function UpSizeDebate(idtomodif){
+    console.log($('#content').find(idtomodif).parents("td"));
+    // A revoir ici: parent 1 ne marche pas. La suite fonctionne.
     $('#content').find(idtomodif).parents("td").each(function(){
-        //console.log($(this).attr('id'));
+        var daddy = $('#content').find(this).closest("td");
+        if (daddy != 0){
+            MaxWidthchildren = Math.max.apply(Math, daddy.find("td").map(function(){ 
+                    console.log($(this).attr("id"), $(this).width());
+                    return $(this).width(); 
+                }).get())
+            datwidth = daddy.width()
+            console.log(daddy.attr("id"), datwidth, MaxWidthchildren, daddy.find("td"))
+            if (datwidth - MaxWidthchildren < 20){
+                daddy.css('width',(datwidth+30).toString()+'px');
+                console.log(daddy.width())
+            };
+        };
+            /*
         var datwidth = $(this).width();
-        $(this).css('width',(datwidth+30).toString()+'px');
+        MaxWidthchildren = Math.max.apply(Math, $(this).children().map(function(){ return $(this).width(); }).get())
+        console.log($(this).children(),     MaxWidthchildren, datwidth, datwidth - MaxWidthchildren )
+        //console.log($(this), datwidth, $(this).parent("td"), $(this).parent().width(), $(this).parent().width()-datwidth);
+        if (datwidth - MaxWidthchildren <= 20){
+            $(this).css('width',(datwidth+30).toString()+'px');
+        }*/
     });
 }
 

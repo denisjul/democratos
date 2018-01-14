@@ -41,8 +41,6 @@
                 <h2>{{ref.title}}</h2>
                 <p>{{ref.text_law}}</p>
 
-
-
     {% else %}
             <!--         The Others         -->
         {% if typeref == 'qst' %} 
@@ -57,14 +55,12 @@
                 <h1> démentis/contradiction sur:
                 {% endcomment %}
 
+        {% elif typeref == 'opp' %}
+            <section class="posopinion">
+                <h1> point fort sur: 
         {% elif typeref == 'opn' %}
-            {% if ref.positive %}
-                <section class="posopinon">
-                    <h1> point fort sur: 
-            {% else %}
-                <section class="negopinon">
-                    <h1> point faible sur: 
-            {% endif %}
+            <section class="negopinion">
+                <h1> point faible sur: 
         {% elif typeref == 'prp' %}
             <section class="proposition">
                 <h1> Contre proposition à: 
@@ -72,8 +68,10 @@
         {% if ref.content_object.title %}  
             {{ref.content_object.title}} 
         {% else %}
-            {% if ref.content_object.text_op %} 
-                <p>{{ref.content_object.text_op}}</p>
+            {% if ref.content_object.text_opp %} 
+                <p>{{ref.content_object.text_opp}}</p>
+            {% elif ref.content_object.text_opn %} 
+                <p>{{ref.content_object.text_opn}}</p>
             {% elif ref.content_object.text_exp %} 
                 <p>{{ref.content_object.text_exp}}</p>
             {% elif ref.content_object.text_prop %} 
@@ -90,8 +88,10 @@
                 <p>{{ref.text_exp}}</p>
             {% elif typeref == 'dis' %}
                 <p>{{ref.text_dis}}</p>
+            {% elif typeref == 'opp' %}
+                <p>{{ref.text_opp}}</p>
             {% elif typeref == 'opn' %}
-                <p>{{ref.text_op}}</p>
+                <p>{{ref.text_opn}}</p>
             {% elif typeref == 'prp' %}
                 <p>{{ref.text_prop}}</p>
             {% endif %}
@@ -102,8 +102,10 @@
                 <h2>{{ref.text_exp}}</h2>
             {% elif typeref == 'dis' %}
                 <h2>{{ref.text_dis}}</h2>
+            {% elif typeref == 'opp' %}
+                <h2>{{ref.text_opp}}</h2>
             {% elif typeref == 'opn' %}
-                <h2>{{ref.text_op}}</h2>
+                <h2>{{ref.text_opn}}</h2>
             {% elif typeref == 'prp' %}
                 <h2>{{ref.text_prop}}</h2>
             {% endif %}

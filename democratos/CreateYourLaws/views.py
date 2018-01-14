@@ -414,16 +414,16 @@ def get_reflection(request, typeref=None, id_ref=None):
         listpropositions = list(ref.propositions.all())
     print('Lists child reflection loaded')
     if request.POST:
+        """
         intro = render_block_to_string('GetReflection.html',
                                        "intro",
                                        locals())
-        print('intro loaded')
+        print('intro loaded')"""
+        intro = ""
         content = render_block_to_string('GetReflection.html',
                                          "content",
                                          locals())
         print(content)
-        # intro = render_to_string('intro_reflec.html', locals())
-        # content = render_to_string('content_reflec.html', locals()
         ctx = {'intro': intro,
                'content': content,
                'typeref': typeref,
