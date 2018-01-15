@@ -11,6 +11,7 @@ body{
     padding: 0;
     border: 0 none;
     background: #ffffff	;
+    line-height: 1.1em;
 }
 
 header{
@@ -280,7 +281,7 @@ section form{
 .explaination
 {
 	background-color: #f7e5ba;
-	border-width: 2px;
+	border-width: 1px;
 	border-color: #f0aa01;
 	border-style: solid;
 	border-radius: 20px;
@@ -294,7 +295,7 @@ section form{
 .question
 {
 	background-color:#dac8ea;
-	border-width: 2px;
+	border-width: 1px;
 	border-color: #5f2f89;
 	border-style: solid;
 	border-radius: 20px;

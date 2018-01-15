@@ -180,34 +180,52 @@ var DonutChart = function (canvas, radius, lineWidth, arraySlices, label) {
 };
 
 // ######################### functions ############################
-function UpSizeDebate(idtomodif){
-    console.log($('#content').find(idtomodif).parents("td"));
+function UpSizeDebate(idtomodif){  // See function CheckIf Resize(NewEl)bellow
+    console.log(idtomodif);
     // A revoir ici: parent 1 ne marche pas. La suite fonctionne.
-    $('#content').find(idtomodif).parents("td").each(function(){
+    NewEl = $('#content').find(idtomodif);
+    var NewElType = NewEl.prev().prop('nodeName');
+    //console.log(NewEl, NewElType);
+    if (NewElType == "DIV"){
+        //console.log('yeah')
+        CheckIfResize(NewEl);
+    };
+    NewEl.parents("td").each(function(){
         var daddy = $('#content').find(this).closest("td");
-        if (daddy != 0){
-            MaxWidthchildren = Math.max.apply(Math, daddy.find("td").map(function(){ 
-                    console.log($(this).attr("id"), $(this).width());
-                    return $(this).width(); 
-                }).get())
-            datwidth = daddy.width()
-            console.log(daddy.attr("id"), datwidth, MaxWidthchildren, daddy.find("td"))
-            if (datwidth - MaxWidthchildren < 20){
-                daddy.css('width',(datwidth+30).toString()+'px');
-                console.log(daddy.width())
-            };
-        };
-            /*
-        var datwidth = $(this).width();
-        MaxWidthchildren = Math.max.apply(Math, $(this).children().map(function(){ return $(this).width(); }).get())
-        console.log($(this).children(),     MaxWidthchildren, datwidth, datwidth - MaxWidthchildren )
-        //console.log($(this), datwidth, $(this).parent("td"), $(this).parent().width(), $(this).parent().width()-datwidth);
-        if (datwidth - MaxWidthchildren <= 20){
-            $(this).css('width',(datwidth+30).toString()+'px');
-        }*/
+        CheckIfResize(daddy);
     });
 }
 
+
+function CheckIfResize(NewEl){
+    if (NewEl != 0){
+        MaxWidthchildren = Math.max.apply(Math, NewEl.find("td").map(function(){ 
+                //console.log($(this).attr("id"), $(this).width());
+                return $(this).width(); 
+            }).get())
+        datwidth = NewEl.width()
+        //console.log(NewEl.attr("id"), datwidth, MaxWidthchildren, NewEl.find("td"))
+        if (datwidth - MaxWidthchildren < 20){
+            NewEl.css('width',(datwidth+30).toString()+'px');
+            //console.log(NewEl.width())
+        };
+    }
+    else{
+        console.log(NewEl);
+    };
+}
+/* WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS 
+WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS 
+WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS WORK IN PROGRESS 
+function HideDisplay(event,idtohide){
+    if ($(idtohide).css('display') == 'none' ){
+        $(idtohide).css('display','block');
+    }
+    else{
+        $(idtohide).css('display','none');
+    }
+}
+*/
 
 function Setabutform(buttype){
     //console.log('Setabutform in')
@@ -618,8 +636,8 @@ $(document).ready(function() {
                     alert(response.message);
                 }
                 var idtomodif = "#child" +  response.typeref + response.idref;
-                UpSizeDebate(idtomodif);
                 $('#content').find(idtomodif).replaceWith(response.newcomments);
+                UpSizeDebate('#'+response.typeref+ 'debate' + response.idref);
                 SetDonuts();
             },
             error: function(rs, e) {
