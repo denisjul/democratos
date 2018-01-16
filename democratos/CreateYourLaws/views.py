@@ -458,6 +458,8 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         if prpform.is_valid():
             proptitle = prpform.cleaned_data['title']
             prop = prpform.cleaned_data['text_prp']
+            details_prp = prpform.cleaned_data['details_prp']
+            print(proptitle, prop, details_prp)
             if isinstance(ref, LawArticle):
                 lawart = ref
             else:
@@ -466,10 +468,12 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                 prp = Proposition.objects.get(id=idform)
                 prp.text_prp = prop
                 prp.title = proptitle
+                prp.details_prp = details_prp
             else:
                 prp = Proposition.objects.create(text_prp=prop,
                                                  title=proptitle,
                                                  autor=User,
+                                                 details_prp=details_prp,
                                                  law_article=lawart,
                                                  content_object=ref)
             prp.save()
@@ -731,7 +735,8 @@ def ModifReflection(request):
                                            })
         elif typeform == 'prp':
             form = PropositionForm(initial={'title': obj.title,
-                                            'text_prp': obj.text_prp
+                                            'text_prp': obj.text_prp,
+                                            'details_prp': obj.details_prp,
                                             })
         else:
             print("http1")
