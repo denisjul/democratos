@@ -207,7 +207,8 @@ class PropositionForm(forms.ModelForm):
         fields = ('title', 'text_prp', 'details_prp')
         labels = {'title': ('Nommez votre proposition de loi'),
                   'text_prp': ("votre proposition de loi"),
-                  'details_prp': ("Note/détails :"),
+                  'details_prp': ("But recherché par " + \
+                                  "cette contre-proposition:"),
                   }
         widgets = {
             'text_prp': CKEditorWidget(config_name='redac_law'),
@@ -221,7 +222,8 @@ class CreateNewLawForm(forms.ModelForm):
         fields = ('title', 'text_law', 'details_lwp')
         labels = {'title': ('Ennoncez votre loi'),
                   'text_law': ("votre proposition de loi"),
-                  'details_lwp': ("Note/détails :"),
+                  'details_lwp': ("But recherché par " + \
+                                  "cette nouvelle loi:"),
                   }
         widgets = {
             'text_law': CKEditorWidget(config_name='redac_law'),

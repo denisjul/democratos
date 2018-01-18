@@ -13,7 +13,7 @@
     {% elif typeref == 'prp' %}  
         C'est une proposition!
     {% else %}   <!--         The path to the reflection       -->
-        <var class="InDatBox" name="1:{{x|lookup:1}}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>
+        <var class="InDatBox" name="1:{{law_code.name}}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>
         {% for x in list_parents %}
             <var class="GetReflection" name="{{x|lookup:0}}:{{x|lookup:1}}"><strong>  {{x|lookup:2|truncatewords:4}}  </strong></var>  >>     
         {% endfor %}
@@ -44,64 +44,63 @@
     {% else %}
             <!--         The Others         -->
         {% if typeref == 'qst' %} 
-            <section class="question">
                 <h1> Question à propos de: 
         {% elif typeref == 'exp' %}
-            <section class="explaination">
                 <h1> Commentaire/explication à propos de:
-        {% elif typeref == 'dis' %}
-        {% comment %}
-            <section class="disclaim">
-                <h1> démentis/contradiction sur:
-                {% endcomment %}
-
         {% elif typeref == 'opp' %}
-            <section class="posopinion">
                 <h1> point fort sur: 
         {% elif typeref == 'opn' %}
-            <section class="negopinion">
                 <h1> point faible sur: 
         {% elif typeref == 'prp' %}
-            <section class="proposition">
                 <h1> Contre proposition à: 
         {% endif %} 
+        <span class="GetReflection" name="{{fstparent|lookup:0}}:{{fstparent|lookup:1}}"> 
         {% if ref.content_object.title %}  
             {{ref.content_object.title}} 
         {% else %}
             {% if ref.content_object.text_opp %} 
-                <p>{{ref.content_object.text_opp}}</p>
+                {{ref.content_object.text_opp}}
             {% elif ref.content_object.text_opn %} 
-                <p>{{ref.content_object.text_opn}}</p>
+                {{ref.content_object.text_opn}}
             {% elif ref.content_object.text_exp %} 
-                <p>{{ref.content_object.text_exp}}</p>
-            {% elif ref.content_object.text_prop %} 
-                <p>{{ref.content_object.text_prop}}</p>
+                {{ref.content_object.text_exp}}
+            {% elif ref.content_object.text_prp %} 
+                {{ref.content_object.text_prp}}
             {% elif ref.content_object.text_q %} 
-                <p>{{ref.content_object.text_q}}</p>
+                {{ref.content_object.text_q}}
             {% endif %}
-        {% endif %}</h1>    
+        {% endif %}</span></h1>
+                {% if typeref == 'qst' %} 
+            <section class="question"> 
+        {% elif typeref == 'exp' %}
+            <section class="explaination">
+        {% elif typeref == 'opp' %}
+            <section class="posopinion">
+        {% elif typeref == 'opn' %}
+            <section class="negopinion">
+        {% elif typeref == 'prp' %}
+            <section class="proposition">
+        {% endif %}     
         {% if ref.title %}    
             <h2>{{ref.title}}</h2>
             {% if typeref == 'qst' %}
                 <p>{{ref.text_q}}</p>
             {% elif typeref == 'exp' %}
                 <p>{{ref.text_exp}}</p>
-            {% elif typeref == 'dis' %}
-                <p>{{ref.text_dis}}</p>
             {% elif typeref == 'opp' %}
                 <p>{{ref.text_opp}}</p>
             {% elif typeref == 'opn' %}
                 <p>{{ref.text_opn}}</p>
             {% elif typeref == 'prp' %}
-                <p>{{ref.text_prop}}</p>
+                <p>{{ref.text_prp}}</p>
+                <i>But recherché par cette contre-proposition:</i>
+                <p>{{ref.details_prp}}</p>
             {% endif %}
         {% else %}
             {% if typeref == 'qst' %}
                 <h2>{{ref.text_q}}</h2>
             {% elif typeref == 'exp' %}
                 <h2>{{ref.text_exp}}</h2>
-            {% elif typeref == 'dis' %}
-                <h2>{{ref.text_dis}}</h2>
             {% elif typeref == 'opp' %}
                 <h2>{{ref.text_opp}}</h2>
             {% elif typeref == 'opn' %}
@@ -334,6 +333,7 @@
                                 <ul>
                                     <li><ins class="DelOwnRef clickable " name="del:exp:{{x.id}}">supprimer</ins></li> 
                                     <li><ins class="ModifRef clickable " name="modif:exp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
+                                    <li><ins class="GetReflection clickable " name="exp:{{x.id}}">ouvrir</ins></li>
                                 </ul>
                             </li>
                         </ul> 
@@ -354,6 +354,7 @@
                                 <ul>
                                     <li><ins class="DelOwnRef clickable " name="del:qst:{{x.id}}">supprimer</ins></li> 
                                     <li><ins class="ModifRef clickable " name="modif:qst:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
+                                    <li><ins class="GetReflection clickable " name="qst:{{x.id}}">ouvrir</ins></li>
                                 </ul>
                             </li>
                         </ul> 

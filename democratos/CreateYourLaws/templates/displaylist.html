@@ -32,31 +32,6 @@
 {% endblock %}
 
 
-{% comment %}
-{% block intro %} <!--         A revoir          -->
-    <h1> Où suis-je? </h1>
-    <p> 
-        {% if typeref == 'loi' %}    <!--         The path to the Article           -->
-            {% for x in listparents %}
-                <a href="{% url 'InDatBox' x|lookup:2 x|lookup:1 %}"><strong>  {{x|lookup:0|truncatewords:4}}  </strong></a>  >>     
-            {% endfor %}
-            {{Article.title}}
-
-        {% else %}   <!--         The path to the reflection       -->
-            <a href="{% url 'InDatBox' 1 law_code.id %}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></a>  >>  ...  >>
-            {% for x in list_parents %}
-                <a href="{% url 'reflection' x|lookup:0 x|lookup:1 %}"><strong>  {{x|lookup:2|truncatewords:4}}  </strong></a>  >>     
-            {% endfor %}
-            {% if ref.title %}    
-                {{ref.title|truncatewords:8}}
-            {% else %}
-                {{ref.text|truncatewords:8}}
-            {% endif %}
-        {% endif %}
-    </p>
-{% endblock %}  {% endcomment %}
-
-
 {% block content %}
 {% autoescape off %}
 

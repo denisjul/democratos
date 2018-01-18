@@ -19,6 +19,7 @@ from CreateYourLaws.forms import PropositionForm, Del_account_form
 from CreateYourLaws.forms import ExplainationForm, PosopinionForm
 from CreateYourLaws.forms import Info_Change_Form, NegopinionForm
 from CreateYourLaws.views_functions import get_path, get_the_instance
+from CreateYourLaws.views_functions import get_model_type_in_str
 from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
 from CreateYourLaws.dl_law_codes.functions import get_something
@@ -390,9 +391,14 @@ def get_reflection(request, typeref=None, id_ref=None):
         listparents.append((parent.title, parent.id, 1))
         listparents.reverse()
     elif typeref == 'prp':
-        print(" getreflection in views.py à finir")  # <---------- A Finir ici
+        fstparent = [get_model_type_in_str(ref.content_object),
+                     ref.content_object.id,
+                     ref.content_object.title,
+                     ]
     else:
         law_code, list_parents = get_path(ref)
+        fstparent = list_parents[0]
+        print(law_code, list_parents)
     # forms initializations
     qstform = QuestionForm()
     expform = ExplainationForm()
@@ -414,16 +420,13 @@ def get_reflection(request, typeref=None, id_ref=None):
         listpropositions = list(ref.propositions.all())
     print('Lists child reflection loaded')
     if request.POST:
-        """
         intro = render_block_to_string('GetReflection.html',
                                        "intro",
                                        locals())
-        print('intro loaded')"""
-        intro = ""
+        print('intro loaded')
         content = render_block_to_string('GetReflection.html',
                                          "content",
                                          locals())
-        print(content)
         ctx = {'intro': intro,
                'content': content,
                'typeref': typeref,
