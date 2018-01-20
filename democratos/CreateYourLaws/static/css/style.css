@@ -161,7 +161,7 @@ button{
 	border-color: #f92222;
 }
 
-.law_text table, th, td{
+.law_section table, th, td{
 	list-style: none;
 }
 
@@ -246,16 +246,40 @@ button{
 
 .proposition
 {
-	background-color: #7ab3e7;
-	border-width: 2px;
-	border-color: #378ddd;
+	background-color: #b3d1ff;
+	border-color: #4d94ff;
+	border-width: 1px;
 	border-style: solid;
-	border-radius: 8px;
-	border-spacing: 10px;
-	margin: 1%;
-	padding: 10px;
+	border-radius: 10px;
+	display: inline-block;
+	margin: 0.2%;
+	padding: 2%;
 }
 
+.law_text
+{
+	background-color: #e6e6e5;
+	border-color: #c1c1be;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 10px;
+	display: inline-block;
+	margin: 0.2%;
+	padding: 2%;
+}
+
+
+.BoxIntroStyle
+{
+	background-color: #ebd9c6;
+	border-color: #c68c53;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 10px;
+	display: inline-block;
+	margin: 0.2%;
+	padding: 2%;
+}
 section form{
 	padding: 2%;
 	text-align: left;
@@ -263,7 +287,7 @@ section form{
 }
 
 
-.law_text
+.law_section
 {	
 	background-color: #d6d5d4;
 	border-width: 4px;
@@ -397,6 +421,10 @@ section form{
 }
 
 .InDatBox:hover {
+	cursor: pointer;
+}
+
+.GetReflection:hover {
 	cursor: pointer;
 }
 

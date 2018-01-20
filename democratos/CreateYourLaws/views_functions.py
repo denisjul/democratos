@@ -13,7 +13,6 @@ def get_path(obj):
     - Disclaim
     - Opinion
     - Explaination
-    - Disclaim
     Return list of parents ugit openclassroomntil law article & law code """
 
     parent = obj.content_type.model_class().objects.get(id=obj.object_id)

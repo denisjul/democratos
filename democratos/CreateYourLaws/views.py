@@ -73,12 +73,13 @@ def nav_up(request, idbox):
         children.append(('NewLaw'+str(id_box),
                          'Créer une loi à cet emplacement',
                          'CreateNewLaw',
-                         'idbox:'+ str(id_box),
+                         'idbox:' + str(id_box),
                          False))
-        children.append(('NewBox'+str(id_box),
-                         'Créer un un sous-groupement de loi à cet emplacement',
+        children.append(('NewBox' + str(id_box),
+                         'Créer un un sous-groupement de' +\
+                         ' loi à cet emplacement',
                          'CreateNewBox',
-                         'idbox:'+ str(id_box),
+                         'idbox:' + str(id_box),
                          False))
     if idbox[0] == 'A':
         listBlock = list(
@@ -417,7 +418,10 @@ def get_reflection(request, typeref=None, id_ref=None):
     if typeref == 'loi' or typeref == 'prp':
         listposop = list(ref.posopinions.all())
         listnegop = list(ref.negopinions.all())
-        listpropositions = list(ref.propositions.all())
+        if typeref == 'prp':
+            listpropositions = list(ref.law_article.propositions.all())
+        else:
+            listpropositions = list(ref.propositions.all())
     print('Lists child reflection loaded')
     if request.POST:
         intro = render_block_to_string('GetReflection.html',
@@ -444,9 +448,9 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
     place = request.POST.get('place', '')
     print("place: ",
           place,
-          "typeform: ",
+          "\ntypeform: ",
           typeform,
-          "typeref: ",
+          "\ntyperef: ",
           typeref)
     id_ref = int(request.POST.get('ref_id', None))
     IsModif = bool(request.POST.get('IsModif', False))
@@ -454,9 +458,14 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         idform = int(request.POST.get('idform', None))
     User = request.user
     ref = get_the_instance(typeref, id_ref)
+    fstparent = [typeref,
+                 ref.id,
+                 ref.title,
+                 ]
     id_ref = str(id_ref)
     # ####################  PropositionForm ###########################
     if typeform == 'prpf'and request.method == 'POST':
+        print("c'est un prpf")
         prpform = PropositionForm(request.POST)
         if prpform.is_valid():
             proptitle = prpform.cleaned_data['title']
@@ -472,15 +481,20 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                 prp.text_prp = prop
                 prp.title = proptitle
                 prp.details_prp = details_prp
+                listpropositions = list(ref.propositions.all())
             else:
+                if isinstance(ref, Proposition):
+                    ctob = ref.law_article  # all prp must point on a law
+                else:
+                    ctob = ref
                 prp = Proposition.objects.create(text_prp=prop,
                                                  title=proptitle,
                                                  autor=User,
                                                  details_prp=details_prp,
                                                  law_article=lawart,
-                                                 content_object=ref)
+                                                 content_object=ctob)
+                listpropositions = list(ctob.propositions.all())
             prp.save()
-            listpropositions = list(ref.propositions.all())
             prpform = PropositionForm()
             NewSection = render_block_to_string('GetReflection.html',
                                                 'content',
@@ -584,7 +598,6 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                     q = Question.objects.get(id=idform)
                     q.text_q = question
                     q.title = qtitle
-                    print("yo", type(q))
                 else:
                     q = Question.objects.create(text_q=question,
                                                 title=qtitle,
@@ -617,6 +630,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
         ctx["message"] = "Votre réflection a bien été modifié!"
     else:
         ctx["message"] = ""
+    print("end PostReflection")
     return JsonResponse(ctx)
 
 
@@ -656,6 +670,10 @@ def getchildcomments(request):
             ref = Question.objects.get(id=id_ref)
         elif typeref == 'exp':
             ref = Explaination.objects.get(id=id_ref)
+        fstparent = [typeref,
+                     ref.id,
+                     ref.title,
+                     ]
         listexplainations = list(ref.explainations.all())
         listquestions = list(ref.questions.all())
         listcom = listexplainations
@@ -664,6 +682,7 @@ def getchildcomments(request):
         NewSection = render_block_to_string('GetReflection.html',
                                             'content',
                                             locals())
+        print("we are here")
         NewSection, trash = get_something(NewSection,
                                           '<section id="' +
                                           typeref +

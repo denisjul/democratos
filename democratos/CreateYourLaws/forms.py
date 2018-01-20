@@ -164,18 +164,6 @@ class ExplainationForm(forms.ModelForm):
                            'Titre nécessaire car votre commentaire est long')
         return cleaned_data
 
-"""
-class DisclaimForm(forms.ModelForm):
-    class Meta:
-        model = Disclaim
-        fields = ('title', 'text_dis')
-        labels = {'title': ('En quelques mots...'),
-                  'text_dis': ("Réfutez la réflexion")}
-        widgets = {
-            'text_dis': CKEditorWidget()
-        }
-"""
-
 
 class PosopinionForm(forms.ModelForm):
     class Meta:

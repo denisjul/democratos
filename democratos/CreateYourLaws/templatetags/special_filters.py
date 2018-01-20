@@ -12,6 +12,23 @@ def lookup(d, key):
 
 
 @register.filter
+def Csstype(typeref):
+    if typeref == "loi":
+        Csstype = "law_text"
+    elif typeref == "prp":
+        Csstype = "proposition"
+    elif typeref == "exp":
+        Csstype = "explaination"
+    elif typeref == "qst":
+        Csstype = "question"
+    elif typeref == "opp":
+        Csstype = "posopinion"
+    elif typeref == "opn":
+        Csstype = "negopinion"
+    return Csstype
+
+
+@register.filter
 def isinst(value, class_str):
     split = class_str.split('.')
     return isinstance(value,

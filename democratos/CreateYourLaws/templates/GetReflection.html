@@ -7,22 +7,23 @@
 <p> 
     {% if typeref == 'loi' %}    <!--         The path to the Article           -->
         {% for x in listparents %}
-            <var class="InDatBox" name="{{x|lookup:2}}:{{x|lookup:1}}"><strong>  {{x|lookup:0|truncatewords:4}}  </strong></var>  >>     
+            <var class="InDatBox BoxIntroStyle" name="{{x|lookup:2}}:{{x|lookup:1}}"><strong>  {{x|lookup:0|truncatewords:4}}  </strong></var>  >>  
         {% endfor %}
-        {{ref.title}}
     {% elif typeref == 'prp' %}  
-        C'est une proposition!
+        <var class="InDatBox BoxIntroStyle" name="1:{{ref.law_article.law_code.id}}"><strong>  {{ ref.law_article.law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>  <var class="GetReflection law_text" name="loi:{{ref.law_article.id}}"><strong>  {{ref.law_article.title|truncatewords:4}}  </strong></var>   >>   
     {% else %}   <!--         The path to the reflection       -->
-        <var class="InDatBox" name="1:{{law_code.name}}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>
+        <var class="InDatBox BoxIntroStyle" name="1:{{law_code.id}}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>  
         {% for x in list_parents %}
-            <var class="GetReflection" name="{{x|lookup:0}}:{{x|lookup:1}}"><strong>  {{x|lookup:2|truncatewords:4}}  </strong></var>  >>     
+            <var class="GetReflection {{x|lookup:0|Csstype}}" name="{{x|lookup:0}}:{{x|lookup:1}}"><strong>  {{x|lookup:2|truncatewords:4}}  </strong></var>  >>     
         {% endfor %}
-        {% if ref.title %}    
-            {{ref.title|truncatewords:8}}
-        {% else %}
-            {{ref.text|truncatewords:8}}
-        {% endif %}
     {% endif %}
+    <var class="{{typeref|Csstype}}">
+    {% if ref.title %}    
+        {{ref.title|truncatewords:8}}
+    {% else %}
+        {{ref.text|truncatewords:8}}
+    {% endif %}
+    </var>
 </p>
 
 {% endblock %}
@@ -36,7 +37,7 @@
 
     {% if typeref == 'loi' %}  
             <!--         The Law article           -->
-        <section class="law_text">
+        <section class="law_section">
             <h1>{{ref.law_code.title}}</h1> 
                 <h2>{{ref.title}}</h2>
                 <p>{{ref.text_law}}</p>
@@ -93,7 +94,7 @@
                 <p>{{ref.text_opn}}</p>
             {% elif typeref == 'prp' %}
                 <p>{{ref.text_prp}}</p>
-                <i>But recherché par cette contre-proposition:</i>
+                <i><ins>But recherché par cette contre-proposition:</ins></i>
                 <p>{{ref.details_prp}}</p>
             {% endif %}
         {% else %}
