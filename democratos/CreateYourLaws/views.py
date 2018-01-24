@@ -79,7 +79,7 @@ def nav_up(request, idbox):
                          'Créer un un sous-groupement de' +\
                          ' loi à cet emplacement',
                          'CreateNewBox',
-                         'idbox:' + str(id_box),
+                         str(id_box),
                          False))
     if idbox[0] == 'A':
         listBlock = list(
@@ -791,7 +791,14 @@ def DeleteReflection(request):
 @login_required
 def CreateNewLaw(request, box_type=None, box_id=None):
     """ View to create a new law article """
+
+    """
+    check si form et récupérer donner pour renvoyer ensuite
+    vers GetReflection 
+    """
     if request.POST:
+        box_id = request.POST.get('slug', None)
+        print(box_id)
         intro = render_block_to_string('CreateNewLaw.html',
                                        "intro",
                                        locals())
@@ -803,8 +810,7 @@ def CreateNewLaw(request, box_type=None, box_id=None):
         # content = render_to_string('content_reflec.html', locals())
         ctx = {'intro': intro,
                'content': content,
-               'typeref': typeref,
-               'id_ref': str(id_ref)}
+               'box_id': str(box_id)}
         return JsonResponse(ctx)
     else:
         return render(request, 'CreateNewLaw.html', locals())

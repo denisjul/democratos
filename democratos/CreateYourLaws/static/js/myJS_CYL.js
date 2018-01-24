@@ -326,14 +326,24 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         var typeform = $(this).attr('name');
         typeform = typeform.substring(4, 7);
         datatosend['csrfmiddlewaretoken']=csrftoken;
+        var place = "#" + this.closest(".UpSection").id;
+        console.log(this, "place:",place)
+          /*
         if(this.IsModif.value){
             var place = "#" + this.closest(".UpSection").id;
         }
         else{
             var place = '#' + $(this).parent().parent().attr('id');
-        }
-        datatosend += '&place=' + place
-        console.log(place)
+          
+            if (typeform == "qst" || typeform == "exp"){
+                var place = '#' + $(this).parent().attr('id');
+            }
+            else{
+                var place = '#' + $(this).parent().parent().attr('id');
+            }
+        }*/
+        datatosend += '&place=' + place;
+        console.log(place);
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -342,6 +352,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
                 $(place).html('');
                 $(place).html(rs.NewSection);
                 var formtodel = "#" +  rs.typeref + 'askform' + rs.idref;
+                console.log(formtodel)
                 $('#content').find(formtodel).html('');
                 //console.log(typeform);
                 if ((typeform === "exp" || typeform ==="qst") && IsModif === ""){
@@ -621,6 +632,13 @@ $(document).ready(function() {
     // --------------- Reflection  loading AJAX -------------------
     $("body").on("click",".GetReflection",function(){
         var url = '/CYL/reflection';
+        var slug = $(this).attr('name');
+        GoAjax(url,slug,true);
+    });
+    // --------------- CreateNewLaw  loading AJAX -------------------
+    // modif url so url = '/CYL/CreateNewLaw/BOXID
+    $("body").on("click",".CreateNewLaw",function(){
+        var url = '/CYL/CreateNewLaw';
         var slug = $(this).attr('name');
         GoAjax(url,slug,true);
     });

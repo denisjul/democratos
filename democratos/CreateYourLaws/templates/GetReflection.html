@@ -401,17 +401,13 @@
                     {% endif %}
                 {% else %}
                     {% if x|isinst:'CreateYourLaws.models.Explaination' %}
-                    <span id='exp{{x.id}}comments' class="tocenter">
-                        <button class="butexp" type="button" name="exp:exp:{{x.id}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                        <button class="butqst" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
-                        <p id="expaskform{{x.id}}"></p>
-                    </span>
+                    <button class="butexp" type="button" name="exp:exp:{{x.id}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                    <button class="butqst" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
+                    <span id="expaskform{{x.id}}" class="tocenter UpSection"></span>
                     {% else %}
-                    <span id='qst{{x.id}}comments' class="tocenter">
-                        <button class="butexp" type="button" name="qst:exp:{{x.id}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                        <button class="butqst" type="button" name="qst:qst:{{x.id}}">Poser une question </button>
-                        <p id="qstaskform{{x.id}}"></p>
-                    </span>
+                    <button class="butexp" type="button" name="qst:exp:{{x.id}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                    <button class="butqst" type="button" name="qst:qst:{{x.id}}">Poser une question </button>
+                    <span id="qstaskform{{x.id}}" class="tocenter UpSection"></span>
                     {% endif %}
                 {% endif %}
                 </p>
