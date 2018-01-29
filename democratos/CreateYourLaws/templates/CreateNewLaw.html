@@ -2,15 +2,6 @@
 {% load special_filters %}
 {% load staticfiles %}
 
-{% block intro %}
-<h1> Où suis-je? </h1>
-<p> 
-
-</p>
-
-{% endblock %}
-
-
 {% block content %}
 <form action="{% url 'CreateNewLaw'%}"  method="post" name="idbox:{{box_id}}">
     {{ form.as_p }} 

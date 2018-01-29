@@ -1,9 +1,29 @@
 {% load staticfiles %}
-<form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}" name="{{typeref}}:{{typeform}}:{{ref.id}}">
+
+{% if typeref == "lwp" %}
+	{% block intro %}
+	<h1> Où suis-je? </h1>
+	<p> 
+
+	</p>
+
+	{% endblock %}
+{% endif %}
+
+{% block content %}
+{% if typeref == "lwp" %}
+	<form action="{% url 'CreateNewLaw'%}"  method="post" id="NewLaw:{{box_id}}">
+{% else %}
+	<form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}" name="{{typeref}}:{{typeform}}:{{ref.id}}">
+{% endif %}
     {{ form.as_p }} 
-    <input type="hidden" name="typeform" value="{{typeform}}f">
-    <input type="hidden" name="typeref" value="{{typeref}}">
-    <input type="hidden" name="ref_id" value="{{idref}}">
+    {% if typeref == "lwp" %}
+    	<input type="hidden" name="box_id" value="{{box_id}}">
+    {% else %}
+	    <input type="hidden" name="typeform" value="{{typeform}}f">
+	    <input type="hidden" name="typeref" value="{{typeref}}">
+	    <input type="hidden" name="ref_id" value="{{idref}}">
+	{% endif %}
 	{% if IsModif %}
 		<input type="hidden" name="IsModif" value="True">
 		<input type="hidden" name="idform" value="{{idform}}">
@@ -15,3 +35,4 @@
 	<button class="but{{typeform}}" id="Cancel{{typeform}}{{idform}}form"> Annuler </button>
 {% endif%}
 </form> 
+{% endblock %}

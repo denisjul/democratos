@@ -11,7 +11,7 @@ body{
     padding: 0;
     border: 0 none;
     background: #ffffff	;
-    line-height: 1.1em;
+    // line-height: 1.1em;
 }
 
 header{
@@ -30,6 +30,7 @@ nav{
 	display: none;
 	background: #f0f0f0;
 }
+
 
 aside{
 	display: inline-block;

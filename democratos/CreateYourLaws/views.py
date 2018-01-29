@@ -1,25 +1,23 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from django.http import Http404, JsonResponse, HttpResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.contenttypes.models import ContentType
-from CreateYourLaws.models import LawCode, LawArticle
-from CreateYourLaws.models import CodeBlock, Question, Disclaim, Negopinion
-from CreateYourLaws.models import Explaination, Posopinion, Proposition
-from CreateYourLaws.models import Note
-from CreateYourLaws.forms import QuestionForm, Create_CYL_UserForm
-from CreateYourLaws.forms import PropositionForm, Del_account_form
-from CreateYourLaws.forms import ExplainationForm, PosopinionForm
-from CreateYourLaws.forms import Info_Change_Form, NegopinionForm
-from CreateYourLaws.views_functions import get_path, get_the_instance
-from CreateYourLaws.views_functions import get_model_type_in_str
+from CreateYourLaws.models import (
+    LawCode, LawArticle, CodeBlock, Question, Disclaim, Negopinion,
+    Explaination, Posopinion, Proposition, Note,)
+from CreateYourLaws.forms import (
+    QuestionForm, Create_CYL_UserForm, PropositionForm, Del_account_form,
+    ExplainationForm, PosopinionForm, Info_Change_Form, NegopinionForm,
+    CreateNewLawForm,)
+from CreateYourLaws.views_functions import (
+    get_path, get_the_instance, get_model_type_in_str,)
 from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
 from CreateYourLaws.dl_law_codes.functions import get_something
@@ -781,7 +779,6 @@ def DeleteReflection(request):
     """ Enable the Autor or the comunity to delete a comment """
     typeref = request.POST.get('typeref', None)
     idref = int(request.POST.get('idref', None))
-    # print(typeref, idref)
     obj = get_the_instance(typeref, idref)
     obj.delete()
     ctx = {'message': 'Votre commentaire a bien été supprimé'}
@@ -789,31 +786,32 @@ def DeleteReflection(request):
 
 
 @login_required
-def CreateNewLaw(request, box_type=None, box_id=None):
+def CreateNewLaw(request, box_id=None):
     """ View to create a new law article """
 
     """
     check si form et récupérer donner pour renvoyer ensuite
     vers GetReflection 
     """
+    print(request)
     if request.POST:
+        typeref = "lwp"
+        form = CreateNewLawForm()
         box_id = request.POST.get('slug', None)
+        box_id = int(box_id[6:])
         print(box_id)
+        """
         intro = render_block_to_string('CreateNewLaw.html',
                                        "intro",
-                                       locals())
-        content = render_block_to_string('CreateNewLaw.html',
+                                       locals())"""
+        content = render_block_to_string('GetForm.html',
                                          "content",
                                          locals())
-        print(content)
-        # intro = render_to_string('intro_reflec.html', locals())
-        # content = render_to_string('content_reflec.html', locals())
-        ctx = {'intro': intro,
-               'content': content,
+        ctx = {'content': content,
                'box_id': str(box_id)}
         return JsonResponse(ctx)
     else:
-        return render(request, 'CreateNewLaw.html', locals())
+        return render(request, 'GetForm.html', locals())
 
 
 @login_required

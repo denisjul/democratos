@@ -7,10 +7,10 @@ from datetime import date, timedelta
 from django.forms import SelectDateWidget
 from django.contrib.auth.forms import UserCreationForm
 from registration.forms import RegistrationFormUniqueEmail
-from CreateYourLaws.models import LawArticle, Explaination
-from CreateYourLaws.models import Proposition, LawProp
-from CreateYourLaws.models import Posopinion, Negopinion, Question, CYL_user
-# Disclaim
+from CreateYourLaws.models import (
+    Explaination, Proposition, LawProp, Posopinion,
+    Negopinion, Question, CYL_user,
+)
 from ckeditor.widgets import CKEditorWidget
 
 

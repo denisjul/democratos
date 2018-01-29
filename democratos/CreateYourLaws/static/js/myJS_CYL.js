@@ -82,12 +82,12 @@ function UpAndDown(tomodif,dontomodif,slug,url){
 // This function gets cookie with a given name
 function getCookie(name) {
     var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
+    if (document.cookie && document.cookie !== '') {
         var cookies = document.cookie.split(';');
         for (var i = 0; i < cookies.length; i++) {
             var cookie = jQuery.trim(cookies[i]);
             // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
@@ -294,7 +294,6 @@ function SetNewForm(place){
     // Set and Enable all form at the indicated place (place as str)
     $(place).find('form').each(function(){
         SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
-        //console.log('Here')
         $(this).find('textarea').each(function() {
             InitNewCkeditor($(this));
         });
@@ -325,23 +324,11 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         var IsModif = this.IsModif.value;
         var typeform = $(this).attr('name');
         typeform = typeform.substring(4, 7);
+        alert("uhgfgsfguhuihgsl");
         datatosend['csrfmiddlewaretoken']=csrftoken;
+        alert(datatosend);
         var place = "#" + this.closest(".UpSection").id;
-        console.log(this, "place:",place)
-          /*
-        if(this.IsModif.value){
-            var place = "#" + this.closest(".UpSection").id;
-        }
-        else{
-            var place = '#' + $(this).parent().parent().attr('id');
-          
-            if (typeform == "qst" || typeform == "exp"){
-                var place = '#' + $(this).parent().attr('id');
-            }
-            else{
-                var place = '#' + $(this).parent().parent().attr('id');
-            }
-        }*/
+        console.log(this, "place:",place);
         datatosend += '&place=' + place;
         console.log(place);
         $.ajax({ // create an AJAX call...
@@ -452,9 +439,7 @@ function GoAjax(url, slug, push) {
                 console.log("InDatbox");
             }
             else{
-                $('form').each(function(){
-                    SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
-                });
+                SetNewForm("#content");
                 Setallbutform();
                 SetDonuts();
             }
@@ -472,6 +457,10 @@ function GoAjax(url, slug, push) {
                         }
                         window.history.pushState({url: url,slug: slug}, null, url + "/" + response.typeref + "/" + response.id_ref);
                         window.histstate.lastref = true; 
+                        break;
+                    case "/CYL/CreateNewLaw":
+                        window.history.pushState({url: url,slug: slug}, null, url + "/" + response.box_id);
+                        window.histstate.lastref = false;
                         break;                         
                     default:
                         console.log("GoAjax error")
@@ -487,7 +476,6 @@ function GoAjax(url, slug, push) {
 
 
 // ##########################  MAIN   #############################
-
 
 
 $(document).ready(function() {
@@ -638,9 +626,9 @@ $(document).ready(function() {
     // --------------- CreateNewLaw  loading AJAX -------------------
     // modif url so url = '/CYL/CreateNewLaw/BOXID
     $("body").on("click",".CreateNewLaw",function(){
-        var url = '/CYL/CreateNewLaw';
         var slug = $(this).attr('name');
-        GoAjax(url,slug,true);
+        var url = '/CYL/CreateNewLaw';
+        GoAjax(url,slug,false);
     });
        //---------------------  Get Child comments---------------------
     $("body").on("click", ".GetDebateChild",function(){
