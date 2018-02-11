@@ -18,7 +18,7 @@
     {% elif list_ref_type == 'prp' %}
         liste des contre-propositions sur 
     {% endif %}
-    {% if parent_type == 'loi' %}
+    {% if parent_type == 'law' %}
         {{parent.title}}
     {% else %}
         {% if parent.title %} {{parent.title}} {% else %} {{parent.text}} {% endif %}
@@ -39,7 +39,7 @@
 ############################      The Parent Reflection       ##################################
 #############################################################################################-->
 
-    {% if parent_type == 'loi' %}  
+    {% if parent_type == 'law' %}  
             <!--         The Law article           -->
         <section class="law_text">
             <h1>{{parent.law_code.title}}</h1> 

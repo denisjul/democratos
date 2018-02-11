@@ -5,12 +5,12 @@
 {% block intro %}
 <h1> Où suis-je? </h1>
 <p> 
-    {% if typeref == 'loi' %}    <!--         The path to the Article           -->
+    {% if typeref == 'law' %}    <!--         The path to the Article           -->
         {% for x in listparents %}
             <var class="InDatBox BoxIntroStyle" name="{{x|lookup:2}}:{{x|lookup:1}}"><strong>  {{x|lookup:0|truncatewords:4}}  </strong></var>  >>  
         {% endfor %}
     {% elif typeref == 'prp' %}  
-        <var class="InDatBox BoxIntroStyle" name="1:{{ref.law_article.law_code.id}}"><strong>  {{ ref.law_article.law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>  <var class="GetReflection law_text" name="loi:{{ref.law_article.id}}"><strong>  {{ref.law_article.title|truncatewords:4}}  </strong></var>   >>   
+        <var class="InDatBox BoxIntroStyle" name="1:{{ref.law_article.law_code.id}}"><strong>  {{ ref.law_article.law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>  <var class="GetReflection law_text" name="law:{{ref.law_article.id}}"><strong>  {{ref.law_article.title|truncatewords:4}}  </strong></var>   >>   
     {% else %}   <!--         The path to the reflection       -->
         <var class="InDatBox BoxIntroStyle" name="1:{{law_code.id}}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>  
         {% for x in list_parents %}
@@ -35,7 +35,7 @@
 ##################################      The Reflection       #################################
 ###########################################################################################-->
 
-    {% if typeref == 'loi' %}  
+    {% if typeref == 'law' %}  
             <!--         The Law article           -->
         <section class="law_section">
             <h1>{{ref.law_code.title}}</h1> 
@@ -120,7 +120,7 @@
                         note:
                     <canvas id="don{{typeref}}{{ref.id}}" name="{{ref.approval_ratio}}" class="donut"></canvas>
                 </p>
-                {% if typeref == 'prp' or typeref == 'loi'%}
+                {% if typeref == 'prp' or typeref == 'law'%}
                     <br>
                     <br>
                     <br>
@@ -172,8 +172,9 @@
                         </table>
                         <div id='pos{{x.id}}comments'>
                             <button class="butopp" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
-                            <form action="{% url 'PostReflection'%}" method="post" id="oppform" name="loi:oppf:{{ref.id}}">
+                            <form action="{% url 'PostReflection'%}" method="post" id="oppform" name="law:oppf:{{ref.id}}">
                                 {{ oppform.as_p }}
+                                {% csrf_token %}
                                 <input type="hidden" name="typeform" value="oppf">
                                 <input type="hidden" name="typeref" value="{{typeref}}">
                                 <input type="hidden" name="ref_id" value="{{ref.id}}">
@@ -233,7 +234,8 @@
                         </div>
                         <div id='neg{{x.id}}comments'>
                             <button class="butopn" type="button">Ajouter un point positif ou <br> négatif sur cette loi</button>
-                            <form action="{% url 'PostReflection'%}" method="post"  id="opnform" name="loi:opnf:{{ref.id}}">
+                            <form action="{% url 'PostReflection'%}" method="post"  id="opnform" name="law:opnf:{{ref.id}}">
+                                {% csrf_token %}
                                 {{ opnform.as_p }}
                                 <input type="hidden" name="typeform" value="opnf">
                                 <input type="hidden" name="typeref" value="{{typeref}}">
@@ -249,7 +251,7 @@
 <!--############################################################################################
 ################################      The propositions       ###################################
 #############################################################################################-->
-    {% if typeref == 'loi' or typeref == 'prp' %}
+    {% if typeref == 'law' or typeref == 'prp' %}
     <hr>
     <section class="Bigproposition UpSection" id="propsection">  {% comment %}PostReflection must be update if this line is modified {% endcomment %}
         <h2>Autres propositions de lois pour cette réflection</h2>
@@ -303,7 +305,8 @@
         </table> 
         <div id='prp{{x.id}}comments'>
             <button class="butprp" type="button">Faire une autre proposition <br>  que cette loi</button>
-            <form action="{% url 'PostReflection'%}"  method="post" id="prpform" name="loi:prpf:{{ref.id}}">
+            <form action="{% url 'PostReflection'%}"  method="post" id="prpform" name="law:prpf:{{ref.id}}">
+                {% csrf_token %}
                 {{ prpform.as_p }} 
                 <input type="hidden" name="typeform" value="prpf">
                 <input type="hidden" name="typeref" value="{{typeref}}">
@@ -414,7 +417,7 @@
         </tr>
         {% endfor %}            
     </table> 
-    {% if typeref == 'loi' or typeref == 'prp' %}
+    {% if typeref == 'law' or typeref == 'prp' %}
         <h3>une réaction?</h3>
     {% endif %}
     <button class="butexp" name="{{typeref}}:exp:{{id_ref}}" type="button">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
@@ -425,10 +428,6 @@
 {% endautoescape %}
 <!--
 <script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script> -->
-<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
-<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
-<script type="text/javascript" src="{% static "ckeditor/ckeditor/adapters/jquery.js" %}"></script>
-
 {% endblock %}
 
 

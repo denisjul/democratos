@@ -105,6 +105,7 @@ function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
 function sameOrigin(url) {
     // test that a given url is a same-origin URL
     // url could be relative or scheme relative or absolute
@@ -121,10 +122,7 @@ function sameOrigin(url) {
 
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
-            // Send the token to same-origin, relative URLs only.
-            // Send the token only if the method warrants CSRF protection
-            // Using the CSRFToken value acquired earlier
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     }
@@ -316,34 +314,38 @@ function InitNewCkeditor(textarea){
 };
 
 function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auquel est attaché le form
+    console.log(FormId, csrftoken);
     $('#'+FormId).on('submit',function() { // catch the form's submit event
         for ( instance in CKEDITOR.instances ) // recover data in CKeditor fields
             CKEDITOR.instances[instance].updateElement();
         var datatosend = $(this).serialize()
-        console.log(this.IsModif.value);
         var IsModif = this.IsModif.value;
         var typeform = $(this).attr('name');
         typeform = typeform.substring(4, 7);
-        alert("uhgfgsfguhuihgsl");
-        datatosend['csrfmiddlewaretoken']=csrftoken;
-        alert(datatosend);
+        datatosend["csrfmiddlewaretoken"]=csrftoken;
         var place = "#" + this.closest(".UpSection").id;
         console.log(this, "place:",place);
         datatosend += '&place=' + place;
-        console.log(place);
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'), // the file to call
             success: function(rs) { // on success..
-                $(place).html('');
-                $(place).html(rs.NewSection);
-                var formtodel = "#" +  rs.typeref + 'askform' + rs.idref;
-                console.log(formtodel)
-                $('#content').find(formtodel).html('');
-                //console.log(typeform);
-                if ((typeform === "exp" || typeform ==="qst") && IsModif === ""){
-                    UpSizeDebate(place);
+                if (rs.typeref == "law"){
+                    $("#intro").html(response.intro);
+                    $("#content").html(response.content);
+                    eval($("#content").find("script").text());  
+                }
+                else {
+                    $(place).html('');
+                    $(place).html(rs.NewSection);
+                    var formtodel = "#" +  rs.typeref + 'askform' + rs.idref;
+                    console.log(formtodel)
+                    $('#content').find(formtodel).html('');
+                    //console.log(typeform);
+                    if ((typeform === "exp" || typeform ==="qst") && IsModif === ""){
+                        UpSizeDebate(place);
+                    }
                 }
                 SetNewForm(place);
                 Setabutform(typeform);
@@ -359,7 +361,6 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         });
         return false;
     });
-    console.log('out SetTheform');
 }
 
 // #################  AJAX, Back and Forward ##########################

@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.contenttypes.models import ContentType
+from django.views.decorators.csrf import ensure_csrf_cookie
 from CreateYourLaws.models import (
     LawCode, LawArticle, CodeBlock, Question, Disclaim, Negopinion,
     Explaination, Posopinion, Proposition, Note,)
@@ -66,7 +67,7 @@ def nav_up(request, idbox):
             children.append(('C' + str(el.id),
                              el.title,
                              "GetReflection",
-                             'loi:' + str(el.id),
+                             'law:' + str(el.id),
                              False))
         children.append(('NewLaw'+str(id_box),
                          'Créer une loi à cet emplacement',
@@ -163,7 +164,7 @@ def UP(request):
                 data['#donprp' + str(x.id)] = str(x.approval_ratio)
                 x.notes.filter(user=user, approve=True).delete()
             lart = obj.law_article
-            data['#donloi' + str(lart.id)] = str(x.approval_ratio)
+            data['#donlaw' + str(lart.id)] = str(x.approval_ratio)
             lart.notes.filter(user=user, approve=True).delete()
         elif isinstance(obj, LawArticle):
             getit = False
@@ -359,7 +360,7 @@ def get_reflection(request, typeref=None, id_ref=None):
             id_ref = int(id_ref)
     print("typeref", typeref)
     try:
-        if typeref == 'loi':
+        if typeref == 'law':
             ref = LawArticle.objects.get(id=id_ref)
         elif typeref == 'qst':
             ref = Question.objects.get(id=id_ref)
@@ -377,7 +378,7 @@ def get_reflection(request, typeref=None, id_ref=None):
     except Exception:
         raise Http404
     # where is it from? path to the reflection
-    if typeref == 'loi':
+    if typeref == 'law':
         parent = ref.block
         if parent is None:
             listparents = []
@@ -413,7 +414,7 @@ def get_reflection(request, typeref=None, id_ref=None):
     listcom.extend(listquestions)
     listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
     listcom.reverse()
-    if typeref == 'loi' or typeref == 'prp':
+    if typeref == 'law' or typeref == 'prp':
         listposop = list(ref.posopinions.all())
         listnegop = list(ref.negopinions.all())
         if typeref == 'prp':
@@ -621,9 +622,10 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                           0)
         ctx = {'NewSection': NewSection,
                'section_type': typeform[0:2],
+               'typeref': typeref,
                'tdid': str(id_ref)}
     else:
-        print("FORM NON VALIDE. ERREURE À REVOIR")
+        print("FORM NON VALIDE. ERREURE")
     if IsModif:
         ctx["message"] = "Votre réflection a bien été modifié!"
     else:
@@ -786,33 +788,101 @@ def DeleteReflection(request):
 
 
 @login_required
+@ensure_csrf_cookie
 def CreateNewLaw(request, box_id=None):
-    """ View to create a new law article """
-
-    """
-    check si form et récupérer donner pour renvoyer ensuite
-    vers GetReflection 
-    """
-    print(request)
+    """ View to ask form to create a new law article """
+    print(request.POST)
     if request.POST:
-        typeref = "lwp"
-        form = CreateNewLawForm()
         box_id = request.POST.get('slug', None)
         box_id = int(box_id[6:])
-        print(box_id)
-        """
-        intro = render_block_to_string('CreateNewLaw.html',
-                                       "intro",
-                                       locals())"""
-        content = render_block_to_string('GetForm.html',
-                                         "content",
-                                         locals())
+        typeref = "law"
+        form = CreateNewLawForm()
+        NewHtml = render_to_string('GetForm.html',
+                                   locals(),
+                                   request)
+        intro, trash = get_something(NewHtml,
+                                     '<!-- *o* -->',
+                                     "<!-- *_* -->",
+                                     0)
+        content, trash = get_something(NewHtml,
+                                       '<!-- *X* -->',
+                                       "<!-- *U* -->",
+                                       0)
         ctx = {'content': content,
                'box_id': str(box_id)}
         return JsonResponse(ctx)
     else:
         return render(request, 'GetForm.html', locals())
 
+
+@login_required
+def ValidNewLaw(request):
+    User = request.user
+    typeref = "law"
+    lawform = CreateNewLawForm(request.POST)
+    if lawform.is_valid():
+        lawtitle = lawform.cleaned_data['title']
+        law_text = lawform.cleaned_data['text_law']
+        law_details = lawform.cleaned_data['details_law']
+        IsModif = bool(request.POST.get('IsModif', False))
+        if IsModif:
+            idform = int(request.POST.get('idform', None))
+            ref = LawArticle.objects.get(id=idform)
+            ref.text_law = prop
+            ref.title = proptitle
+            ref.details_law = details_prp
+            listpropositions = list(ref.propositions.all())
+        else:
+            boxid = int(request.POST.get('box_id', None))
+            box = CodeBlock.objects.get(id=boxid)
+            ref = LawArticle.objects.create(text_law=law_text,
+                                            title=lawtitle,
+                                            autor=User,
+                                            details_law=law_details,
+                                            block=box)
+        ref.save()
+        parent = ref.block
+        if parent is None:
+            listparents = []
+        else:
+            listparents = [(parent.title, parent.id, 2)]
+            while parent.rank != 1:
+                parent = parent.block
+                listparents.append((parent.title, parent.id, 2))
+        parent = ref.law_code
+        listparents.append((parent.title, parent.id, 1))
+        listparents.reverse()
+        # forms initializations
+        qstform = QuestionForm()
+        expform = ExplainationForm()
+        oppform = PosopinionForm()
+        opnform = NegopinionForm()
+        prpform = PropositionForm()
+        print("forms loaded")
+        # load all the disclaims, other proposions, opinions, comments and
+        # questions about the reflection
+        listexplainations = list(ref.explainations.all())
+        listquestions = list(ref.questions.all())
+        listcom = listexplainations
+        listcom.extend(listquestions)
+        listcom = sorted(listcom, key=operator.attrgetter('approval_factor'))
+        listcom.reverse()
+        listposop = list(ref.posopinions.all())
+        listnegop = list(ref.negopinions.all())
+        listpropositions = list(ref.propositions.all())
+        intro = render_block_to_string('GetReflection.html',
+                                       "intro",
+                                       locals())
+        content = render_block_to_string('GetReflection.html',
+                                         "content",
+                                         locals())
+        ctx = {'intro': intro,
+               'content': content,
+               'typeref': typeref,
+               'id_ref': str(id_ref)}
+        return JsonResponse(ctx)
+    else:
+        raise Http404
 
 @login_required
 def create_new_box():

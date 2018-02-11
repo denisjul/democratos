@@ -57,7 +57,7 @@ def get_model_type_in_str(obj):
     elif type(obj) is CreateYourLaws.models.Proposition:
         return 'prp'
     elif type(obj) is CreateYourLaws.models.LawArticle:
-        return 'loi'
+        return 'law'
 
 
 def get_ref_text(obj):
@@ -93,7 +93,7 @@ def get_the_instance(obj, Id):
         return CreateYourLaws.models.Negopinion.objects.get(id=Id)
     elif obj == 'prp':
         return CreateYourLaws.models.Proposition.objects.get(id=Id)
-    elif obj == 'loi':
+    elif obj == 'law':
         return CreateYourLaws.models.LawArticle.objects.get(id=Id)
 
 

@@ -25,6 +25,10 @@
 	 <section id="content">
 	   {% block content %}{% endblock %}
 	 </section>
+
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/adapters/jquery.js" %}"></script>
  {% endblock %}
 
  {%block aside%}

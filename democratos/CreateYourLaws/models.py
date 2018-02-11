@@ -159,10 +159,8 @@ class LawArticle(Reflection):
     nb_posop = models.IntegerField(default=0)
     nb_negop = models.IntegerField(default=0)
     nb_prop = models.IntegerField(default=0)
-
-
-class LawProp (LawArticle):
-    details_lwp = RichTextField()
+    is_lwp = models.BooleanField(default=False)
+    details_law = RichTextField(default='')
 
 
 class LawCode(models.Model):

@@ -8,7 +8,7 @@ from django.forms import SelectDateWidget
 from django.contrib.auth.forms import UserCreationForm
 from registration.forms import RegistrationFormUniqueEmail
 from CreateYourLaws.models import (
-    Explaination, Proposition, LawProp, Posopinion,
+    Explaination, Proposition, LawArticle, Posopinion,
     Negopinion, Question, CYL_user,
 )
 from ckeditor.widgets import CKEditorWidget
@@ -206,14 +206,14 @@ class PropositionForm(forms.ModelForm):
 
 class CreateNewLawForm(forms.ModelForm):
     class Meta:
-        model = LawProp
-        fields = ('title', 'text_law', 'details_lwp')
+        model = LawArticle
+        fields = ('title', 'text_law', 'details_law')
         labels = {'title': ('Ennoncez votre loi'),
                   'text_law': ("votre proposition de loi"),
-                  'details_lwp': ("But recherché par " + \
+                  'details_law': ("But recherché par " + \
                                   "cette nouvelle loi:"),
                   }
         widgets = {
             'text_law': CKEditorWidget(config_name='redac_law'),
-            'details_lwp': CKEditorWidget(config_name='redac_law'),
+            'details_law': CKEditorWidget(config_name='redac_law'),
         }

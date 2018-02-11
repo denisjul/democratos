@@ -1,38 +1,38 @@
 {% load staticfiles %}
+<!-- *o* -->
+{% if typeref == "law" %}
+    <h1> Où suis-je? </h1>
+    <p>
 
-{% if typeref == "lwp" %}
-	{% block intro %}
-	<h1> Où suis-je? </h1>
-	<p> 
-
-	</p>
-
-	{% endblock %}
+    </p>
 {% endif %}
-
-{% block content %}
-{% if typeref == "lwp" %}
-	<form action="{% url 'CreateNewLaw'%}"  method="post" id="NewLaw:{{box_id}}">
+<!-- *X* -->
+<!-- *_* -->
+{% if typeref == "law" %}
+    <form action="{% url 'ValidNewLaw'%}"  method="post" id="NewLaw:{{box_id}}">
 {% else %}
-	<form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}" name="{{typeref}}:{{typeform}}:{{ref.id}}">
+    <form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}" name="{{typeref}}:{{typeform}}:{{ref.id}}">
 {% endif %}
-    {{ form.as_p }} 
-    {% if typeref == "lwp" %}
-    	<input type="hidden" name="box_id" value="{{box_id}}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if typeref == "law" %}
+        <input type="hidden" name="box_id" value="{{box_id}}">
+        <input type="hidden" name="typeform" value="lawf">
+        <input type="hidden" name="typeref" value="">
     {% else %}
-	    <input type="hidden" name="typeform" value="{{typeform}}f">
-	    <input type="hidden" name="typeref" value="{{typeref}}">
-	    <input type="hidden" name="ref_id" value="{{idref}}">
-	{% endif %}
-	{% if IsModif %}
-		<input type="hidden" name="IsModif" value="True">
-		<input type="hidden" name="idform" value="{{idform}}">
-	{% else %}
-		<input type="hidden" name="IsModif" value="">
-	{% endif%}
+        <input type="hidden" name="typeform" value="{{typeform}}f">
+        <input type="hidden" name="typeref" value="{{typeref}}">
+        <input type="hidden" name="ref_id" value="{{idref}}">
+    {% endif %}
+    {% if IsModif %}
+        <input type="hidden" name="IsModif" value="True">
+        <input type="hidden" name="idform" value="{{idform}}">
+    {% else %}
+        <input type="hidden" name="IsModif" value="">
+    {% endif%}
 <button type="submit" class="but{{typeform}}" name="{{typeform}}form{{idref}}"> Envoyer </button>
 {% if IsModif %}
-	<button class="but{{typeform}}" id="Cancel{{typeform}}{{idform}}form"> Annuler </button>
+    <button class="but{{typeform}}" id="Cancel{{typeform}}{{idform}}form"> Annuler </button>
 {% endif%}
-</form> 
-{% endblock %}
+</form>
+<!-- *U* -->

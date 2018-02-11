@@ -12,27 +12,26 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 @receiver(post_save, sender=Posopinion)
 @receiver(post_delete, sender=Negopinion)
 @receiver(post_save, sender=Negopinion)
-@receiver(post_delete, sender=Disclaim)
-@receiver(post_save, sender=Disclaim)
 @receiver(post_delete, sender=Explaination)
 @receiver(post_save, sender=Explaination)
 @receiver(post_delete, sender=Question)
 @receiver(post_save, sender=Question)
 def autoset(sender, instance, **kwargs):
     parent = instance.content_object
-    print(parent, '     ', instance, '     ', instance.id)
-    parent.nb_q = parent.questions.count()
-    parent.nb_exp = parent.explainations.count()
-    if type(parent) is not Question:
-        if ((type(parent) is not LawArticle) and
-                (type(parent) is not Proposition)):
-            parent.nb_dis = parent.disclaims.count()
-        else:
-            parent.nb_negop = parent.posopinions.count()
-            parent.nb_posop = parent.negopinions.count()
-            if type(parent) is LawArticle:
-                parent.nb_prop = parent.propositions.count()
-    parent.save()
+    if parent is not None:
+        print(parent, '     ', instance, '     ', instance.id)
+        parent.nb_q = parent.questions.count()
+        parent.nb_exp = parent.explainations.count()
+        if type(parent) is not Question:
+            if ((type(parent) is not LawArticle) and
+                    (type(parent) is not Proposition)):
+                parent.nb_dis = parent.disclaims.count()
+            else:
+                parent.nb_negop = parent.posopinions.count()
+                parent.nb_posop = parent.negopinions.count()
+                if type(parent) is LawArticle:
+                    parent.nb_prop = parent.propositions.count()
+        parent.save()
 
 
 """ OBSOLETE ???

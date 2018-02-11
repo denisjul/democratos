@@ -4,6 +4,7 @@
 
 {% block content %}
 <form action="{% url 'CreateNewLaw'%}"  method="post" name="idbox:{{box_id}}">
+	{% csrf_token %}
     {{ form.as_p }} 
     <input type="hidden" name="box_id" value="{{box_id}}">
 	{% if IsModif %}

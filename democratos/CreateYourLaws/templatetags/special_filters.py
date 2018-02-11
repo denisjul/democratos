@@ -13,7 +13,7 @@ def lookup(d, key):
 
 @register.filter
 def Csstype(typeref):
-    if typeref == "loi":
+    if typeref == "law":
         Csstype = "law_text"
     elif typeref == "prp":
         Csstype = "proposition"
