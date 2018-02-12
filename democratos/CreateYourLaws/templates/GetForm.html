@@ -1,21 +1,24 @@
 {% load staticfiles %}
 <!-- *o* -->
-{% if typeref == "law" %}
+{% block intro %}
+{% if typeform == "lawf" %}
     <h1> Où suis-je? </h1>
     <p>
 
     </p>
 {% endif %}
+{% endblock %}
 <!-- *X* -->
 <!-- *_* -->
-{% if typeref == "law" %}
-    <form action="{% url 'ValidNewLaw'%}"  method="post" id="NewLaw:{{box_id}}">
+{% block content %}
+{% if typeform == "lawf" %}
+    <form action="{% url 'ValidNewLaw'%}"  method="post" id="NewLaw:{{box_id}}" name="box:{{typeform}}:{{box_id}}">
 {% else %}
     <form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}" name="{{typeref}}:{{typeform}}:{{ref.id}}">
 {% endif %}
     {% csrf_token %}
     {{ form.as_p }}
-    {% if typeref == "law" %}
+    {% if typeform == "lawf" %}
         <input type="hidden" name="box_id" value="{{box_id}}">
         <input type="hidden" name="typeform" value="lawf">
         <input type="hidden" name="typeref" value="">
@@ -35,4 +38,5 @@
     <button class="but{{typeform}}" id="Cancel{{typeform}}{{idform}}form"> Annuler </button>
 {% endif%}
 </form>
+{% endblock %}
 <!-- *U* -->

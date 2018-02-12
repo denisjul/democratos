@@ -721,7 +721,9 @@ def GetForm(request):
         form = QuestionForm()
     elif typeform == 'exp':
         form = ExplainationForm()
-    NewForm = render_to_string('GetForm.html', locals())
+    NewForm = render_block_to_string('GetForm.html',
+                                     "content",
+                                     locals())
     ctx = {'newform': NewForm, 'typeref': typeref, "idref": idref}
     return JsonResponse(ctx)
 
@@ -795,8 +797,9 @@ def CreateNewLaw(request, box_id=None):
     if request.POST:
         box_id = request.POST.get('slug', None)
         box_id = int(box_id[6:])
-        typeref = "law"
+        typeform = "lawf"
         form = CreateNewLawForm()
+        """
         NewHtml = render_to_string('GetForm.html',
                                    locals(),
                                    request)
@@ -807,8 +810,17 @@ def CreateNewLaw(request, box_id=None):
         content, trash = get_something(NewHtml,
                                        '<!-- *X* -->',
                                        "<!-- *U* -->",
-                                       0)
-        ctx = {'content': content,
+                                       0)"""
+        intro = render_block_to_string('GetForm.html',
+                                       "intro",
+                                       locals(),
+                                       request)
+        content = render_block_to_string('GetForm.html',
+                                         "content",
+                                         locals(),
+                                         request)
+        ctx = {'intro': intro,
+               'content': content,
                'box_id': str(box_id)}
         return JsonResponse(ctx)
     else:
@@ -817,6 +829,7 @@ def CreateNewLaw(request, box_id=None):
 
 @login_required
 def ValidNewLaw(request):
+    print("ajax? ", request.is_ajax())
     User = request.user
     typeref = "law"
     lawform = CreateNewLawForm(request.POST)
@@ -835,9 +848,11 @@ def ValidNewLaw(request):
         else:
             boxid = int(request.POST.get('box_id', None))
             box = CodeBlock.objects.get(id=boxid)
+            LawCode = box.law_code
             ref = LawArticle.objects.create(text_law=law_text,
                                             title=lawtitle,
                                             autor=User,
+                                            law_code=LawCode,
                                             details_law=law_details,
                                             block=box)
         ref.save()
@@ -858,7 +873,6 @@ def ValidNewLaw(request):
         oppform = PosopinionForm()
         opnform = NegopinionForm()
         prpform = PropositionForm()
-        print("forms loaded")
         # load all the disclaims, other proposions, opinions, comments and
         # questions about the reflection
         listexplainations = list(ref.explainations.all())
@@ -872,17 +886,21 @@ def ValidNewLaw(request):
         listpropositions = list(ref.propositions.all())
         intro = render_block_to_string('GetReflection.html',
                                        "intro",
-                                       locals())
+                                       locals(),
+                                       request)
         content = render_block_to_string('GetReflection.html',
                                          "content",
-                                         locals())
+                                         locals(),
+                                         request)
         ctx = {'intro': intro,
                'content': content,
                'typeref': typeref,
-               'id_ref': str(id_ref)}
+               'id_ref': str(ref.id)}
+        print("ValidNewLaw end")
         return JsonResponse(ctx)
     else:
         raise Http404
+
 
 @login_required
 def create_new_box():

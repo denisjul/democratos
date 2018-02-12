@@ -318,6 +318,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
     $('#'+FormId).on('submit',function() { // catch the form's submit event
         for ( instance in CKEDITOR.instances ) // recover data in CKeditor fields
             CKEDITOR.instances[instance].updateElement();
+        alert("!");
         var datatosend = $(this).serialize()
         var IsModif = this.IsModif.value;
         var typeform = $(this).attr('name');
@@ -326,14 +327,15 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         var place = "#" + this.closest(".UpSection").id;
         console.log(this, "place:",place);
         datatosend += '&place=' + place;
+        alert("go ajax!");
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'), // the file to call
             success: function(rs) { // on success..
                 if (rs.typeref == "law"){
-                    $("#intro").html(response.intro);
-                    $("#content").html(response.content);
+                    $("#intro").html(rs.intro);
+                    $("#content").html(rs.content);
                     eval($("#content").find("script").text());  
                 }
                 else {
