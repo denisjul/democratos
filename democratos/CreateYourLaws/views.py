@@ -622,6 +622,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
                                           0)
         ctx = {'NewSection': NewSection,
                'section_type': typeform[0:2],
+               'typeform': typeform,
                'typeref': typeref,
                'tdid': str(id_ref)}
     else:
@@ -793,9 +794,9 @@ def DeleteReflection(request):
 @ensure_csrf_cookie
 def CreateNewLaw(request, box_id=None):
     """ View to ask form to create a new law article """
-    print(request.POST)
-    if request.POST:
-        box_id = request.POST.get('slug', None)
+    print(request.GET)
+    if request.GET:
+        box_id = request.GET.get('slug', None)
         box_id = int(box_id[6:])
         typeform = "lawf"
         form = CreateNewLawForm()
@@ -829,6 +830,7 @@ def CreateNewLaw(request, box_id=None):
 
 @login_required
 def ValidNewLaw(request):
+    print(request.method)
     print("ajax? ", request.is_ajax())
     User = request.user
     typeref = "law"
@@ -895,6 +897,7 @@ def ValidNewLaw(request):
         ctx = {'intro': intro,
                'content': content,
                'typeref': typeref,
+               'typeform': "lawf",
                'id_ref': str(ref.id)}
         print("ValidNewLaw end")
         return JsonResponse(ctx)

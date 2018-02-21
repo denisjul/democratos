@@ -12,11 +12,11 @@
 <!-- *_* -->
 {% block content %}
 {% if typeform == "lawf" %}
-    <form action="{% url 'ValidNewLaw'%}"  method="post" id="NewLaw:{{box_id}}" name="box:{{typeform}}:{{box_id}}">
+    <form action="{% url 'ValidNewLaw'%}"  method="post" id="Newlaw{{box_id}}" name="box:{{typeform}}:{{box_id}}">
 {% else %}
     <form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}" name="{{typeref}}:{{typeform}}:{{ref.id}}">
 {% endif %}
-    {% csrf_token %}
+	{% csrf_token %}
     {{ form.as_p }}
     {% if typeform == "lawf" %}
         <input type="hidden" name="box_id" value="{{box_id}}">

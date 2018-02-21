@@ -314,11 +314,14 @@ function InitNewCkeditor(textarea){
 };
 
 function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auquel est attaché le form
+    /*
     console.log(FormId, csrftoken);
-    $('#'+FormId).on('submit',function() { // catch the form's submit event
+    $('#'+FormId).on("mouseover",function(e){
+        console.log("Mouse Over!")
+    });*/
+    $('#'+FormId).on('submit',function(e){ // catch the form's submit event
         for ( instance in CKEDITOR.instances ) // recover data in CKeditor fields
             CKEDITOR.instances[instance].updateElement();
-        alert("!");
         var datatosend = $(this).serialize()
         var IsModif = this.IsModif.value;
         var typeform = $(this).attr('name');
@@ -327,16 +330,20 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         var place = "#" + this.closest(".UpSection").id;
         console.log(this, "place:",place);
         datatosend += '&place=' + place;
-        alert("go ajax!");
         $.ajax({ // create an AJAX call...
             data: datatosend, // get the form data
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'), // the file to call
             success: function(rs) { // on success..
-                if (rs.typeref == "law"){
+                if (rs.typeform == "lawf"){
                     $("#intro").html(rs.intro);
                     $("#content").html(rs.content);
-                    eval($("#content").find("script").text());  
+                    eval($("#content").find("script").text());
+                    Setallbutform();
+                    url = "/CYL/Reflection";
+                    slug = "law:" + rs.id_ref;
+                    window.history.pushState({url: url,slug: slug}, null, url + "/" + rs.typeref + "/" + rs.id_ref);
+                    window.histstate.lastref = true; 
                 }
                 else {
                     $(place).html('');
@@ -363,6 +370,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
         });
         return false;
     });
+    return false;
 }
 
 // #################  AJAX, Back and Forward ##########################
@@ -428,8 +436,14 @@ function GoAjax(url, slug, push) {
     if (url.indexOf("Reflection") > 0){
         url = url.replace("Reflection","reflection");
     }
+    if (url == "/CYL/CreateNewLaw"){
+        typeajax = "GET"
+    }
+    else{
+        typeajax = "POST"
+    }
     $.ajax({
-        type: "POST",
+        type: typeajax,
         url: url,
         data: {'slug': slug ,csrfmiddlewaretoken: csrftoken},
         dataType: "json",
