@@ -159,6 +159,7 @@ class LawArticle(Reflection):
     nb_posop = models.IntegerField(default=0)
     nb_negop = models.IntegerField(default=0)
     nb_prop = models.IntegerField(default=0)
+    # is law prop (NewLaw)?
     is_lwp = models.BooleanField(default=False)
     details_law = RichTextField(default='')
 
@@ -183,3 +184,5 @@ class CodeBlock(models.Model):
         null=True)
     lastupdate = models.DateTimeField(auto_now=True,
                                       verbose_name="Last update date")
+    # is new code block proposition?
+    is_cdp = models.BooleanField(default=False)

@@ -19,7 +19,8 @@
 	{% csrf_token %}
     {{ form.as_p }}
     {% if typeform == "lawf" %}
-        <input type="hidden" name="box_id" value="{{box_id}}">
+    	<input type="hidden" name="box_id" value="{{box_id}}">
+        <input type="hidden" name="box_type" value="{{box_type}}">
         <input type="hidden" name="typeform" value="lawf">
         <input type="hidden" name="typeref" value="">
     {% else %}

@@ -507,14 +507,16 @@ $(document).ready(function() {
     // -------------- JStree settings ---------------------
     $("#jstree_CYL").jstree({
         'core' : {
-          'data' : {
-            'url' : function (node) {
-                return node.id === '#' ?
-                    '/CYL/nav_init' :   
-                    '/CYL/nav_up/' + node.id;
-            },
-            'data' : function (node) {
-                return JSON.stringify({ 'id' : node.id, 'text': node.text});
+            'data' : {
+                'url' : function (node) {
+                    return node.id === '#' ?
+                        '/CYL/nav_init' :   
+                        '/CYL/nav_up/' + node.id;
+                },
+                'data' : function (node) {
+                    return { "id" : node.id,
+                             "text": node.text,
+                            };
             }
           }
         },
@@ -527,11 +529,17 @@ $(document).ready(function() {
         if (data.node.id != '#'){
             for (var i= 0; i < data.node.children.length; i++) {
                 var child = data.instance.get_node(data.node.children[i])
-                switch (child.a_attr.class) {
-                    case 'GetReflection':
+                switch (child.id[0]) { // REVOIR ICI <-----------------------------
+                    case 'C':
                         data.instance.set_icon(child, "/static/icons/article.png");
                         break;
-                    case 'CreateNewLaw':
+                    case 'D':
+                        data.instance.set_icon(child, "/static/icons/NewLawPrp.png");
+                        break;
+                    case 'GetNewLaws':
+                        data.instance.set_icon(child, "/static/icons/plus.png");
+                        break;
+                    case 'GetNewBoxes':
                         data.instance.set_icon(child, "/static/icons/plus.png");
                         break;
                     default:

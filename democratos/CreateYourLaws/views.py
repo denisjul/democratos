@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.contenttypes.models import ContentType
 from django.views.decorators.csrf import ensure_csrf_cookie
+from CreateYourLaws.view_functions.nav_jstree import up_nav, init_nav
 from CreateYourLaws.models import (
     LawCode, LawArticle, CodeBlock, Question, Disclaim, Negopinion,
     Explaination, Posopinion, Proposition, Note,)
@@ -22,7 +23,6 @@ from CreateYourLaws.views_functions import (
 from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
 from CreateYourLaws.dl_law_codes.functions import get_something
-# from templates.template_tools import render_block_to_string
 from render_block import render_block_to_string
 import operator
 
@@ -52,81 +52,13 @@ def home(request):
 @login_required
 def nav_up(request, idbox):
     """ajax for CYL nav: update the tree"""
-    id_box = int(idbox[1:len(idbox)])
-    children = []
-    JSON_obj = []
-    if idbox[0] == 'A':
-        listArticle = list(
-            LawArticle.objects.filter(law_code=id_box,
-                                      block_id__isnull=True).order_by('id'))
-    else:
-        listArticle = list(
-            LawArticle.objects.filter(block=id_box).order_by('id'))
-    if listArticle:
-        for el in listArticle:
-            children.append(('C' + str(el.id),
-                             el.title,
-                             "GetReflection",
-                             'law:' + str(el.id),
-                             False))
-        children.append(('NewLaw'+str(id_box),
-                         'Créer une loi à cet emplacement',
-                         'CreateNewLaw',
-                         'idbox:' + str(id_box),
-                         False))
-        children.append(('NewBox' + str(id_box),
-                         'Créer un un sous-groupement de' +\
-                         ' loi à cet emplacement',
-                         'CreateNewBox',
-                         str(id_box),
-                         False))
-    if idbox[0] == 'A':
-        listBlock = list(
-            CodeBlock.objects.filter(rank=1, law_code=id_box).order_by('id'))
-    else:
-        listBlock = list(
-            CodeBlock.objects.filter(block=id_box).order_by('id'))
-    if listBlock:
-        for el in listBlock:
-            children.append(('B' + str(el.id),
-                             el.title,
-                             "InDatBox",
-                             '2:' + str(el.id),
-                             True))
-        children.append(('NewBox'+str(id_box),
-                         'Créer un un sous-groupement de loi à' +
-                         ' cet emplacement',
-                         'CreateNewBox',
-                         'idbox:' + str(id_box),
-                         False))
-        children.append(('NewLaw'+str(id_box),
-                         'Créer une loi à cet emplacement',
-                         'CreateNewLaw',
-                         'idbox:' + str(id_box),
-                         False))
-    for elem in children:
-        # 'B' in the 'id' param inform that this is a Code BLock
-        JSON_obj.append({'id': elem[0],
-                         'text': elem[1],
-                         'a_attr': {'class': elem[2],
-                                    'name': elem[3]},
-                         'children': elem[4]})
-    return JsonResponse(JSON_obj, safe=False)
+    return up_nav(request, idbox)
 
 
 @login_required
 def nav_init(request):
     """ajax for CYL nav: init the tree"""
-    law_codes = list(LawCode.objects.all())
-    JSON_obj = []
-    for i, el in enumerate(law_codes):
-        # 'A' in the 'id' param inform that this is a Law code
-        JSON_obj.append({'id': 'A' + str(el.id),
-                         'text': el.title,
-                         'a_attr': {"class": "InDatBox",
-                                    "name": "1:" + str(el.id)},
-                         'children': True})
-    return JsonResponse(JSON_obj, safe=False)
+    return init_nav(request)
 
 
 # ################################ UP and DOWN ################################
@@ -794,10 +726,11 @@ def DeleteReflection(request):
 @ensure_csrf_cookie
 def CreateNewLaw(request, box_id=None):
     """ View to ask form to create a new law article """
-    print(request.GET)
     if request.GET:
-        box_id = request.GET.get('slug', None)
-        box_id = int(box_id[6:])
+        print(request.GET.get('slug', None))
+        box = request.GET.get('slug', None)
+        box_type = box[0]
+        box_id = int(box[2:])
         typeform = "lawf"
         form = CreateNewLawForm()
         """
@@ -822,6 +755,7 @@ def CreateNewLaw(request, box_id=None):
                                          request)
         ctx = {'intro': intro,
                'content': content,
+               'box_type': box_type,
                'box_id': str(box_id)}
         return JsonResponse(ctx)
     else:
@@ -830,8 +764,6 @@ def CreateNewLaw(request, box_id=None):
 
 @login_required
 def ValidNewLaw(request):
-    print(request.method)
-    print("ajax? ", request.is_ajax())
     User = request.user
     typeref = "law"
     lawform = CreateNewLawForm(request.POST)
@@ -849,12 +781,22 @@ def ValidNewLaw(request):
             listpropositions = list(ref.propositions.all())
         else:
             boxid = int(request.POST.get('box_id', None))
-            box = CodeBlock.objects.get(id=boxid)
-            LawCode = box.law_code
+            boxtype = request.POST.get('box_type', None)
+            print(boxtype, boxid)
+            if boxtype == 'D':
+                box = None
+                Law_code = LawCode.objects.get(id=boxid)
+            elif boxtype == 'E':
+                box = CodeBlock.objects.get(id=boxid)
+                Law_code = box.law_code
+            else:
+                print("boxtype error")
+                raise Http404
             ref = LawArticle.objects.create(text_law=law_text,
                                             title=lawtitle,
                                             autor=User,
-                                            law_code=LawCode,
+                                            is_lwp=True,
+                                            law_code=Law_code,
                                             details_law=law_details,
                                             block=box)
         ref.save()
@@ -898,8 +840,8 @@ def ValidNewLaw(request):
                'content': content,
                'typeref': typeref,
                'typeform': "lawf",
-               'id_ref': str(ref.id)}
-        print("ValidNewLaw end")
+               'id_ref': str(ref.id),
+               'message': "Votre proposition de loi a bien été ajoutée."}
         return JsonResponse(ctx)
     else:
         raise Http404
