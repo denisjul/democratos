@@ -9,12 +9,14 @@ def up_nav(request, idbox):
     - A: the node is a Law Code
     - B: the node is a code bloc
     - C: the node is a Law Article
-    - D: the node is a New Law proposition directly for a Law Code
-    - E: the node is a New Law proposition for a specific Codeblock
-    - F: the node is a code block proposition directly for a Law Code
-    - G: the node is a code block proposition for a specific Codeblock
+    - D: the node is to see New Law proposition directly for a Law Code
+    - E: the node is to see New Law proposition for a specific Codeblock
+    - F: the node is to see code block proposition directly for a Law Code
+    - G: the node is to code block proposition for a specific Codeblock
     - H: Create New Law
     - I: Create New Boxes
+    - J: New Laws proposition
+    - K: New Bloc Prop
     """
     idbox = request.GET.get("id")
     id_box = int(idbox[1:len(idbox)])
@@ -81,7 +83,7 @@ def up_nav(request, idbox):
                                           is_lwp=True).order_by('id'))
         if listArticle:
             for el in listArticle:
-                children.append(('C' + str(el.id),
+                children.append(('J' + str(el.id),
                                  el.title,
                                  "GetReflection",
                                  'law:' + str(el.id),

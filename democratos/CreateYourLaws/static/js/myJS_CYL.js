@@ -530,11 +530,20 @@ $(document).ready(function() {
             for (var i= 0; i < data.node.children.length; i++) {
                 var child = data.instance.get_node(data.node.children[i])
                 switch (child.id[0]) { // REVOIR ICI <-----------------------------
+                    case 'A':
+                        data.instance.set_icon(child, "/static/icons/code.png");
+                        break;
+                    case 'B':
+                        data.instance.set_icon(child, "/static/icons/code.png");
+                        break;
                     case 'C':
                         data.instance.set_icon(child, "/static/icons/article.png");
                         break;
-                    case 'D':
+                    case 'J':
                         data.instance.set_icon(child, "/static/icons/NewLawPrp.png");
+                        break;
+                    case 'H':
+                        data.instance.set_icon(child, "/static/icons/AddNewLaw.png");
                         break;
                     case 'GetNewLaws':
                         data.instance.set_icon(child, "/static/icons/plus.png");
