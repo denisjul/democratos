@@ -685,6 +685,25 @@ $(document).ready(function() {
             }
         });
     });
+    //---------------------  Get New Laws Prop ---------------------
+    $("body").on("click", ".GetDebateChild",function(){
+        $.ajax({
+            type: "POST",
+            url: '/CYL/getnewlawprops',
+            data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
+            dataType: "json",
+            success: function(response) {
+                if (response.message != ""){
+                    alert(response.message);
+                }
+                var idtomodif = "#NPLbox:" +  response.box_type + ':' + response.box_id;
+                $('#content').find(idtomodif).html(response.newlawpropslist);
+            },
+            error: function(rs, e) {
+                alert(rs.responseText);
+            }
+        });
+    });
     //---------------------  Delete own ref---------------------
     /* 
     Del the selected td

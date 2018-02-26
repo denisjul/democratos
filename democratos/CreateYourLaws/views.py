@@ -239,16 +239,29 @@ def In_dat_box(request, box_type=None, box_id=None):
     if box_type == '1':
         lqs = list(
             LawArticle.objects.filter(law_code=box_id,
+                                      is_lwp=False,
                                       block_id__isnull=True).order_by('id'))
         lqs += list(
-            CodeBlock.objects.filter(rank=1, law_code=box_id).order_by('id'))
+            CodeBlock.objects.filter(rank=1,
+                                     law_code=box_id,
+                                     is_cbp=False,
+                                     ).order_by('id'))
+        HasLawProp = LawArticle.objects.filter(law_code=box_id,
+                                               is_lwp=True,
+                                               block_id__isnull=True).exists()
+        HasBlocProp = CodeBlock.objects.filter(rank=1,
+                                               law_code=box_id,
+                                               is_cbp=True,
+                                               ).exists()
         Box = LawCode.objects.get(id=box_id)
         listparents = []
     else:
         lqs = list(
-            LawArticle.objects.filter(block=box_id).order_by('id'))
+            LawArticle.objects.filter(block=box_id,
+                                      is_lwp=False).order_by('id'))
         lqs += list(
-            CodeBlock.objects.filter(block=box_id).order_by('id'))
+            CodeBlock.objects.filter(block=box_id,
+                                     is_cbp=False).order_by('id'))
         Box = CodeBlock.objects.get(id=box_id)
         listparents = []
         lastbox = Box
@@ -259,6 +272,11 @@ def In_dat_box(request, box_type=None, box_id=None):
         parent = Box.law_code
         listparents.append((parent.title, parent.id, 1))
         listparents.reverse()
+        HasLawProp = LawArticle.objects.filter(block=box_id,
+                                               is_lwp=True).exists()
+        HasBlocProp = CodeBlock.objects.filter(block=box_id,
+                                               is_cbp=True).exists()
+    print(HasLawProp, HasBlocProp)
     if request.POST:
         intro = render_block_to_string('InDatBox.html',
                                        "intro",
@@ -269,10 +287,24 @@ def In_dat_box(request, box_type=None, box_id=None):
         ctx = {'intro': intro,
                'content': content,
                'box_type': str(box_type),
-               'box_id': str(box_id)}
+               'box_id': str(box_id),
+               }
         return JsonResponse(ctx)
     else:
         return render(request, 'InDatBox.html', locals())
+
+
+@login_required
+def getnewlawprops(request):
+    slug = request.POST.get('slug', None)
+
+    #    continuer ici
+
+    ctx = {'intro': intro,
+           'content': content,
+           'box_type': str(box_type),
+           'box_id': str(box_id)}
+    return JsonResponse(ctx)
 
 
 @login_required

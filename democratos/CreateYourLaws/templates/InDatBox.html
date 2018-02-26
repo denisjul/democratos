@@ -42,5 +42,11 @@
 				{% endfor %}
 				</ul>
 			</p>
+	{% if HasLawProp %}
+		<p class="GetNewLawProps" id="NLPbox:{{box_type}}:{{box_id}}"> Voir les propositions de nouvelles lois pour cet emplacement </p>
+	{% endif %}
+	{% if HasBlocProp %}
+		<p class="GetCodeBlocProps" id="CBPbox:{{box_type}}:{{box_id}}"> Voir les rautres propositions de groupement de lois à cet emplacement </p>
+	{% endif %}
 	</article>
 {% endblock %}

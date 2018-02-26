@@ -185,4 +185,4 @@ class CodeBlock(models.Model):
     lastupdate = models.DateTimeField(auto_now=True,
                                       verbose_name="Last update date")
     # is new code block proposition?
-    is_cdp = models.BooleanField(default=False)
+    is_cbp = models.BooleanField(default=False)
