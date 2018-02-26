@@ -686,11 +686,11 @@ $(document).ready(function() {
         });
     });
     //---------------------  Get New Laws Prop ---------------------
-    $("body").on("click", ".GetDebateChild",function(){
+    $("body").on("click", ".GetNewLawProps",function(){
         $.ajax({
             type: "POST",
             url: '/CYL/getnewlawprops',
-            data: {'slug': $(this).attr('name') ,csrfmiddlewaretoken: csrftoken},
+            data: {'slug': $(this).attr('id') ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(response) {
                 if (response.message != ""){
