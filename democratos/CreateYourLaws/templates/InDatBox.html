@@ -22,6 +22,7 @@
 	<article style="padding-right:2%;">	
 		<h1>{{Box.title}}</h1>
 			<p>
+				{% block getlist %}
 				<ul style="list-style:none;">
 				{% for x in lqs %}
 					<li>
@@ -41,12 +42,15 @@
 				    </li>
 				{% endfor %}
 				</ul>
+				{% endblock getlist %}
 			</p>
+	<br>
+	<hr>
 	{% if HasLawProp %}
-		<p class="GetNewLawProps" id="NLPbox:{{box_type}}:{{box_id}}"> Voir les propositions de nouvelles lois pour cet emplacement </p>
+		<p class="GetNewLawProps" id="{{box_type}}NLPbox{{box_id}}"> Voir les propositions de nouvelles lois pour cet emplacement </p>
 	{% endif %}
 	{% if HasBlocProp %}
 		<p class="GetCodeBlocProps" id="CBPbox:{{box_type}}:{{box_id}}"> Voir les rautres propositions de groupement de lois à cet emplacement </p>
 	{% endif %}
 	</article>
-{% endblock %}
+{% endblock content%}

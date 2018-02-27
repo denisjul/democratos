@@ -99,10 +99,19 @@ td {
 
 section p {
 	text-align: left;
+	display: inline-block;
 }
 
 section ul {
+	width: 96%;
+    margin: 0px auto;
 	text-align: left;
+	position: relative;
+	display: block;
+}
+
+section ul div{
+	width: 100%;
 }
 
 table{

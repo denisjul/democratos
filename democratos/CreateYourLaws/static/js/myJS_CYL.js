@@ -693,11 +693,10 @@ $(document).ready(function() {
             data: {'slug': $(this).attr('id') ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(response) {
-                if (response.message != ""){
-                    alert(response.message);
-                }
-                var idtomodif = "#NPLbox:" +  response.box_type + ':' + response.box_id;
-                $('#content').find(idtomodif).html(response.newlawpropslist);
+                var idtomodif = "#" +  response.box_type + "NLPbox" + response.box_id;
+                console.log(idtomodif);
+                $('#content').find(idtomodif).html(response.listofNLP);
+                console.log("getnewlawprops has end");
             },
             error: function(rs, e) {
                 alert(rs.responseText);

@@ -236,6 +236,8 @@ def In_dat_box(request, box_type=None, box_id=None):
         slug = request.POST.get('slug', None)
         box_type, box_id = slug.split(sep=":")
         box_id = int(box_id)
+    else:
+        box_type = str(box_type)
     if box_type == '1':
         lqs = list(
             LawArticle.objects.filter(law_code=box_id,
@@ -297,13 +299,24 @@ def In_dat_box(request, box_type=None, box_id=None):
 @login_required
 def getnewlawprops(request):
     slug = request.POST.get('slug', None)
-
-    #    continuer ici
-
-    ctx = {'intro': intro,
-           'content': content,
+    box_type = slug[0]
+    box_id = int(slug[7:])
+    if box_type == '1':
+        lqs = list(
+            LawArticle.objects.filter(law_code=box_id,
+                                      is_lwp=True,
+                                      block_id__isnull=True).order_by('id'))
+    else:
+        lqs = list(
+            LawArticle.objects.filter(block=box_id,
+                                      is_lwp=True).order_by('id'))
+    listofNLP = render_block_to_string('InDatBox.html',
+                                       "getlist",
+                                       locals())
+    ctx = {'listofNLP': listofNLP,
            'box_type': str(box_type),
-           'box_id': str(box_id)}
+           'box_id': str(box_id)
+           }
     return JsonResponse(ctx)
 
 
