@@ -308,6 +308,18 @@ section form{
 	padding: 1%;
 }
 
+
+.lwp_section
+{	
+	background: linear-gradient(130deg, #d6d5d4 30%, #b3d1ff 70%);
+	border-width: 4px;
+	border-color: #4d94ff ; //linear-gradient(130deg, #909090 30%, #4d94ff 70%);
+	border-style: solid;
+	border-radius: 8px;
+	margin: 1%;
+	padding: 1%;
+}
+
 .debate{
 	overflow: auto;
 }

@@ -37,10 +37,15 @@
 
     {% if typeref == 'law' %}  
             <!--         The Law article           -->
-        <section class="law_section">
+        {% if ref.is_lwp %}
+            <section class="lwp_section">
+        {% else %}
+            <section class="law_section">
+        {% endif %}
             <h1>{{ref.law_code.title}}</h1> 
                 <h2>{{ref.title}}</h2>
                 <p>{{ref.text_law}}</p>
+        }
 
     {% else %}
             <!--         The Others         -->
