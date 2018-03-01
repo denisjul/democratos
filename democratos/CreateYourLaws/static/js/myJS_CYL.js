@@ -525,39 +525,7 @@ $(document).ready(function() {
     $('#jstree_CYL').on('select_node.jstree', function (e, data) {
         window.location = data.node.a_attr.href;
     });
-    $('#jstree_CYL').on('load_node.jstree', function (e, data) {
-        if (data.node.id != '#'){
-            for (var i= 0; i < data.node.children.length; i++) {
-                var child = data.instance.get_node(data.node.children[i])
-                switch (child.id[0]) { // REVOIR ICI <-----------------------------
-                    case 'A':
-                        data.instance.set_icon(child, "/static/icons/code.png");
-                        break;
-                    case 'B':
-                        data.instance.set_icon(child, "/static/icons/code.png");
-                        break;
-                    case 'C':
-                        data.instance.set_icon(child, "/static/icons/article.png");
-                        break;
-                    case 'J':
-                        data.instance.set_icon(child, "/static/icons/NewLawPrp.png");
-                        break;
-                    case 'H':
-                        data.instance.set_icon(child, "/static/icons/AddNewLaw.png");
-                        break;
-                    case 'GetNewLaws':
-                        data.instance.set_icon(child, "/static/icons/plus.png");
-                        break;
-                    case 'GetNewBoxes':
-                        data.instance.set_icon(child, "/static/icons/plus.png");
-                        break;
-                    default:
-                        data.instance.set_icon(data.node.children[0],true);
-                        break;
-                }
-            }
-        }
-    });        
+  
     // --------------- resizable nav -----------------------
     var container = $("body");
     var numberOfCol = 2;
@@ -695,7 +663,7 @@ $(document).ready(function() {
             success: function(response) {
                 var idtomodif = "#" +  response.box_type + "NLPbox" + response.box_id;
                 console.log(idtomodif);
-                $('#content').find(idtomodif).html(response.listofNLP);
+                $('#content').find(idtomodif).replaceWith(response.listofNLP);
                 console.log("getnewlawprops has end");
             },
             error: function(rs, e) {

@@ -41,6 +41,7 @@ def up_nav(request, idbox):
             for el in listArticle:
                 children.append(('C' + str(el.id),
                                  el.title,
+                                 "/static/icons/article.png",
                                  "GetReflection",
                                  'law:' + str(el.id),
                                  False))
@@ -55,18 +56,21 @@ def up_nav(request, idbox):
             for el in listBlock:
                 children.append(('B' + str(el.id),
                                  el.title,
+                                 "",
                                  "InDatBox",
                                  '2:' + str(el.id),
                                  True))
         children.append((typeboxnexlaw + str(id_box),
                          'Voir les propositions de nouvelles lois ' +
                          'pour cet emplacement',
+                         True,
                          'GetNewLaws',
                          idbox[0] + ':' + str(id_box),
                          True))
         children.append((typeboxnexbox + str(id_box),
                          'Voir les propositions sous-groupement de loi ' +
                          'pour cet emplacement',
+                         True,
                          'GetNewBoxes',
                          idbox[0] + ':' + str(id_box),
                          True))
@@ -85,11 +89,13 @@ def up_nav(request, idbox):
             for el in listArticle:
                 children.append(('J' + str(el.id),
                                  el.title,
+                                 "/static/icons/NewLawPrp.png",
                                  "GetReflection",
                                  'law:' + str(el.id),
                                  False))
         children.append(('H'+str(id_box),
                          'Créer une loi à cet emplacement',
+                         "/static/icons/AddNewLaw.png",
                          'CreateNewLaw',
                          idbox[0] + ':' + str(id_box),
                          False))
@@ -108,12 +114,14 @@ def up_nav(request, idbox):
             for el in listBlock:
                 children.append(('G' + str(el.id),
                                  el.title,
+                                 True,
                                  "InDatBox",
                                  '2:' + str(el.id),
                                  True))
         children.append(('I'+str(id_box),
                          'Proposer un un sous-groupement de loi à' +
                          ' cet emplacement',
+                         True,
                          'CreateNewBox',
                          idbox[0] + ':' + str(id_box),
                          False))
@@ -121,10 +129,11 @@ def up_nav(request, idbox):
         # 'B' in the 'id' param inform that this is a Code BLock
         JSON_obj.append({'id': elem[0],
                          'text': elem[1],
-                         'a_attr': {'class': elem[2],
-                                    'name': elem[3],
+                         'icon': elem[2],
+                         'a_attr': {'class': elem[3],
+                                    'name': elem[4],
                                     },
-                         'children': elem[4]})
+                         'children': elem[5]})
     return JsonResponse(JSON_obj, safe=False)
 
 
@@ -136,6 +145,7 @@ def init_nav(request):
         # 'A' in the 'id' param inform that this is a Law code
         JSON_obj.append({'id': 'A' + str(el.id),
                          'text': el.title,
+                         'icon': "/static/icons/code.png",
                          'a_attr': {"class": "InDatBox",
                                     "name": "1:" + str(el.id),
                                     "get_new_laws": "False",

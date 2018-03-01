@@ -27,7 +27,12 @@
 				{% for x in lqs %}
 					<li>
 				    {% if x|isinst:'CreateYourLaws.models.LawArticle' %}
-					    <div class="IDB GetReflection law_text" name="law:{{x.id}}"><label class="suscribe" id="checklaw{{x.id}}"><input type="checkbox" name="checklaw{{x.id}}">s'abonner</label>
+				    	{% if x.is_lwp %}
+				    		<div class="IDB GetReflection lwp_text" name="law:{{x.id}}">
+				    	{% else %}
+					    	<div class="IDB GetReflection law_text" name="law:{{x.id}}">
+					    {% endif %}
+					    	<label class="suscribe" id="checklaw{{x.id}}"><input type="checkbox" name="checklaw{{x.id}}">s'abonner</label>
 					    {% autoescape off %}
 						    <strong>{{x.title}}</strong><br>
 					    	<p>{{x.text_law}}</p>
