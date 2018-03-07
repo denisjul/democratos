@@ -891,6 +891,15 @@ def ValidNewLaw(request):
     else:
         raise Http404
 
+@login_required
+def ReportReflection(request):
+    """ View to abusive behavior """
+    user = request.user
+    typeref = request.POST.get('typeref', None)
+    idref = int(request.POST.get('idref', None))
+    # créer un reportjob
+    pass
+
 
 @login_required
 def create_new_box():

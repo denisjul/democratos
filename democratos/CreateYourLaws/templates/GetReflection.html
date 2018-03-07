@@ -148,6 +148,16 @@
                                                 </li>
                                             </ul> 
                                             </div>
+                                        {% else %}
+                                            <div class="SmallMenu">
+                                            <ul>
+                                                <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                                    <ul>
+                                                        <li><ins class="ReportRef clickable " name="rpt:opp:{{x.id}}">Signaler</ins></li> 
+                                                    </ul>
+                                                </li>
+                                            </ul> 
+                                            </div>
                                         {% endif %}
                                         <div class='clickable GetReflection' name='opp:{{x.id}}'>
                                         {% if x.title%}
@@ -204,6 +214,16 @@
                                                             <ul>
                                                                 <li><ins class="DelOwnRef clickable " name="del:opn:{{x.id}}">supprimer</ins></li> 
                                                                 <li><ins class="ModifRef clickable " name="modif:opn:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul> 
+                                                    </div>
+                                                {% else %}
+                                                    <div class="SmallMenu">
+                                                    <ul>
+                                                        <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                                            <ul>
+                                                                <li><ins class="ReportRef clickable " name="rpt:opn:{{x.id}}">Signaler</ins></li> 
                                                             </ul>
                                                         </li>
                                                     </ul> 
@@ -272,11 +292,19 @@
                                     <ul>
                                     <li><ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins></li> 
                                     <li><ins class="ModifRef clickable " name="modif:prp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
-                                  
                                     </ul>
                                 </ul> 
                                 </div>
-                                <br>
+                            {% else %}
+                                <div class="SmallMenu">
+                                <ul>
+                                    <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                        <ul>
+                                            <li><ins class="ReportRef clickable " name="rpt:prp:{{x.id}}">Signaler</ins></li> 
+                                        </ul>
+                                    </li>
+                                </ul> 
+                                </div>
                             {% endif %}
                             <div class="IDB GetReflection" name="prp:{{x.id}}">
 
@@ -346,6 +374,16 @@
                             </li>
                         </ul> 
                         </div>
+                    {% else %}
+                        <div class="SmallMenu">
+                        <ul>
+                            <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                <ul>
+                                    <li><ins class="ReportRef clickable " name="rpt:exp:{{x.id}}">Signaler</ins></li> 
+                                </ul>
+                            </li>
+                        </ul> 
+                        </div>
                     {% endif %}
                     {% if x.title %}
                         <strong><b>{{x.title}}</b></strong>
@@ -363,6 +401,16 @@
                                     <li><ins class="DelOwnRef clickable " name="del:qst:{{x.id}}">supprimer</ins></li> 
                                     <li><ins class="ModifRef clickable " name="modif:qst:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
                                     <li><ins class="GetReflection clickable " name="qst:{{x.id}}">ouvrir</ins></li>
+                                </ul>
+                            </li>
+                        </ul> 
+                        </div>
+                    {% else %}
+                        <div class="SmallMenu">
+                        <ul>
+                            <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                <ul>
+                                    <li><ins class="ReportRef clickable " name="rpt:qst:{{x.id}}">Signaler</ins></li> 
                                 </ul>
                             </li>
                         </ul> 

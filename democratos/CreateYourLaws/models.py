@@ -17,6 +17,8 @@ from datetime import date
 
 class CYL_user(AbstractUser):
     date_of_birth = models.DateField(default=date.today)
+    is_punished = models.DateField(null=True, default=None)
+    report_level = models.IntegerField(default=0)
     # elector_number = models.IntegerField()
     # digital_print = models.ImageField()
     # contacts = models.ManyToManyField('self')
@@ -31,6 +33,13 @@ class Note(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
+class ReportJob(models.Model):
+    user = models.ForeignKey(CYL_user, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType,
+                                     null=True,
+                                     on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
 
 """  OBSOLETE?
 class UserSession(models.Model):
@@ -59,6 +68,8 @@ class Reflection(models.Model):
     update = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=150, blank=True, null=True)
     notes = GenericRelation(Note)
+    report_level = models.IntegerField(default=0)
+    reportjobs = GenericRelation(ReportJob)
     content_type = models.ForeignKey(ContentType,
                                      null=True,
                                      on_delete=models.CASCADE)

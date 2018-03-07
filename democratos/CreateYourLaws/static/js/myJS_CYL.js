@@ -709,5 +709,24 @@ $(document).ready(function() {
             }
         });
     });
+        //---------------------  Report own ref---------------------
+    /* 
+    Send a repport for abusive behavior or comment
+    */
+    $('body').on('click', '.ReportRef', function(){
+        var data =  $(this).attr('name').split(":");
+        $.ajax({
+            type: "POST",
+            url: '/CYL/ReportReflection',
+            data: {'typeref': data[1] ,'idref': data[2] ,csrfmiddlewaretoken: csrftoken},
+            dataType: "json",
+            success: function(rs) {
+                alert(rs.message);
+            },
+            error: function(rs, e) {
+                alert(rs.responseText);
+            }
+        });
+    });
 });
 
