@@ -33,6 +33,7 @@ class Note(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
+
 class ReportJob(models.Model):
     user = models.ForeignKey(CYL_user, on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType,
