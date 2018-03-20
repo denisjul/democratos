@@ -1,55 +1,6 @@
+$.getScript('quickdialog.js');
+
 //setup JQuery's AJAX methods to setup CSRF token in the request before sending it off.
-
-
-function ConfirmDialog(qorigin, title, message, data) {
-    $('<div></div>').appendTo('body')
-                    .html('<div>'+message+'?</div>')
-                    .dialog({
-                        modal: true, title: title, zIndex: 10000, autoOpen: true,
-                        width: 'auto', resizable: false,
-                        buttons: {
-                            Oui: function () {
-                                Confirmresult(qorigin, true, data);
-                                $(this).dialog("close");                               
-                            },
-                            Annuler: function () {                                                                
-                                Confirmresult(qorigin, false, data);
-                                $(this).dialog("close");
-                            }
-                        },
-                        close: function (event, ui) {
-                            $(this).remove();
-                        }
-                    });
-};
-
-function Confirmresult(qorigin, answer, data) {
-    switch (qorigin){
-        case "DelOwnRef":
-            if (answer){
-                $.ajax({
-                    type: "POST",
-                    url: '/CYL/DeleteReflection',
-                    data: {'typeref': data[1] ,'idref': data[2] ,csrfmiddlewaretoken: csrftoken},
-                    dataType: "json",
-                    success: function(rs) {
-                        alert(rs.message);
-                        if (history.state==null) {
-                            location.reload();
-                        }
-                        else{
-                           GoAjax(history.state.url, history.state.slug, false);
-                        }
-                    },
-                    error: function(rs, e) {
-                        alert(rs.responseText);
-                    }
-                });
-            }
-        //case
-    }
-}
-
 
 function UpAndDown(tomodif,dontomodif,slug,url){
     $.ajax({
@@ -499,11 +450,12 @@ $(document).ready(function() {
     console.log("doc ready");
     // -------------Displaying Forms for q,exp,op etc. -------------
     Setallbutform();
+    /*
     if (location.href.slice(0,37) == "http://127.0.0.1:8000/CYL/Reflection/"){
         $('form').each(function(){
             SetTheForm($(this).attr('id')) // joindre l'ID de la réflexion
         });
-    }
+    }*/
     // -------------- JStree settings ---------------------
     $("#jstree_CYL").jstree({
         'core' : {

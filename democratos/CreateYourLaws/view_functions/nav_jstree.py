@@ -56,7 +56,7 @@ def up_nav(request, idbox):
             for el in listBlock:
                 children.append(('B' + str(el.id),
                                  el.title,
-                                 "",
+                                 "/static/icons/chapitre.png",
                                  "InDatBox",
                                  '2:' + str(el.id),
                                  True))
