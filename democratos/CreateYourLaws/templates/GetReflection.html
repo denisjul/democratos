@@ -42,10 +42,12 @@
         {% else %}
             <section class="law_section">
         {% endif %}
-            <h1>{{ref.law_code.title}}</h1> 
-                <h2>{{ref.title}}</h2>
-                <p>{{ref.text_law}}</p>
+        <h1>{{ref.law_code.title}}</h1> 
+            <h2>{{ref.title}}</h2>
+            <p>{{ref.text_law}}</p>
+
     {% else %}
+
             <!--         The Others         -->
         {% if typeref == 'qst' %} 
                 <h1> Question à propos de: 
@@ -384,7 +386,7 @@
                         </div>
                     {% endif %}
                     {% if x.title %}
-                        <strong><b>{{x.title}}</b></strong>
+                        <strong><b>{{x.title}}</b></strong><br>
                         {{x.text_exp|truncatewords:80}}
                     {% else %}
                         <strong>{{x.text_exp}}</strong>
@@ -414,13 +416,15 @@
                         </ul> 
                         </div>
                     {% endif %}
+                    <br>
                     {% if x.title %}
-                        <strong><b>{{x.title}}</b></strong>
+                        <strong><b>{{x.title}}</b></strong><br>
                         {{x.text_q|truncatewords:80}}
                     {% else %}
                         <strong>{{x.text_q}}</strong> 
                     {% endif %}
-            {% endif %}             
+            {% endif %} 
+            <br>            
             <div class="count">
                 <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
                 <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 

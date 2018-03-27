@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from CreateYourLaws.models import LawArticle  # , UserSession
+from CreateYourLaws.models import LawArticle, Commit  # , UserSession
 import CreateYourLaws.models
 from django.template.loader_tags import BlockNode, ExtendsNode
 
@@ -96,10 +96,59 @@ def get_the_instance(obj, Id):
     elif obj == 'law':
         return CreateYourLaws.models.LawArticle.objects.get(id=Id)
 
+def CreateCommit(ref, newtxt, newtitle, details, comments):
+    if type(ref) is CreateYourLaws.objects.LawArticle:
+        commit = Commit.objects.create(
+            commit_txt = CreateCommitstr(ref.text_law, newtxt),
+            commit_title = CreateCommitstr(ref.title, newtitle),
+            commit_details = details,
+            comments = comments,
+            content_objects=ref,
+            )
+        commit.save()
+    elif type(ref) is CreateYourLaws.objects.Proposition:
+        commit = Commit.objects.create(
+            commit_txt = CreateCommitstr(ref.text_prp, newtxt),
+            commit_title = CreateCommitstr(ref.title, newtitle),
+            commit_details = details,
+            comments = comments,
+            content_objects=ref,
+            )
+        commit.save()
 
-# A revoir <----------------------------------------------
-"""
-def delete_user_sessions(user):
-    user_sessions = UserSession.objects.filter(user=user)
-    for user_session in user_sessions:
-        user_session.session.delete()"""
+
+def CreateCommitstr(oldtxt,newtxt):
+    """
+    Commit structure: 
+    list of [ tag, i1, i2, j1, j2,oldtext[i1,i2], newtext[j1,j2] ]
+    with:
+        -i(n) = n(th) iteration of oldtxt
+        -j(n) = n(th) iteration of newtxt
+        -tag: equal, replace, delete, insert
+    """
+    SeqMatch= SequenceMatcher()
+    SeqMatch.set_seqs(oldtxt,newtxt)
+    Commit = []
+    for el in SeqMatch.get_opcodes():
+        comlist = list(el)
+        if el[0] == "equal":
+            comlist.append("")
+            Commit.append(comlist)
+        else:
+            old = oldtxt[el[1]:el[2]]
+            comlist.append(old)
+            Commit.append(comlist)
+    return str(Commit)
+
+
+def RecoverOldComimtstr(newtxt,Commit):
+    """ recover and old text from a commit"""
+    oldtxt = ""
+    for el in Commit:
+        if el[0] == 'equal':
+            oldtxt += newtxt[el[3]:el[4]]
+        if el[0] == 'replace':
+            oldtxt += el[5]
+        if el[0] == 'delete':
+            oldtxt += el[5]
+    return oldtxtx

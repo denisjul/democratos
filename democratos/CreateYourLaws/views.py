@@ -25,6 +25,7 @@ from django.template.response import TemplateResponse
 from CreateYourLaws.dl_law_codes.functions import get_something
 from render_block import render_block_to_string
 import operator
+import json
 
 
 @login_required
@@ -453,7 +454,14 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             else:
                 lawart = ref.law_article
             if IsModif:
+                comments = prpform.cleaned_data['commit_com']
                 prp = Proposition.objects.get(id=idform)
+                CreateCommit(
+                    prp,
+                    prop,
+                    proptitle,
+                    details_prp,
+                    comments)
                 prp.text_prp = prop
                 prp.title = proptitle
                 prp.details_prp = details_prp
@@ -890,6 +898,16 @@ def ValidNewLaw(request):
         return JsonResponse(ctx)
     else:
         raise Http404
+
+
+@login_required
+def GetHistory(request):
+    typeref = request.POST.get('typeref', None)
+    idref = int(request.POST.get('idref', None))
+    ref  = get_the_instance(typeref,idref)
+    history = ref.Commit.all()
+    return Jsonresponse(history)
+
 
 @login_required
 def ReportReflection(request):

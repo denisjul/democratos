@@ -7,6 +7,7 @@ try:
 except:
     from CreateYourLaws.dl_law_codes.classe_pdf import Table
     from CreateYourLaws.models import LawArticle
+    from CreateYourLaws.views_functions import CreateCommit
 
 
 def SU_Article(NewArticle, link, container, Law_Code, Gov):
@@ -29,6 +30,14 @@ def SU_Article(NewArticle, link, container, Law_Code, Gov):
         Articlesql.save()
     else:
         if Articlesql.text_law != NewArticlehtml:
+            details =""
+            coms=""
+            CreateCommit(
+                Articlesql,
+                NewArticlehtml,
+                NewArticle.name,
+                details,
+                coms)
             Articlesql.autor = Gov
             Articlesql.title = NewArticle.name
             Articlesql.text_law = NewArticlehtml

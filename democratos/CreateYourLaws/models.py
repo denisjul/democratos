@@ -33,7 +33,6 @@ class Note(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-
 class ReportJob(models.Model):
     user = models.ForeignKey(CYL_user, on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType,
@@ -144,6 +143,7 @@ class Proposition(Reflection):
     nb_q = models.IntegerField(default=0)
     nb_posop = models.IntegerField(default=0)
     nb_negop = models.IntegerField(default=0)
+    commit = GenericRelation('Commit')
 
 
 ###############################################################################
@@ -171,6 +171,7 @@ class LawArticle(Reflection):
     nb_posop = models.IntegerField(default=0)
     nb_negop = models.IntegerField(default=0)
     nb_prop = models.IntegerField(default=0)
+    commit = GenericRelation('Commit')
     # is law prop (NewLaw)?
     is_lwp = models.BooleanField(default=False)
     details_law = RichTextField(default='')
@@ -198,3 +199,16 @@ class CodeBlock(models.Model):
                                       verbose_name="Last update date")
     # is new code block proposition?
     is_cbp = models.BooleanField(default=False)
+
+
+class Commit(models.Model):
+    commit_title = models.TextField()
+    commit_txt = models.TextField()
+    commit_details = models.TextField()
+    posted = models.DateTimeField(auto_now_add=True)
+    content_type = models.ForeignKey(ContentType,
+                                     null=True,
+                                     on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    comments = RichTextField(null=True)
