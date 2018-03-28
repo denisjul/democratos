@@ -86,9 +86,14 @@ HAYSTACK_CONNECTIONS = {
 WSGI_APPLICATION = 'democratos.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'thedatabase',
+    }
+}
 
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -99,6 +104,9 @@ DATABASES = {
         'PORT': '',
     }
 }
+"""
+
+
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 

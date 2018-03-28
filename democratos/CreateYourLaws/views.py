@@ -19,7 +19,7 @@ from CreateYourLaws.forms import (
     ExplainationForm, PosopinionForm, Info_Change_Form, NegopinionForm,
     CreateNewLawForm,)
 from CreateYourLaws.views_functions import (
-    get_path, get_the_instance, get_model_type_in_str,)
+    get_path, get_the_instance, get_model_type_in_str,CreateCommit)
 from django.utils.translation import ugettext as _
 from django.template.response import TemplateResponse
 from CreateYourLaws.dl_law_codes.functions import get_something
@@ -454,7 +454,7 @@ def PostReflection(request):  # Trouver un moyen d'avoir ID_ref
             else:
                 lawart = ref.law_article
             if IsModif:
-                comments = prpform.cleaned_data['commit_com']
+                comments = request.POST.get('commit_com', '')
                 prp = Proposition.objects.get(id=idform)
                 CreateCommit(
                     prp,

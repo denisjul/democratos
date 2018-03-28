@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from CreateYourLaws.models import LawArticle, Commit  # , UserSession
 import CreateYourLaws.models
 from django.template.loader_tags import BlockNode, ExtendsNode
+from difflib import SequenceMatcher
 
 
 def get_path(obj):
@@ -97,22 +98,22 @@ def get_the_instance(obj, Id):
         return CreateYourLaws.models.LawArticle.objects.get(id=Id)
 
 def CreateCommit(ref, newtxt, newtitle, details, comments):
-    if type(ref) is CreateYourLaws.objects.LawArticle:
+    if type(ref) is CreateYourLaws.models.LawArticle:
         commit = Commit.objects.create(
             commit_txt = CreateCommitstr(ref.text_law, newtxt),
             commit_title = CreateCommitstr(ref.title, newtitle),
             commit_details = details,
             comments = comments,
-            content_objects=ref,
+            content_object=ref,
             )
         commit.save()
-    elif type(ref) is CreateYourLaws.objects.Proposition:
+    elif type(ref) is CreateYourLaws.models.Proposition:
         commit = Commit.objects.create(
             commit_txt = CreateCommitstr(ref.text_prp, newtxt),
             commit_title = CreateCommitstr(ref.title, newtitle),
-            commit_details = details,
+            commit_details = CreateCommitstr(ref.details, details),
             comments = comments,
-            content_objects=ref,
+            content_object=ref,
             )
         commit.save()
 
