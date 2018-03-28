@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'democratos.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'thedatabase',
+        'NAME': 'db.sqlite3',
     }
 }
 
