@@ -139,28 +139,21 @@
                             {% for x in listposop %}
                                 <tr>
                                     <td id="opptd{{x.id}}" class="posopinion"> 
-                                        {% if User == x.autor %}
-                                            <div class="SmallMenu">
+                                        <div class="SmallMenu">
                                             <ul>
                                                 <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
                                                     <ul>
+                                                        {% if User == x.autor %}
                                                         <li><ins class="DelOwnRef clickable " name="del:opp:{{x.id}}">supprimer</ins></li> 
-                                                        <li><ins class="ModifRef clickable " name="modif:opp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
+                                                        <li><ins class="ModifRef clickable " name="modif:opp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins>
+                                                        </li>
+                                                        {% else %}
+                                                        <li><ins class="ReportRef clickable " name="rpt:opp:{{x.id}}">Signaler</ins></li>
+                                                        {% endif %}
                                                     </ul>
                                                 </li>
                                             </ul> 
-                                            </div>
-                                        {% else %}
-                                            <div class="SmallMenu">
-                                            <ul>
-                                                <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
-                                                    <ul>
-                                                        <li><ins class="ReportRef clickable " name="rpt:opp:{{x.id}}">Signaler</ins></li> 
-                                                    </ul>
-                                                </li>
-                                            </ul> 
-                                            </div>
-                                        {% endif %}
+                                        </div>
                                         <div class='clickable GetReflection' name='opp:{{x.id}}'>
                                         {% if x.title%}
                                             <b>{{x.title}}</b> <br/>
@@ -209,28 +202,21 @@
                                     {% for x in listnegop %}
                                         <tr>
                                             <td id="opntd{{x.id}}" class="negopinion">
-                                                {% if User == x.autor %}
-                                                    <div class="SmallMenu">
-                                                    <ul>
-                                                        <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
-                                                            <ul>
-                                                                <li><ins class="DelOwnRef clickable " name="del:opn:{{x.id}}">supprimer</ins></li> 
-                                                                <li><ins class="ModifRef clickable " name="modif:opn:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul> 
-                                                    </div>
-                                                {% else %}
-                                                    <div class="SmallMenu">
+                                               <div class="SmallMenu">
                                                     <ul>
                                                         <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
                                                             <ul>
-                                                                <li><ins class="ReportRef clickable " name="rpt:opn:{{x.id}}">Signaler</ins></li> 
+                                                                {% if User == x.autor %}
+                                                                <li><ins class="DelOwnRef clickable " name="del:opn:{{x.id}}">supprimer</ins></li> 
+                                                                <li><ins class="ModifRef clickable " name="modif:opn:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins>
+                                                                </li>
+                                                                {% else %}
+                                                                <li><ins class="ReportRef clickable " name="rpt:opn:{{x.id}}">Signaler</ins></li>
+                                                                {% endif %}
                                                             </ul>
                                                         </li>
                                                     </ul> 
-                                                    </div>
-                                                {% endif %}
+                                                </div>
                                                 <div class='clickable GetReflection' name='opn:{{x.id}}'>
                                                 {% if x.title%}
                                                     <b>{{x.title}}</b>
@@ -287,27 +273,22 @@
                 {% for x in listpropositions %}
                     <tr>
                         <td id="prptd{{x.id}}" class="proposition">
-                            {% if User == x.autor %}
-                                <div class="SmallMenu">
-                                <ul>
-                                <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
-                                    <ul>
-                                    <li><ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins></li> 
-                                    <li><ins class="ModifRef clickable " name="modif:prp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
-                                    </ul>
-                                </ul> 
-                                </div>
-                            {% else %}
-                                <div class="SmallMenu">
+                           <div class="SmallMenu">
                                 <ul>
                                     <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
                                         <ul>
-                                            <li><ins class="ReportRef clickable " name="rpt:prp:{{x.id}}">Signaler</ins></li> 
+                                            {% if User == x.autor %}
+                                            <li><ins class="DelOwnRef clickable " name="del:prp:{{x.id}}">supprimer</ins></li> 
+                                            <li><ins class="ModifRef clickable " name="modif:prp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins>
+                                            </li>
+                                            {% else %}
+                                            <li><ins class="ReportRef clickable " name="rpt:prp:{{x.id}}">Signaler</ins></li>
+                                            {% endif %}
+                                            <li><ins class="ReportRef clickable " name="hst:prp:{{x.id}}">historique</ins></li>
                                         </ul>
                                     </li>
                                 </ul> 
-                                </div>
-                            {% endif %}
+                            </div>
                             <div class="IDB GetReflection" name="prp:{{x.id}}">
 
                                 {% if x.title %}
@@ -364,29 +345,21 @@
         <tr>
             {% if x|isinst:'CreateYourLaws.models.Explaination' %}    
                 <td id="exptd{{x.id}}" class="explaination"> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
-                    {% if User == x.autor %}
-                        <div class="SmallMenu">
-                        <ul>
-                            <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
-                                <ul>
-                                    <li><ins class="DelOwnRef clickable " name="del:exp:{{x.id}}">supprimer</ins></li> 
-                                    <li><ins class="ModifRef clickable " name="modif:exp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
-                                    <li><ins class="GetReflection clickable " name="exp:{{x.id}}">ouvrir</ins></li>
-                                </ul>
-                            </li>
-                        </ul> 
-                        </div>
-                    {% else %}
-                        <div class="SmallMenu">
+                   <div class="SmallMenu">
                         <ul>
                             <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
                                 <ul>
-                                    <li><ins class="ReportRef clickable " name="rpt:exp:{{x.id}}">Signaler</ins></li> 
+                                    {% if User == x.autor %}
+                                    <li><ins class="DelOwnRef clickable " name="del:exp:{{x.id}}">supprimer</ins></li> 
+                                    <li><ins class="ModifRef clickable " name="modif:exp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins>
+                                    </li>
+                                    {% else %}
+                                    <li><ins class="ReportRef clickable " name="rpt:exp:{{x.id}}">Signaler</ins></li>
+                                    {% endif %}
                                 </ul>
                             </li>
                         </ul> 
-                        </div>
-                    {% endif %}
+                    </div>
                     {% if x.title %}
                         <strong><b>{{x.title}}</b></strong><br>
                         {{x.text_exp|truncatewords:80}}
@@ -395,29 +368,21 @@
                     {% endif %}
             {% else %}
                 <td id="qsttd{{x.id}}" class="question">  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
-                    {% if User == x.autor %}
-                        <div class="SmallMenu">
-                        <ul>
-                            <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
-                                <ul>
-                                    <li><ins class="DelOwnRef clickable " name="del:qst:{{x.id}}">supprimer</ins></li> 
-                                    <li><ins class="ModifRef clickable " name="modif:qst:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins></li>
-                                    <li><ins class="GetReflection clickable " name="qst:{{x.id}}">ouvrir</ins></li>
-                                </ul>
-                            </li>
-                        </ul> 
-                        </div>
-                    {% else %}
-                        <div class="SmallMenu">
+                      <div class="SmallMenu">
                         <ul>
                             <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
                                 <ul>
-                                    <li><ins class="ReportRef clickable " name="rpt:qst:{{x.id}}">Signaler</ins></li> 
+                                    {% if User == x.autor %}
+                                    <li><ins class="DelOwnRef clickable " name="del:qst:{{x.id}}">supprimer</ins></li> 
+                                    <li><ins class="ModifRef clickable " name="modif:qst:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins>
+                                    </li>
+                                    {% else %}
+                                    <li><ins class="ReportRef clickable " name="rpt:qst:{{x.id}}">Signaler</ins></li>
+                                    {% endif %}
                                 </ul>
                             </li>
                         </ul> 
-                        </div>
-                    {% endif %}
+                    </div>
                     <br>
                     {% if x.title %}
                         <strong><b>{{x.title}}</b></strong><br>
