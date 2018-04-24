@@ -661,6 +661,31 @@ $(document).ready(function() {
             }
         });
     });
+    //-------------  Get Ref History (commits) -------------------
+    /* 
+    Send a repport for abusive behavior or comment
+    */
+    $('body').on('click', '.GetHistory', function(){
+        var data =  $(this).attr('name').split(":");
+        $.ajax({
+            type: "POST",
+            url: '/CYL/GetHistory',
+            data: {'typeref': data[1] ,'idref': data[2] ,csrfmiddlewaretoken: csrftoken},
+            dataType: "json",
+            success: function(rs) {
+                var toalert = "";
+                for (var i=0; i < rs.history.length; i++){
+                    toalert = toalert + "commit " + i.toString() + ":\n" + rs.history[i] + "\n\n";
+                }
+                alert(toalert);
+            },
+            error: function(rs, e) {
+                alert(rs.responseText);
+            }
+        });
+    });
+
+
         //---------------------  Report own ref---------------------
     /* 
     Send a repport for abusive behavior or comment

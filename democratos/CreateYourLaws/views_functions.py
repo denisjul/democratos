@@ -111,7 +111,7 @@ def CreateCommit(ref, newtxt, newtitle, details, comments):
         commit = Commit.objects.create(
             commit_txt = CreateCommitstr(ref.text_prp, newtxt),
             commit_title = CreateCommitstr(ref.title, newtitle),
-            commit_details = CreateCommitstr(ref.details, details),
+            commit_details = CreateCommitstr(ref.details_prp, details),
             comments = comments,
             content_object=ref,
             )

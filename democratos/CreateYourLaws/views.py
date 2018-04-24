@@ -10,6 +10,14 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.contenttypes.models import ContentType
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.translation import ugettext as _
+from django.template.response import TemplateResponse
+from django.core import serializers
+
+from render_block import render_block_to_string
+import operator
+import json
+
 from CreateYourLaws.view_functions.nav_jstree import up_nav, init_nav
 from CreateYourLaws.models import (
     LawCode, LawArticle, CodeBlock, Question, Disclaim, Negopinion,
@@ -20,12 +28,7 @@ from CreateYourLaws.forms import (
     CreateNewLawForm,)
 from CreateYourLaws.views_functions import (
     get_path, get_the_instance, get_model_type_in_str,CreateCommit)
-from django.utils.translation import ugettext as _
-from django.template.response import TemplateResponse
 from CreateYourLaws.dl_law_codes.functions import get_something
-from render_block import render_block_to_string
-import operator
-import json
 
 
 @login_required
@@ -905,8 +908,9 @@ def GetHistory(request):
     typeref = request.POST.get('typeref', None)
     idref = int(request.POST.get('idref', None))
     ref  = get_the_instance(typeref,idref)
-    history = ref.Commit.all()
-    return Jsonresponse(history)
+    history = {"history":serializers.serialize("json",ref.commit.all())}
+    print(history)
+    return JsonResponse(history)
 
 
 @login_required
@@ -923,3 +927,29 @@ def ReportReflection(request):
 def create_new_box():
     """ View to create a new Law Code or codeblock """
     pass
+
+
+"""
+
+[{"model": "CreateYourLaws.commit", 
+  "pk": 2,
+  "fields": {"commit_title": "[['equal', 0, 11, 0, 11, '']]", 
+             "commit_txt": "[['equal', 0, 11, 0, 11, ''], ['insert', 11, 11, 11, 14, ''], ['equal', 11, 15, 14, 18, ''], ['insert', 15, 15, 18, 30, ''], ['equal', 15, 22, 30, 37, '']]",
+             "commit_details": "[['equal', 0, 20, 0, 20, ''], ['insert', 20, 20, 20, 62, ''], ['equal', 20, 24, 62, 66, '']]", 
+             "posted": "2018-04-24T11:17:05.677Z", 
+             "content_type": 13, "object_id": 2, 
+             "comments": "nouvooooo"}
+ },
+ {"model": "CreateYourLaws.commit", 
+  "pk": 3, 
+  "fields": {"commit_title": "[['delete', 0, 3, 0, 0, 'fgd'], ['equal', 3, 11, 0, 8, '']]", 
+             "commit_txt": "[['equal', 0, 11, 0, 11, ''], ['delete', 11, 13, 11, 11, 'sd'], ['equal', 13, 22, 11, 20, ''], ['insert', 22, 22, 20, 22, ''], ['equal', 22, 23, 22, 23, ''], ['insert', 23, 23, 23, 26, ''], ['equal', 23, 37, 26, 40, '']]", 
+             "commit_details": "[['equal', 0, 24, 0, 24, ''], ['delete', 24, 35, 24, 24, 'gsidj fjp s'], ['equal', 35, 62, 24, 51, ''], ['insert', 62, 62, 51, 57, ''], ['equal', 62, 66, 57, 61, '']]", 
+             "posted": "2018-04-24T11:45:51.164Z", 
+             "content_type": 13, 
+             "object_id": 2,
+             "comments": "nouvoooo 2"}
+             }
+]
+
+"""
