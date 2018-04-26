@@ -673,7 +673,8 @@ $(document).ready(function() {
             data: {'typeref': data[1] ,'idref': data[2] ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(rs) {
-                var toalert = "";
+                console.log(typeof(rs.ref));
+                var toalert = rs.ref.txt_prp + "\n\n";
                 for (var i=0; i < rs.history.length; i++){
                     toalert = toalert + "commit " + i.toString() + ":\n" + rs.history[i] + "\n\n";
                 }

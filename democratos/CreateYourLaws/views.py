@@ -908,9 +908,13 @@ def GetHistory(request):
     typeref = request.POST.get('typeref', None)
     idref = int(request.POST.get('idref', None))
     ref  = get_the_instance(typeref,idref)
-    history = {"history":serializers.serialize("json",ref.commit.all())}
-    print(history)
-    return JsonResponse(history)
+    ctx = {
+        "ref":serializers.serialize("json",[ref]),
+        "history":serializers.serialize("json",ref.commit.all()),
+    }
+    print(ctx["ref"])
+    print(type(ctx["ref"]))
+    return JsonResponse(ctx)
 
 
 @login_required
