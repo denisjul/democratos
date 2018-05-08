@@ -204,6 +204,10 @@ class PropositionForm(forms.ModelForm):
         }
 
 
+class ModifPropositionForm(PropositionForm):
+    commit_com = forms.CharField(widget=CKEditorWidget(config_name='redac_law'))
+
+
 class CreateNewLawForm(forms.ModelForm):
     class Meta:
         model = LawArticle

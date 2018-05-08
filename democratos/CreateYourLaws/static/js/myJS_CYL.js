@@ -1,6 +1,51 @@
-$.getScript('quickdialog.js');
+function ConfirmDialog(qorigin, title, message, data) {
+    $('<div></div>').appendTo('body')
+                    .html('<div>'+message+'?</div>')
+                    .dialog({
+                        modal: true, title: title, zIndex: 10000, autoOpen: true,
+                        width: 'auto', resizable: false,
+                        buttons: {
+                            Oui: function () {
+                                Confirmresult(qorigin, true, data);
+                                $(this).dialog("close");                               
+                            },
+                            Annuler: function () {                                                                
+                                Confirmresult(qorigin, false, data);
+                                $(this).dialog("close");
+                            }
+                        },
+                        close: function (event, ui) {
+                            $(this).remove();
+                        }
+                    });
+};
 
-//setup JQuery's AJAX methods to setup CSRF token in the request before sending it off.
+function Confirmresult(qorigin, answer, data) {
+    switch (qorigin){
+        case "DelOwnRef":
+            if (answer){
+                $.ajax({
+                    type: "POST",
+                    url: '/CYL/DeleteReflection',
+                    data: {'typeref': data[1] ,'idref': data[2] ,csrfmiddlewaretoken: csrftoken},
+                    dataType: "json",
+                    success: function(rs) {
+                        alert(rs.message);
+                        if (history.state==null) {
+                            location.reload();
+                        }
+                        else{
+                           GoAjax(history.state.url, history.state.slug, false);
+                        }
+                    },
+                    error: function(rs, e) {
+                        alert(rs.responseText);
+                    }
+                });
+            }
+        //case
+    }
+}
 
 function UpAndDown(tomodif,dontomodif,slug,url){
     $.ajax({
@@ -29,6 +74,8 @@ function UpAndDown(tomodif,dontomodif,slug,url){
         }
     });
 }
+
+//setup JQuery's AJAX methods to setup CSRF token in the request before sending it off.
 
 // This function gets cookie with a given name
 function getCookie(name) {
@@ -286,6 +333,7 @@ function SetTheForm(FormId){ // Il faut aussi joindre l'ID de la reflection auqu
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'), // the file to call
             success: function(rs) { // on success..
+                console.log("Success set form")
                 if (rs.typeform == "lawf"){
                     $("#intro").html(rs.intro);
                     $("#content").html(rs.content);
@@ -387,7 +435,10 @@ function GoAjax(url, slug, push) {
     if (url.indexOf("Reflection") > 0){
         url = url.replace("Reflection","reflection");
     }
-    if (url == "/CYL/CreateNewLaw"){
+    else if (url.indexOf("CommitDebate") > 0){
+        url = url.replace("CommitDebate","commitdebate");
+    }
+    else if (url == "/CYL/CreateNewLaw"){
         typeajax = "GET"
     }
     else{
@@ -652,6 +703,7 @@ $(document).ready(function() {
                 $('#content').find("#Cancel" + rs.typeform + rs.idform + "form").each(function(){
                     $(this).click(function(){
                         $('#content').find(idtomodif).html(oldhtml);
+                        SetDonuts();
                     });
                 });
                 SetNewForm(idtomodif);
@@ -673,13 +725,60 @@ $(document).ready(function() {
             data: {'typeref': data[1] ,'idref': data[2] ,csrfmiddlewaretoken: csrftoken},
             dataType: "json",
             success: function(rs) {
-                console.log(typeof(rs.ref.fields));
-                console.log(rs.ref.fields.text_prp);
-                var toalert = rs.ref.fields.text_prp + "\n\n";
-                for (var i=0; i < rs.history.length; i++){
-                    toalert = toalert + "commit " + i.toString() + ":\n" + rs.history[i] + "\n\n";
+                var html = "<ul>"
+                var ref = JSON.parse(rs.ref)
+                ref = ref[0];
+                var commits = JSON.parse(rs.history)
+                commits.sort(function(a,b){
+                    return b.pk-a.pk;
+                });
+                for (var i=0; i < commits.length; i++){
+                    var commit = commits[i];
+                    var date = new Date(commit.fields.posted); //.toLocaleString();
+                    console.log(typeof(date));
+                    date = date.toLocaleString();
+                    var pk = commit.pk;
+                    var comments = commit.fields.comments;
+                    if (i== 0){
+                        var text = ref.fields.text_prp, old_text = "";
+                        var title = ref.fields.title, old_title = "";
+                        var details = ref.fields.details_prp, old_details = "";
+                    }
+                    [text, old_text] = PresentCommit(text, commit.fields.commit_txt);
+                    [title, old_title] = PresentCommit(title, commit.fields.commit_title);
+                    [details, old_details] = PresentCommit(details, commit.fields.commit_details);
+                    html += eval("`"+ rs.template + "`");
+                    text = old_text
+                    title = old_title
+                    details = old_details
                 }
-                alert(toalert);
+                pk = String(ref.pk) + "ref";
+                date = ref.fields.posted;
+                comments = "Création";
+                html += eval("`"+ rs.template + "`");
+                html += "</ul>";
+                $('#content').find("#CommitDialog").html(html);
+                $( "#CommitDialog" ).dialog({
+                    width: 900,
+                    height: 1000,
+                    title: "Historique de la réflexion",
+                    buttons: [
+                        {
+                            text: "Fermer",
+                            click: function() {
+                            $( this ).dialog( "close" );
+                            }
+                        },
+                        {
+                            text: "voir détails",
+                            click: function() {
+                                var url = '/CYL/commitdebate';
+                                var slug = $(this).attr('name');  <-- REVOIR LA! slug=typeref:id_ref ou qqch comme ça
+                                GoAjax(url,slug,true);
+                            }
+                        },
+                    ]
+                });
             },
             error: function(rs, e) {
                 alert(rs.responseText);
@@ -709,3 +808,27 @@ $(document).ready(function() {
     });
 });
 
+
+function PresentCommit(newtxt,Commit){
+    Commit = eval(Commit);
+    var txt = "";
+    var oldtxt = "";
+    Commit.forEach(function(el){
+        if (el[0] == "equal"){
+            txt += newtxt.substring(el[3],el[4]);
+            oldtxt += newtxt.substring(el[3],el[4]);
+        }
+        if (el[0] == "replace"){
+            txt +=  "<span class='CommitRemove'>" + el[5] + "</span>" + "<span class='CommitAdd'>" + newtxt.substring(el[3],el[4]) + "</span>";
+            oldtxt += el[5];
+        }
+        if (el[0] == "delete"){
+            txt += "<span class='CommitRemove'>" + el[5] + "</span>";
+            oldtxt += el[5];
+        }
+        if (el[0] == "insert"){
+            txt += "<span class='CommitAdd'>" + newtxt.substring(el[3],el[4]) + "</span>";
+        }
+    });
+    return [txt, oldtxt];
+}

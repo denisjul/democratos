@@ -1,10 +1,14 @@
 {% load staticfiles %}
+{% load special_filters %}
 <!-- *o* -->
 {% block intro %}
 {% if typeform == "lawf" %}
     <h1> Où suis-je? </h1>
     <p>
-
+        {% for x in listparents %}
+            <var class= "InDatBox BoxIntroStyle" name="{{x|lookup:2}}:{{x|lookup:1}}"><strong> {{x|lookup:0|truncatewords:4}}  </strong></var>  >>     
+        {% endfor %}
+        {{Box.title}}
     </p>
 {% endif %}
 {% endblock %}
@@ -31,7 +35,6 @@
     {% if IsModif %}
         <input type="hidden" name="IsModif" value="True">
         <input type="hidden" name="idform" value="{{idform}}">
-        <textarea type="visible" class="ToCkeditor" name="commit_com"></textarea>
     {% else %}
         <input type="hidden" name="IsModif" value="">
     {% endif%}

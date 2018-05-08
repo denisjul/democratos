@@ -59,6 +59,8 @@ def get_model_type_in_str(obj):
         return 'prp'
     elif type(obj) is CreateYourLaws.models.LawArticle:
         return 'law'
+    elif type(obj) is CreateYourLaws.models.Commit:
+        return 'com'
 
 
 def get_ref_text(obj):
@@ -96,6 +98,8 @@ def get_the_instance(obj, Id):
         return CreateYourLaws.models.Proposition.objects.get(id=Id)
     elif obj == 'law':
         return CreateYourLaws.models.LawArticle.objects.get(id=Id)
+    elif obj == 'com':
+        return CreateYourLaws.models.Commit.objects.get(id=Id)
 
 def CreateCommit(ref, newtxt, newtitle, details, comments):
     if type(ref) is CreateYourLaws.models.LawArticle:
@@ -121,7 +125,7 @@ def CreateCommit(ref, newtxt, newtitle, details, comments):
 def CreateCommitstr(oldtxt,newtxt):
     """
     Commit structure: 
-    list of [ tag, i1, i2, j1, j2,oldtext[i1,i2], newtext[j1,j2] ]
+    list of [ tag, i1, i2, j1, j2,oldtext[i1,i2]]
     with:
         -i(n) = n(th) iteration of oldtxt
         -j(n) = n(th) iteration of newtxt
@@ -153,3 +157,41 @@ def RecoverOldComimtstr(newtxt,Commit):
         if el[0] == 'delete':
             oldtxt += el[5]
     return oldtxtx
+
+def get_box_parents(Box):
+    listparents = []
+    lastbox = Box
+    while lastbox.rank != 1:
+        parent = lastbox.block
+        listparents.append((parent.title, parent.id, 2))
+        lastbox = parent
+    parent = Box.law_code
+    listparents.append((parent.title, parent.id, 1))
+    listparents.reverse()
+    return listparents
+
+def get_ref_parents(ref,typeref):
+    if typeref == 'law':
+        parent = ref.block
+        if parent is None:
+            listparents = []
+        else:
+            listparents = [(parent.title, parent.id, 2)]
+            while parent.rank != 1:
+                parent = parent.block
+                listparents.append((parent.title, parent.id, 2))
+        law_code = ref.law_code
+        listparents.append((law_code.title, law_code.id, 1))
+        fstparent = listparents[0]
+        listparents.reverse()
+    elif typeref == 'prp':
+        listparents =[]
+        fstparent = [get_model_type_in_str(ref.content_object),
+                     ref.content_object.id,
+                     ref.content_object.title,
+                     ]
+        law_code = ref.law_article.law_code
+    else:
+        law_code, listparents = get_path(ref)
+        fstparent = listparents[0]
+    return law_code, listparents, fstparent

@@ -31,6 +31,8 @@
 
 {% block content %}
 {% autoescape off %}
+
+<p id="CommitDialog"></p>
 <!--##########################################################################################
 ##################################      The Reflection       #################################
 ###########################################################################################-->
@@ -100,7 +102,7 @@
             {% elif typeref == 'prp' %}
                 <p>{{ref.text_prp}}</p>
                 <br>
-                <i><ins>But recherché par cette contre-proposition:</ins></i>
+                <h3>But recherché par cette contre-proposition:</h3>
                 <br>
                 <p>{{ref.details_prp}}</p>
             {% endif %}
@@ -297,7 +299,7 @@
                                 {% else %}
                                     <strong>{{x.text_prp}}</strong> <br/>
                                 {% endif %}
-                                <i><ins>Nota:</ins></i><br/>{{x.details_prp}}
+                                <label class="RefNote">Note:</label><br/>{{x.details_prp}}
                             </div>
                             <div class="count">
                             <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}

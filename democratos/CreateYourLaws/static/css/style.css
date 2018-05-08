@@ -175,20 +175,6 @@ button{
 	list-style: none;
 }
 
-/*
-.disclaim
-{
-	background-color: #F9AC68;
-	border-width: 2px;
-	border-color: #FC540B;
-	border-style: solid;
-	border-radius: 8px;
-	border-spacing: 10px;
-	margin: 1%;
-	padding: 10px;
-}
-*/
-
 .Bigposopinion
 {
 	background-color: #93f99a;
@@ -529,3 +515,48 @@ section form{
 	background-color: grey;
 	box-shadow: 2px 2px 1px #aaa;
  }
+
+.Commitlist{
+	list-style-type: none;
+	border-width: 2px;
+	border-color: grey;
+	border-style: solid;
+	border-radius: 10px;
+	margin: 1%;
+	display: block;
+	float: center;
+	overflow: hidden;
+}
+
+.CommitHead{
+	padding: 1%;
+	color: white;
+	background-color: #6495ED;
+	overflow: auto;
+}
+
+.CommitContent{
+	margin: 1%;
+	background: #ffffff;
+}
+
+.CommitComments{
+	padding: 1%;
+	background-color: #b3d1ff;
+}
+
+.CommitAdd{
+	color: green;
+	background-color: #cffcd2;
+}
+
+.CommitRemove{
+	color: red;
+	//text-decoration-line: line-through;
+	background-color: #fccfcf;
+}
+
+.CommitDate{
+	float: right;
+}
+

@@ -1,0 +1,204 @@
+{% extends "base_CYL.html" %}
+{% load special_filters %}
+{% load staticfiles %}
+
+{% block intro %}
+<h1> Où suis-je? </h1>
+<p> 
+    {% if typeref == 'law' %}    <!--         The path to the Article           -->
+        {% for x in listparents %}
+            <var class="InDatBox BoxIntroStyle" name="{{x|lookup:2}}:{{x|lookup:1}}"><strong>  {{x|lookup:0|truncatewords:4}}  </strong></var>  >>  
+        {% endfor %}
+    {% elif typeref == 'prp' %}  
+        <var class="InDatBox BoxIntroStyle" name="1:{{ref.law_article.law_code.id}}"><strong>  {{ ref.law_article.law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>  <var class="GetReflection law_text" name="law:{{ref.law_article.id}}"><strong>  {{ref.law_article.title|truncatewords:4}}  </strong></var>   >>   
+    {% else %}   <!--         The path to the reflection       -->
+        <var class="InDatBox BoxIntroStyle" name="1:{{law_code.id}}"><strong>  {{ law_code.title|truncatewords:4}}  </strong></var>  >>  ...  >>  
+        {% for x in list_parents %}
+            <var class="GetReflection {{x|lookup:0|Csstype}}" name="{{x|lookup:0}}:{{x|lookup:1}}"><strong>  {{x|lookup:2|truncatewords:4}}  </strong></var>  >>     
+        {% endfor %}
+    {% endif %}
+    <var class="{{typeref|Csstype}}">
+    {% if ref.title %}    
+        {{ref.title|truncatewords:8}}
+    {% else %}
+        {{ref.text|truncatewords:8}}
+    {% endif %}
+    </var>
+    >> Historique
+</p>
+
+{% endblock %}
+
+
+{% block content %}
+{% autoescape off %}
+
+<p id="CommitDialog"></p>
+<!--##########################################################################################
+##################################      The Reflection       #################################
+###########################################################################################-->
+
+    {% if typeref == 'law' %}  
+            <!--         The Law article           -->
+        {% if ref.is_lwp %}
+            <section class="lwp_section">
+        {% else %}
+            <section class="law_section">
+        {% endif %}
+        <h1>{{ref.law_code.title}}</h1> 
+            <h2>{{ref.title}}</h2>
+            <p>{{ref.text_law}}</p>
+
+    {% else %}
+        {% elif typeref == 'prp' %}
+                <h1> Contre proposition à: 
+        {% endif %} 
+        <span class="GetReflection" name="{{fstparent|lookup:0}}:{{fstparent|lookup:1}}"> 
+        {% if ref.content_object.title %}  
+            {{ref.content_object.title}} 
+        {% else %}
+            {{ref.content_object.text_prp}}
+        {% endif %}</span></h1>
+        <section class="proposition">
+        {% endif %}     
+        {% if ref.title %}    
+            <h2>{{ref.title}}</h2>
+            <p>{{ref.text_prp}}</p>
+            <br>
+            <h3>But recherché par cette contre-proposition:</h3>
+            <br>
+            <p>{{ref.details_prp}}</p>
+        {% else %}
+            <h2>{{ref.text_prop}}</h2>
+         {% endif %}
+    {% endif %}
+                <p class="count"> <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{ref.nb_q}}
+                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{ref.nb_exp}} 
+                </p>
+                <p class="vote">
+                    <input type="image" src="{% static 'icons/thumbs_up.png' %}" class="UP" name="{{typeref}}:{{ref.id}}" value="UP"/>
+                    <input type="image" src="{% static 'icons/thumbs_down.png' %}" class="DOWN" name="{{typeref}}:{{ref.id}}" value="DOWN"/>
+                        note:
+                    <canvas id="don{{typeref}}{{ref.id}}" name="{{ref.approval_ratio}}" class="donut"></canvas>
+                </p>
+            </section>
+
+
+<!--############################################################################################
+######################################     the Commits     #####################################
+#############################################################################################-->
+
+<section id="{{typeref}}debate{{id_ref}}" class="UpSection">
+    <table>    
+        {% for x in listcom %}
+        <tr>
+            {% if x|isinst:'CreateYourLaws.models.Explaination' %}    
+                <td id="exptd{{x.id}}" class="explaination"> {% comment %} <div class="IDB GetReflection" name="exp:{{x.id}}"> {% endcomment %} 
+                   <div class="SmallMenu">
+                        <ul>
+                            <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                <ul>
+                                    {% if User == x.autor %}
+                                    <li><ins class="DelOwnRef clickable " name="del:exp:{{x.id}}">supprimer</ins></li> 
+                                    <li><ins class="ModifRef clickable " name="modif:exp:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins>
+                                    </li>
+                                    {% else %}
+                                    <li><ins class="ReportRef clickable " name="rpt:exp:{{x.id}}">Signaler</ins></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul> 
+                    </div>
+                    {% if x.title %}
+                        <strong><b>{{x.title}}</b></strong><br>
+                        {{x.text_exp|truncatewords:80}}
+                    {% else %}
+                        <strong>{{x.text_exp}}</strong>
+                    {% endif %}
+            {% else %}
+                <td id="qsttd{{x.id}}" class="question">  {% comment %} <div class="IDB GetReflection" name="qst:{{x.id}}"> {% endcomment %}
+                      <div class="SmallMenu">
+                        <ul>
+                            <li> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{% static 'icons/menu.png' %}" alt="menu" class="icn">
+                                <ul>
+                                    {% if User == x.autor %}
+                                    <li><ins class="DelOwnRef clickable " name="del:qst:{{x.id}}">supprimer</ins></li> 
+                                    <li><ins class="ModifRef clickable " name="modif:qst:{{x.id}}:{{typeref}}:{{ref.id}}">Modifier</ins>
+                                    </li>
+                                    {% else %}
+                                    <li><ins class="ReportRef clickable " name="rpt:qst:{{x.id}}">Signaler</ins></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul> 
+                    </div>
+                    <br>
+                    {% if x.title %}
+                        <strong><b>{{x.title}}</b></strong><br>
+                        {{x.text_q|truncatewords:80}}
+                    {% else %}
+                        <strong>{{x.text_q}}</strong> 
+                    {% endif %}
+            {% endif %} 
+            <br>            
+            <div class="count">
+                <img src="{% static 'icons/qst.png' %}" alt="?" class="icn"> {{x.nb_q}}
+                <img src="{% static 'icons/exp.png' %}" alt="com" class="icn"> {{x.nb_exp}} 
+            </div>
+            <div class="vote">
+            {% if x|isinst:'CreateYourLaws.models.Explaination' %}   
+                <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="exp:{{x.id}}" value="UP"/>
+                <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="exp:{{x.id}}" value="DOWN"/>
+                 note:
+                <canvas id="donexp{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+            {% else %}
+                <input type="image" src="{% static 'icons/thumbs_up.png' %}"  class="UP" name="qst:{{x.id}}" value="UP"/>
+                <input type="image" src="{% static 'icons/thumbs_down.png' %}"  class="DOWN" name="qst:{{x.id}}" value="DOWN"/>
+                note:
+                <canvas id="donqst{{x.id}}" name="{{x.approval_ratio}}" class="donut"></canvas>
+            {% endif %}
+            </div>
+            <br>
+            <br>
+            <hr>
+            {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                <p id="devexp{{x.id}}" style='text-align: center;'>
+            {% else %}
+                <p id="devqst{{x.id}}" style='text-align: center;'>
+            {% endif %}
+                {% if x.nb_exp != 0 or x.nb_q != 0 %}
+                    {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                        <span class="GetDebateChild" name="childexp{{x.id}}" id="childexp{{x.id}}"> Voir les réactions à ce commentaire </span>
+                    {% else %}
+                        <span class="GetDebateChild" name="childqst{{x.id}}" id="childqst{{x.id}}"> Voir les réactions à ce commentaire </span>
+                    {% endif %}
+                {% else %}
+                    {% if x|isinst:'CreateYourLaws.models.Explaination' %}
+                    <button class="butexp" type="button" name="exp:exp:{{x.id}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                    <button class="butqst" type="button" name="exp:qst:{{x.id}}">Poser votre question </button>
+                    <span id="expaskform{{x.id}}" class="tocenter UpSection"></span>
+                    {% else %}
+                    <button class="butexp" type="button" name="qst:exp:{{x.id}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                    <button class="butqst" type="button" name="qst:qst:{{x.id}}">Poser une question </button>
+                    <span id="qstaskform{{x.id}}" class="tocenter UpSection"></span>
+                    {% endif %}
+                {% endif %}
+                </p>
+            </td>                   
+        </tr>
+        {% endfor %}            
+    </table> 
+    {% if typeref == 'law' or typeref == 'prp' %}
+        <h3>une réaction?</h3>
+    {% endif %}
+    <button class="butexp" name="{{typeref}}:exp:{{id_ref}}" type="button">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commenter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+    <button class="butqst" name="{{typeref}}:qst:{{id_ref}}" type="button">Poser une question </button>
+    <span id="{{typeref}}askform{{id_ref}}"></span>
+</section>
+
+{% endautoescape %}
+<!--
+<script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script> -->
+{% endblock %}
+
+

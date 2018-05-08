@@ -25,9 +25,10 @@ from CreateYourLaws.models import (
 from CreateYourLaws.forms import (
     QuestionForm, Create_CYL_UserForm, PropositionForm, Del_account_form,
     ExplainationForm, PosopinionForm, Info_Change_Form, NegopinionForm,
-    CreateNewLawForm,)
+    CreateNewLawForm, ModifPropositionForm)
 from CreateYourLaws.views_functions import (
-    get_path, get_the_instance, get_model_type_in_str,CreateCommit)
+    get_path, get_the_instance, get_model_type_in_str,CreateCommit,
+    get_box_parents, get_ref_parents, )
 from CreateYourLaws.dl_law_codes.functions import get_something
 
 
@@ -269,15 +270,7 @@ def In_dat_box(request, box_type=None, box_id=None):
             CodeBlock.objects.filter(block=box_id,
                                      is_cbp=False).order_by('id'))
         Box = CodeBlock.objects.get(id=box_id)
-        listparents = []
-        lastbox = Box
-        while lastbox.rank != 1:
-            parent = lastbox.block
-            listparents.append((parent.title, parent.id, 2))
-            lastbox = parent
-        parent = Box.law_code
-        listparents.append((parent.title, parent.id, 1))
-        listparents.reverse()
+        listparents = get_box_parents(Box)
         HasLawProp = LawArticle.objects.filter(block=box_id,
                                                is_lwp=True).exists()
         HasBlocProp = CodeBlock.objects.filter(block=box_id,
@@ -359,27 +352,7 @@ def get_reflection(request, typeref=None, id_ref=None):
     except Exception:
         raise Http404
     # where is it from? path to the reflection
-    if typeref == 'law':
-        parent = ref.block
-        if parent is None:
-            listparents = []
-        else:
-            listparents = [(parent.title, parent.id, 2)]
-            while parent.rank != 1:
-                parent = parent.block
-                listparents.append((parent.title, parent.id, 2))
-        parent = ref.law_code
-        listparents.append((parent.title, parent.id, 1))
-        listparents.reverse()
-    elif typeref == 'prp':
-        fstparent = [get_model_type_in_str(ref.content_object),
-                     ref.content_object.id,
-                     ref.content_object.title,
-                     ]
-    else:
-        law_code, list_parents = get_path(ref)
-        fstparent = list_parents[0]
-        print(law_code, list_parents)
+    law_code, listparents, fstparent = get_ref_parents(ref,typeref)
     # forms initializations
     qstform = QuestionForm()
     expform = ExplainationForm()
@@ -407,7 +380,6 @@ def get_reflection(request, typeref=None, id_ref=None):
         intro = render_block_to_string('GetReflection.html',
                                        "intro",
                                        locals())
-        print('intro loaded')
         content = render_block_to_string('GetReflection.html',
                                          "content",
                                          locals())
@@ -747,10 +719,11 @@ def ModifReflection(request):
                                            'text_opn': obj.text_opn
                                            })
         elif typeform == 'prp':
-            form = PropositionForm(initial={'title': obj.title,
-                                            'text_prp': obj.text_prp,
-                                            'details_prp': obj.details_prp,
-                                            })
+            form = ModifPropositionForm(initial={
+                'title': obj.title,
+                'text_prp': obj.text_prp,
+                'details_prp': obj.details_prp,
+            })
         else:
             print("http1")
             raise Http404
@@ -787,9 +760,11 @@ def CreateNewLaw(request, box_id=None):
         box = request.GET.get('slug', None)
         box_type = box[0]
         box_id = int(box[2:])
+        box = CodeBlock.objects.get(id=box_id)
+        listparents = get_box_parents(box)
+        listparents.append((box.title, box.id,1))
         typeform = "lawf"
         form = CreateNewLawForm()
-        """
         NewHtml = render_to_string('GetForm.html',
                                    locals(),
                                    request)
@@ -797,10 +772,12 @@ def CreateNewLaw(request, box_id=None):
                                      '<!-- *o* -->',
                                      "<!-- *_* -->",
                                      0)
+        print(intro)
         content, trash = get_something(NewHtml,
                                        '<!-- *X* -->',
                                        "<!-- *U* -->",
-                                       0)"""
+                                       0)
+        """
         intro = render_block_to_string('GetForm.html',
                                        "intro",
                                        locals(),
@@ -808,7 +785,7 @@ def CreateNewLaw(request, box_id=None):
         content = render_block_to_string('GetForm.html',
                                          "content",
                                          locals(),
-                                         request)
+                                         request)"""
         ctx = {'intro': intro,
                'content': content,
                'box_type': box_type,
@@ -886,12 +863,12 @@ def ValidNewLaw(request):
         listpropositions = list(ref.propositions.all())
         intro = render_block_to_string('GetReflection.html',
                                        "intro",
-                                       locals(),
-                                       request)
+                                       locals(),)
+                                       #request)
         content = render_block_to_string('GetReflection.html',
                                          "content",
-                                         locals(),
-                                         request)
+                                         locals(),)
+                                         #request)
         ctx = {'intro': intro,
                'content': content,
                'typeref': typeref,
@@ -908,13 +885,45 @@ def GetHistory(request):
     typeref = request.POST.get('typeref', None)
     idref = int(request.POST.get('idref', None))
     ref  = get_the_instance(typeref,idref)
+    template = render_to_string("commit.html")
+    Commits = ref.commit.all().order_by("-posted")
     ctx = {
-        "ref":json.loads(serializers.serialize("json",[ref])),
-        "history":json.loads(serializers.serialize("json",ref.commit.all())),
+        "ref":serializers.serialize("json",[ref]),
+        "history":serializers.serialize("json",Commits),
+        "template":template,
     }
-    print(ctx["ref"])
-    print(type(ctx["ref"]))
     return JsonResponse(ctx)
+
+
+@login_required
+def CommitDebate(request, typeref=None, id_ref=None):
+    if request.POST:
+        slug = request.POST.get('slug', None)
+        if slug is None:
+            typeref = request.typeref
+            id_ref = int(request.id_ref)
+        else:
+            typeref, id_ref = slug.split(sep=":")
+            id_ref = int(id_ref)
+    ref  = get_the_instance(typeref,id_ref)
+    template = render_to_string("CommitDebate.html")
+    Commits = ref.commit.all().order_by("-posted")
+    law_code, listparents, fstparent = get_ref_parents(ref, typeref)
+    if request.POST:
+        intro = render_block_to_string('CommitDebate.html',
+                                       "intro",
+                                       locals())
+        content = render_block_to_string('CommitDebate.html',
+                                         "content",
+                                         locals())
+        ctx = {'intro': intro,
+               'content': content,
+               'typeref': typeref,
+               'id_ref': str(id_ref)}
+        return JsonResponse(ctx)
+    else:
+        print("sucess stdt load")
+        return render(request, 'CommitDebate.html', locals())
 
 
 @login_required
