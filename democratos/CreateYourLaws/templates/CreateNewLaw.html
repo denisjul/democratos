@@ -1,0 +1,22 @@
+{% extends "base_CYL.html" %}
+{% load special_filters %}
+{% load staticfiles %}
+
+{% block content %}
+<form action="{% url 'CreateNewLaw'%}"  method="post" name="idbox:{{box_id}}">
+	{% csrf_token %}
+    {{ form.as_p }} 
+    <input type="hidden" name="box_id" value="{{box_id}}">
+	{% if IsModif %}
+		<input type="hidden" name="IsModif" value="True">
+		<input type="hidden" name="idform" value="{{idform}}">
+	{% else %}
+		<input type="hidden" name="IsModif" value="">
+	{% endif%}
+<button type="submit" class="but{{typeform}}" name="{{typeform}}form{{idref}}"> Envoyer </button>
+</form> 
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+
+{% endblock %}
+
