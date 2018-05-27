@@ -138,11 +138,10 @@ def CreateCommitstr(oldtxt,newtxt):
         comlist = list(el)
         if el[0] == "equal":
             comlist.append("")
-            Commit.append(comlist)
         else:
             old = oldtxt[el[1]:el[2]]
             comlist.append(old)
-            Commit.append(comlist)
+        Commit.append(comlist)
     return str(Commit)
 
 

@@ -732,6 +732,7 @@ $(document).ready(function() {
                 commits.sort(function(a,b){
                     return b.pk-a.pk;
                 });
+                console.log(commits, commits.length);
                 for (var i=0; i < commits.length; i++){
                     var commit = commits[i];
                     var date = new Date(commit.fields.posted); //.toLocaleString();
@@ -739,10 +740,16 @@ $(document).ready(function() {
                     date = date.toLocaleString();
                     var pk = commit.pk;
                     var comments = commit.fields.comments;
-                    if (i== 0){
-                        var text = ref.fields.text_prp, old_text = "";
+                    if (i==0){
                         var title = ref.fields.title, old_title = "";
-                        var details = ref.fields.details_prp, old_details = "";
+                        if (data[1] == "prp"){
+                            var text = ref.fields.text_prp, old_text = "";
+                            var details = ref.fields.details_prp, old_details = "";
+                        }
+                        if (data[1] == "law"){
+                            var text = ref.fields.text_law, old_text = "";
+                            var details = ref.fields.details_law, old_details = "";
+                        }
                     }
                     [text, old_text] = PresentCommit(text, commit.fields.commit_txt);
                     [title, old_title] = PresentCommit(title, commit.fields.commit_title);
@@ -773,7 +780,7 @@ $(document).ready(function() {
                             text: "voir détails",
                             click: function() {
                                 var url = '/CYL/commitdebate';
-                                var slug = $(this).attr('name');  <-- REVOIR LA! slug=typeref:id_ref ou qqch comme ça
+                               //var slug = $(this).attr('name');  <-- REVOIR LA! slug=typeref:id_ref ou qqch comme ça
                                 GoAjax(url,slug,true);
                             }
                         },
@@ -811,24 +818,30 @@ $(document).ready(function() {
 
 function PresentCommit(newtxt,Commit){
     Commit = eval(Commit);
+    console.log(Commit)
     var txt = "";
     var oldtxt = "";
-    Commit.forEach(function(el){
-        if (el[0] == "equal"){
-            txt += newtxt.substring(el[3],el[4]);
-            oldtxt += newtxt.substring(el[3],el[4]);
-        }
-        if (el[0] == "replace"){
-            txt +=  "<span class='CommitRemove'>" + el[5] + "</span>" + "<span class='CommitAdd'>" + newtxt.substring(el[3],el[4]) + "</span>";
-            oldtxt += el[5];
-        }
-        if (el[0] == "delete"){
-            txt += "<span class='CommitRemove'>" + el[5] + "</span>";
-            oldtxt += el[5];
-        }
-        if (el[0] == "insert"){
-            txt += "<span class='CommitAdd'>" + newtxt.substring(el[3],el[4]) + "</span>";
-        }
-    });
+    if (typeof Commit != "undefined") {
+        Commit.forEach(function(el){
+            if (el[0] == "equal"){
+                txt += newtxt.substring(el[3],el[4]);
+                oldtxt += newtxt.substring(el[3],el[4]);
+            }
+            if (el[0] == "replace"){
+                //txt +=  el[5];
+                txt +=  "<span class='CommitRemove'>" + el[5] + "</span>" + "<span class='CommitAdd'>" + newtxt.substring(el[3],el[4]) + "</span>";
+                oldtxt += el[5];
+            }
+            if (el[0] == "delete"){
+                //txt += ""
+                txt += "<span class='CommitRemove'>" + el[5] + "</span>";
+                oldtxt += el[5];
+            }
+            if (el[0] == "insert"){
+                //txt += newtxt.substring(el[3],el[4]);
+                txt += "<span class='CommitAdd'>" + newtxt.substring(el[3],el[4]) + "</span>";
+            }
+        });
+    }
     return [txt, oldtxt];
 }
