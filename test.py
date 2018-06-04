@@ -6,7 +6,33 @@ from html.entities import name2codepoint
 text = """
 <p class="title">
     <b>
-        The Dormouse's story
+        The Dormouse's <br> story
+    </b>
+</p>
+<p class="story">
+    Once upon a time there were three little sisters; and their names were
+    <a class="sister" href="http://example.com/elsie" id="link1">
+        Elsie
+    </a>
+    ,
+    <a class="sister" href="http://example.com/lacie" id="link2">
+        Lacie
+    </a>
+    and
+    <a class="sister" href="http://example.com/tillie" id="link2">
+        Tillie
+    </a>
+    ; and they lived at the bottom of a well.
+</p>
+<p class="story">
+ ...
+</p>
+"""
+
+text2  = """
+<p class="title">
+    <b>
+        The Dormouse's <br> story
     </b>
 </p>
 <p class="story">
@@ -39,16 +65,23 @@ class SavedHTMLParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
         self.content = []
+        self.Data = ""
 
     def handle_starttag(self, tag, attrs):
-        self.content.append(("start", tag, attrs))
+        data = "<" + tag
+        for attr in attrs:
+            data += ' ' + attr[0] + '="' + attr[1] + '"'
+        data += ">"
+        self.content.append(("start", data))
 
     def handle_endtag(self, tag):
-        self.content.append(("end", tag))
+        self.content.append(("end", "</" + tag + ">"))
         # print("End tag  :", tag)
 
     def handle_data(self, data):
-        self.content.append(("data", data))
+        data = data.split(" ")
+        for el in data:
+            self.content.append(("data", el))
         # print("Data     :", data)
 
     def handle_comment(self, data):
