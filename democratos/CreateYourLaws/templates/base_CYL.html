@@ -14,7 +14,19 @@
 
 {% block nav %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/jstree-style.css' %}" />
-    <div id="jstree_CYL"  class="ui-widget-content" style="padding:1px;"></div>
+    <div>
+    	<ul class="nav nav-tabs" role="tablist">
+		    <li role="presentation" class="active"><a data-toggle="tab" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+		    <li role="presentation"><a data-toggle="tab" href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+		    <li role="presentation"><a data-toggle="tab" href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
+		    <li role="presentation"><a data-toggle="tab" href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+		</ul>
+  	<div class="tab-content">
+    	<div id="jstree_CYL"  class="ui-widget-content" style="padding:1px;"></div>
+    	<div role="tabpanel" class="tab-pane" id="profile">...</div>
+	    <div role="tabpanel" class="tab-pane" id="messages">...</div>
+    	<div role="tabpanel" class="tab-pane" id="settings">...</div>
+  	</div>
 {% endblock %}
 
  {% block Main %}

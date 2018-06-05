@@ -55,6 +55,9 @@ DEFAULTS = {
     'DEFAULT_PAGINATION_CLASS': None,
     'DEFAULT_FILTER_BACKENDS': (),
 
+    # Schema
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
+
     # Throttling
     'DEFAULT_THROTTLE_RATES': {
         'user': None,
@@ -140,6 +143,7 @@ IMPORT_STRINGS = (
     'DEFAULT_VERSIONING_CLASS',
     'DEFAULT_PAGINATION_CLASS',
     'DEFAULT_FILTER_BACKENDS',
+    'DEFAULT_SCHEMA_CLASS',
     'EXCEPTION_HANDLER',
     'TEST_REQUEST_RENDERER_CLASSES',
     'UNAUTHENTICATED_USER',
@@ -175,8 +179,7 @@ def import_from_string(val, setting_name):
     """
     try:
         # Nod to tastypie's use of importlib.
-        parts = val.split('.')
-        module_path, class_name = '.'.join(parts[:-1]), parts[-1]
+        module_path, class_name = val.rsplit('.', 1)
         module = import_module(module_path)
         return getattr(module, class_name)
     except (ImportError, AttributeError) as e:
@@ -200,6 +203,7 @@ class APISettings(object):
             self._user_settings = self.__check_user_settings(user_settings)
         self.defaults = defaults or DEFAULTS
         self.import_strings = import_strings or IMPORT_STRINGS
+        self._cached_attrs = set()
 
     @property
     def user_settings(self):
@@ -223,6 +227,7 @@ class APISettings(object):
             val = perform_import(val, attr)
 
         # Cache the result
+        self._cached_attrs.add(attr)
         setattr(self, attr, val)
         return val
 
@@ -233,15 +238,21 @@ class APISettings(object):
                 raise RuntimeError("The '%s' setting has been removed. Please refer to '%s' for available settings." % (setting, SETTINGS_DOC))
         return user_settings
 
+    def reload(self):
+        for attr in self._cached_attrs:
+            delattr(self, attr)
+        self._cached_attrs.clear()
+        if hasattr(self, '_user_settings'):
+            delattr(self, '_user_settings')
+
 
 api_settings = APISettings(None, DEFAULTS, IMPORT_STRINGS)
 
 
 def reload_api_settings(*args, **kwargs):
-    global api_settings
-    setting, value = kwargs['setting'], kwargs['value']
+    setting = kwargs['setting']
     if setting == 'REST_FRAMEWORK':
-        api_settings = APISettings(value, DEFAULTS, IMPORT_STRINGS)
+        api_settings.reload()
 
 
 setting_changed.connect(reload_api_settings)

@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load bootstrap4 %}
 {% load special_filters %}
 <!-- *o* -->
 {% block intro %}
@@ -21,7 +22,8 @@
     <form action="{% url 'PostReflection'%}"  method="post" id="{{typeref}}form{{idref}}" name="{{typeref}}:{{typeform}}:{{ref.id}}">
 {% endif %}
 	{% csrf_token %}
-    {{ form.as_p }}
+    {% bootstrap_form form %}
+    {#{{ form.as_p }}#}
     {% if typeform == "lawf" %}
     	<input type="hidden" name="box_id" value="{{box_id}}">
         <input type="hidden" name="box_type" value="{{box_type}}">
