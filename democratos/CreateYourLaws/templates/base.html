@@ -4,6 +4,9 @@
   <head>
     <meta http-equiv="Content-Type" charset="UTF-8">
     {% load staticfiles %}
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/myJS_CYL.js' %}"></script>
@@ -18,14 +21,14 @@
          {% block nav %}
          {% endblock %}
      </nav>
-     <aside>
-      {% block aside %}
-      {% endblock %} 
-     </aside>
      <main>
       {% block Main %}
       {% endblock %}  
      </main>
+     <aside>
+      {% block aside %}
+      {% endblock %} 
+     </aside>
   <footer>
   </footer>
   </body>

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'captcha',
     'registration',
     'ckeditor',
+    'bootstrap4',
     #'werkzeug',
     'render_block',
 ]
@@ -85,7 +86,7 @@ HAYSTACK_CONNECTIONS = {
 
 WSGI_APPLICATION = 'democratos.wsgi.application'
 
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -104,7 +105,7 @@ DATABASES = {
         'PORT': '',
     }
 }
-
+"""
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 

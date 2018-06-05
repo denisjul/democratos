@@ -116,10 +116,10 @@ def DataCompare(data1, data2):
         if el[0] == "equal":
             comlist.extend(["", ""])
         else:
-            joiner = " "
-            old = joiner.join(data1[el[1]:el[2]])
-            new = joiner.join(data2[el[3]:el[4]])
+            old = (data1[el[1]:el[2]])
+            new = (data2[el[3]:el[4]])
             comlist.extend([old, new])
+        """
         if comlist[0] == "replace":
             s = SequenceMatcher()
             s.set_seqs(comlist[5], comlist[6])
@@ -138,6 +138,7 @@ def DataCompare(data1, data2):
                     subcommit.append(subcomlist)
                 comlist[5] = subcommit
                 comlist[6] = ""
+        """
         Commit.append(comlist)
         print(comlist)
     return Commit
