@@ -453,10 +453,12 @@ def _Main_():
         pass
     url_fail = get_code_data(listofcodes[71][1], url_fail, Gov)
     """
+
     for x in range(len(listofcodes)):
         url_fail = get_code_data(listofcodes[x][1], url_fail, Gov)
 
     # RECOVER ALL THE DATA FAILLED BY REQUEST ERROR
+    print(url_fail)
     while url_fail:
         for el in url_fail:
             if el[0] == "constitution":
@@ -465,7 +467,8 @@ def _Main_():
                 url_fail = get_code_data(el[1], url_fail)
             elif el[0] == "article":
                 url_fail = get_article(el[1], el[2], el[3], url_fail)
-            url_fail.remove(el)
+            if url_fail:
+                url_fail.remove(el)
         print(" length url_fail: ", len(url_fail))
 
     # 3 TRIES TO RECOVER OTHER ERRORS
@@ -495,3 +498,4 @@ def _Main_():
         el.delete()
     CodeBlock.objects.filter(updated=False).delete()
     LawArticle.objects.filter(updated=False).delete()
+

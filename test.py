@@ -29,10 +29,10 @@ text = """
 </p>
 """
 
-text2  = """
-<p class="title">
+text2 = """
+<p class="title" id="tittle">
     <b>
-        The Dormouse's <br> story
+        The Dormouse's story
     </b>
 </p>
 <p class="story">
@@ -44,14 +44,11 @@ text2  = """
     <a class="sister" href="http://example.com/lacie" id="link2">
         Lacie
     </a>
-    and
-    <a class="sister" href="http://example.com/tillie" id="link2">
-        Tillie
-    </a>
-    ; and they lived at the bottom of a well.
+    <br>
+    and they lived at the bottom of a well well well... fart
 </p>
 <p class="story">
- ...
+    Isn't it?
 </p>
 """
 """
@@ -92,12 +89,22 @@ class SavedHTMLParser(HTMLParser):
         print("Decl     :", data)
 
 
-TestParser = SavedHTMLParser()
-TestParser.feed(text)
-print(TestParser.content)
+ParsedText1 = SavedHTMLParser()
+ParsedText1.feed(text)
+data1 = ParsedText1.content
+ParsedText2 = SavedHTMLParser()
+ParsedText2.feed(text2)
+data2 = ParsedText2.content
 
-data1 = ["Once","upon","a","time","there","were","three","little", "cochon", "sisters", "maison", "vertes", "mais", "pas", "red", "&blue"]
-data2 = ["Once","upon","an", "time", "very", "long","there","were","three","very", "pretty", "little", "cochonnes", "sisters", "maisons", "sans","vitres", "red"]
+print(data1,
+      "\n\n ############################################### \n\n",
+      data2,
+      "\n\n ############################################### \n\n",
+      )
+
+
+X1 = ["Once","upon","a","time","there","were","three","little", "cochon", "sisters", "maison", "vertes", "mais", "pas", "red", "&blue"]
+X2 = ["Once","upon","an", "time", "very", "long","there","were","three","very", "pretty", "little", "cochonnes", "sisters", "maisons", "sans","vitres", "red"]
 
 
 def DataCompare(data1, data2):
@@ -132,8 +139,10 @@ def DataCompare(data1, data2):
                 comlist[5] = subcommit
                 comlist[6] = ""
         Commit.append(comlist)
+        print(comlist)
     return Commit
 
 
+Commit = DataCompare(X1, X2)
+print("\n\n")
 Commit = DataCompare(data1, data2)
-# print(Commit)

@@ -13,4 +13,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Hello World")
         _Main_()
-        Session.objects.filter(expire_date__lt=date.today).delete()
+        # Session.objects.filter(expire_date__lt=date.today).delete()

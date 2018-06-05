@@ -85,7 +85,7 @@ HAYSTACK_CONNECTIONS = {
 
 WSGI_APPLICATION = 'democratos.wsgi.application'
 
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -97,15 +97,13 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'democratos_db',
+        'NAME': 'democratosdb',
         'USER': 'superjuju',
         'PASSWORD': 'UWBddw75',
         'HOST': 'localhost',
         'PORT': '',
     }
 }
-"""
-
 
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
